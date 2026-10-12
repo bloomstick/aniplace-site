@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как установить Aniplace — Android и Windows | ani.place</title>
+<meta name="description" content="Пошаговая инструкция с картинками: установка Aniplace APK на Android и запуск на Windows.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="logo-mark">🌸</span><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
+    <div class="nav-links">
+      <a href="index.html#features">Возможности</a>
+      <a href="index.html#download">Скачать</a>
+      <a href="index.html#faq">FAQ</a>
+      <a class="btn btn-primary btn-small" href="index.html#download">Скачать</a>
+    </div>
+  </nav>
+</header>
+
+<div class="wrap">
+  <section>
+    <span class="eyebrow">Инструкция · с картинками</span>
+    <h1>Установка за <span class="hl">5 минут</span></h1>
+    <p class="lead">Aniplace распространяется напрямую (мимо магазинов приложений), поэтому Android и Windows попросят одно подтверждение. Ниже — каждый шаг подробно.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">⬇ Скачать с GitHub Releases</a>
+      <a class="btn btn-ghost" href="#android">Сразу к Android</a>
+      <a class="btn btn-ghost" href="#windows">Сразу к Windows</a>
+    </div>
+  </section>
+
+  <!-- ANDROID -->
+  <section id="android">
+    <span class="eyebrow">🤖 Android 8.0+</span>
+    <h2>Установка APK на телефон</h2>
+    <div class="warn">⚠️ Файл скачивается из интернета, а не из Google Play — так и задумано. Сверь SHA-256 сумму со страницей релиза (инструкция в конце), и всё будет безопасно.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div>
+        <h3>Скачай APK-файл</h3>
+        <p>На телефоне открой страницу <a href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">последнего релиза</a> и нажми на файл <code>aniplace-*-android.apk</code>. Дождись окончания загрузки — в шторке появится уведомление «Загрузка завершена».</p>
+      </div></div>
+      <div class="step"><div class="step-num">2</div><div>
+        <h3>Открой скачанный файл</h3>
+        <p>Нажми на уведомление о загрузке либо открой <code>Файлы → Загрузки</code> (или <code>Chrome → ⋮ → Скачанные файлы</code>) и тапни по <code>aniplace-*.apk</code>. Появится системное окно «Установить приложение?».</p>
+        <p class="warn">📱 <b>Как это выглядит:</b> системное окно с иконкой Aniplace, кнопками «Отмена» / «Установить» и списком разрешений.</p>
+      </div></div>
+      <div class="step"><div class="step-num">3</div><div>
+        <h3>Разреши установку из этого источника (один раз)</h3>
+        <p>На Android 8 и новее разрешение выдаётся точечно — только твоему браузеру:</p>
+        <ol>
+          <li>Если система показала «Установка заблокирована» — нажми <code>Настройки</code> в этом же окне.</li>
+          <li>Откроется пункт <code>Установка из неизвестных источников / Install unknown apps</code> — включи переключатель для браузера (Chrome, Firefox и т.п.).</li>
+          <li>Вернись назад и нажми <code>Установить</code>.</li>
+        </ol>
+        <p>Путь вручную: <code>Настройки → Приложения → Доступ к приложениям → Установка неизвестных приложений → твой браузер → Разрешить</code>. На Samsung: <code>Настройки → Биометрия и безопасность → Установка неизвестных приложений</code>. На Xiaomi (MIUI): может понадобиться также разрешить во всплывающем окне «Безопасность».</p>
+        <p class="warn">📱 <b>Как это выглядит:</b> список приложений с тумблером «Разрешить установку из этого источника» — включи его для своего браузера.</p>
+      </div></div>
+      <div class="step"><div class="step-num">4</div><div>
+        <h3>Подтверди установку и открой приложение</h3>
+        <p>Нажми <code>Установить</code> и подожди 10–30 секунд. Когда появится «Приложение установлено» — жми <code>Открыть</code>. Иконка 🌸 Aniplace уже на домашнем экране!</p>
+        <p>При первом запуске разреши уведомления — так ты узнаешь о новых сериях первым.</p>
+      </div></div>
+      <div class="step"><div class="step-num">5</div><div>
+        <h3>Проверь файл (необязательно, но надёжно)</h3>
+        <p>На странице релиза есть <code>SHA256SUMS.txt</code>. Сравни сумму любым приложением для проверки SHA-256 или командой на компьютере: <code>sha256sum aniplace-*.apk</code>. Суммы совпали — файл подлинный.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- WINDOWS -->
+  <section id="windows">
+    <span class="eyebrow">🖥️ Windows 10 / 11</span>
+    <h2>Запуск на компьютере</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div>
+        <h3>Скачай ZIP-сборку</h3>
+        <p>На странице <a href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">последнего релиза</a> скачай файл <code>aniplace-*-windows.zip</code> (portable — установка не нужна).</p>
+      </div></div>
+      <div class="step"><div class="step-num">2</div><div>
+        <h3>Распакуй архив</h3>
+        <p>Кликни по ZIP правой кнопкой → <code>Извлечь всё…</code> и выбери папку, например <code>Документы\Aniplace</code>. Важно: запускай из распакованной папки, а не изнутри архива.</p>
+      </div></div>
+      <div class="step"><div class="step-num">3</div><div>
+        <h3>Запусти Aniplace.exe</h3>
+        <p>Открой папку и дважды кликни <code>Aniplace.exe</code>. Если Windows SmartScreen покажет синее окно «Система Windows защитила ваш компьютер»:</p>
+        <ol>
+          <li>Нажми <code>Подробнее</code>.</li>
+          <li>Нажми <code>Выполнить в любом случае</code>.</li>
+        </ol>
+        <p>Это стандартное предупреждение для программ без платной подписи издателя — приложение при этом безопасно, особенно если сошлась SHA-256 сумма из релиза.</p>
+        <p class="warn">🖥️ <b>Как это выглядит:</b> синее окно SmartScreen → ссылка «Подробнее» → кнопка «Выполнить в любом случае». (Фото-скриншоты с реального устройства добавим перед публичным запуском.)</p>
+      </div></div>
+      <div class="step"><div class="step-num">4</div><div>
+        <h3>Если что-то пошло не так</h3>
+        <ul>
+          <li>Антивирус ругается? Добавь папку Aniplace в исключения — эвристика часто реагирует на portable-сборки.</li>
+          <li>Просит DLL / Visual C++? Установи <code>Microsoft Visual C++ Redistributable (x64)</code> с сайта Microsoft.</li>
+          <li>Ничего не помогло? <a href="https://github.com/bloomstick/aniplace-releases/issues" target="_blank" rel="noopener">Создай issue</a> — укажи версию Windows и текст ошибки.</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="download-card">
+      <div>
+        <h2>Готово? Забирай приложение!</h2>
+        <p class="lead">Последние версии, changelog и контрольные суммы — на странице релизов.</p>
+        <div class="dl-buttons">
+          <a class="btn btn-primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">⬇ GitHub Releases — скачать</a>
+          <a class="btn btn-ghost" href="index.html">← На главную</a>
+        </div>
+      </div>
+      <img src="assets/mascot.png" alt="Маскот Aniplace" style="width:170px;border-radius:24px;box-shadow:var(--shadow)" onerror="this.style.display='none'">
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div><b style="font-size:1.3rem">🌸 Aniplace</b><p>Твоё уютное место для аниме.</p></div>
+    <div><b>Ссылки</b><br><a href="index.html">Главная</a><br><a href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub Releases</a></div>
+    <div><span class="age">18+</span></div>
+  </div>
+  <div class="wrap" style="margin-top:24px;opacity:.8">© 2026 Aniplace Team · ani.place</div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

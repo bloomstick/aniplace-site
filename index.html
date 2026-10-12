@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aniplace — Аниплейс | Твоё уютное место для аниме</title>
+<meta name="description" content="Aniplace (Аниплейс) — бесплатное приложение для любителей аниме: каталог, списки просмотра, рекомендации и сообщество. Скачай на Android и Windows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.149.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<header>
+  <nav class="nav">
+    <a class="logo" href="index.html"><span class="logo-mark">🌸</span><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
+    <div class="nav-links">
+      <a href="#features">Возможности</a>
+      <a href="#shots">Скриншоты</a>
+      <a href="#download">Скачать</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary btn-small" href="#download">Скачать</a>
+    </div>
+  </nav>
+</header>
+
+<div class="wrap">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Бесплатно · без подписок · 18+</span>
+        <h1>Аниме в твоём <span class="hl">кармане</span></h1>
+        <p class="lead">Открывай новые тайтлы, веди списки просмотра, обсуждай серии с друзьями и получай рекомендации, которые точно попадут в настроение.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#download">Скачать приложение</a>
+          <a class="btn btn-ghost" href="install.html">Как установить?</a>
+        </div>
+        <p class="hero-note">Android 8.0+ · Windows 10/11 · RuStore — скоро. Нажми на сердечки справа — они живые!</p>
+      </div>
+      <div class="hero-visual">
+        <canvas id="sparkles" title="Интерактив: двигай мышкой, кликай — вылетают сердечки"></canvas>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-bar"><span>Aniplace</span><span>♥ 9:41</span></div>
+            <div class="app-row">
+              <div class="poster" style="background-image:url('assets/poster-dream.webp')"></div>
+              <div class="poster" style="background:linear-gradient(135deg,#ff8fa3,#e11d48)"></div>
+              <div class="poster" style="background:linear-gradient(135deg,#ffd166,#ff7a18)"></div>
+            </div>
+            <div class="app-chip">💖 Для тебя: «Монолог фармацевта» — новая серия уже вышла!</div>
+            <div class="app-chip">📝 Ты смотришь: 12 тайтлов · запланировано: 34</div>
+          </div>
+        </div>
+        <img class="mascot" id="mascot" src="assets/mascot.png" alt="Маскот Aniplace" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="marquee"><span>🌸 смотри аниме 🌸 веди списки 🌸 обсуждай серии 🌸 получай рекомендации 🌸 смотри аниме 🌸 веди списки 🌸 обсуждай серии 🌸 получай рекомендации&nbsp;</span></div>
+  </section>
+
+  <!-- STATS -->
+  <section class="reveal">
+    <span class="eyebrow">Нас уже много</span>
+    <h2>Место, куда хочется возвращаться</h2>
+    <div class="stats">
+      <div class="stat"><b><span data-count="7100">0</span>+</b><span>аниме в каталоге</span></div>
+      <div class="stat"><b><span data-count="650">0</span>+</b><span>дунхуа для марафонов</span></div>
+      <div class="stat"><b><span data-count="4.8" data-dec="1">0</span> ★</b><span>средняя оценка пользователей</span></div>
+    </div>
+  </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="shots" class="reveal">
+    <span class="eyebrow">Загляни внутрь</span>
+    <h2>Уютный интерфейс, всё под рукой</h2>
+    <div class="shots">
+      <div class="shot"><img src="assets/poster-dream.webp" alt="Каталог"><p>Каталог с постерами и рейтингами</p></div>
+      <div class="shot"><img src="assets/mio.webp" alt="Персонажи"><p>Карточки тайтлов и героев</p></div>
+      <div class="shot"><img src="assets/mascot.png" alt="Рекомендации" onerror="this.parentElement.style.display='none'"><p>Рекомендации под твой вкус</p></div>
+      <div class="shot"><img src="assets/poster-dream.webp" alt="Списки" style="filter:hue-rotate(40deg)"><p>Списки: смотрю и запланировано</p></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <span class="eyebrow">Для ценителей восточной культуры</span>
+    <h2>Всё для твоего аниме-уюта</h2>
+    <div class="features">
+      <div class="feature"><div class="ico">💖</div><h3>Рекомендации</h3><p>Приложение изучит твои вкусы и подберёт тайтлы, от которых невозможно оторваться.</p></div>
+      <div class="feature"><div class="ico">💬</div><h3>Обсуждения</h3><p>Делись эмоциями от серий в комментариях и находи единомышленников.</p></div>
+      <div class="feature"><div class="ico">📰</div><h3>Поток контента</h3><p>Подписывайся на блоги: новости, мемы и эстетичные арты каждый день.</p></div>
+      <div class="feature"><div class="ico">🔔</div><h3>Пуш-уведомления</h3><p>Новые серии любимых озвучек — сразу в шторке, ничего не пропустишь.</p></div>
+      <div class="feature"><div class="ico">📝</div><h3>Списки просмотра</h3><p>Не держи всё в голове: смотрю, просмотрено, запланировано.</p></div>
+      <div class="feature"><div class="ico">🎙️</div><h3>Выбор озвучки</h3><p>Персонажи оживают голосами. Выбирай студию, которая нравится тебе.</p></div>
+      <div class="feature"><div class="ico">📊</div><h3>Статистика</h3><p>Следи за прогрессом: часы просмотра, жанры и личные рекорды.</p></div>
+      <div class="feature"><div class="ico">🏅</div><h3>Достижения</h3><p>Смотри аниме и коллекционируй уникальные значки для профиля.</p></div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section id="download" class="reveal">
+    <span class="eyebrow">Забери с собой</span>
+    <h2>Скачай сейчас — это бесплатно</h2>
+    <div class="download-card">
+      <div>
+        <p class="lead">Выбери удобный способ. Прямая загрузка ведёт на пошаговую инструкцию с картинками — справится даже котик.</p>
+        <div class="dl-buttons">
+          <a class="btn btn-primary" href="install.html">⬇ Прямое скачивание (APK / Windows)</a>
+          <a class="btn btn-ghost" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">GitHub: все релизы и changelog</a>
+          <button class="btn btn-ghost" disabled title="Скоро">RuStore — скоро 🏪</button>
+        </div>
+      </div>
+      <div class="qr">QR-код<br>для скачивания<br>(скоро)</div>
+    </div>
+  </section>
+
+  <!-- TRENDING -->
+  <section class="reveal">
+    <span class="eyebrow">Смотрят сегодня</span>
+    <h2>Сейчас в топе у сообщества</h2>
+    <div class="trending">
+      <div class="tcard"><div class="art" style="background-image:url('assets/poster-dream.webp')"></div><div><b>Монолог фармацевта 2</b><span>24 эп · 4.9 ★</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#3d1f2a,#e11d48)"></div><div><b>Поднятие уровня в одиночку 2</b><span>13 эп · 4.9 ★</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#ff7a18,#ff3d5e)"></div><div><b>Дандадан</b><span>12 эп · 4.9 ★</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#7a5cff,#ff3d5e)"></div><div><b>Ветролом</b><span>13 эп · 4.7 ★</span></div></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="reveal">
+    <span class="eyebrow">Ответы на вопросы</span>
+    <h2>Частые вопросы</h2>
+    <div class="faq">
+      <details open><summary>Что умеет приложение?</summary><p>Aniplace — каталог аниме и дунхуа, персональные рекомендации, списки просмотра, выбор озвучки, уведомления о новинках, обсуждения и сообщество. Всё в одном уютном месте.</p></details>
+      <details><summary>На каких платформах доступно?</summary><p>Android-смартфоны, планшеты и ТВ (Android 8.0+), Windows 10/11. Версия в RuStore — на подходе.</p></details>
+      <details><summary>Это бесплатно?</summary><p>Да! Приложение полностью бесплатно и без встроенных покупок.</p></details>
+      <details><summary>Почему нет Google Play?</summary><p>Мы распространяем приложение напрямую и через RuStore, чтобы быстрее выпускать обновления. Установка занимает пару минут — смотри <a href="install.html">пошаговую инструкцию</a>.</p></details>
+      <details><summary>Это безопасно?</summary><p>Да. Сверяй SHA-256 суммы из раздела релиза на GitHub — так ты убедишься, что файл не подменили и он скачался целиком.</p></details>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <b style="font-size:1.3rem">🌸 Aniplace</b>
+      <p>Твоё уютное место для аниме.<br>Присоединяйся к сообществу фанатов восточной анимации.</p>
+    </div>
+    <div>
+      <b>Скачать</b><br>
+      <a href="install.html">Android APK</a><br>
+      <a href="install.html#windows">Windows</a><br>
+      <a href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub Releases</a>
+    </div>
+    <div>
+      <b>Информация</b><br>
+      <a href="install.html">Как установить</a><br>
+      <a href="https://github.com/bloomstick/aniplace-releases/blob/main/CHANGELOG.md" target="_blank" rel="noopener">История обновлений</a><br>
+      <a href="mailto:support@ani.place">Обратная связь</a>
+    </div>
+    <div><span class="age">18+</span><p>Может содержать информацию,<br>не предназначенную для несовершеннолетних.</p></div>
+  </div>
+  <div class="wrap" style="margin-top:24px;opacity:.8">© 2026 Aniplace Team · ani.place · Сделано с любовью к аниме 💖</div>
+</footer>
+
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script>
+  // UMD build defines global THREE; app.js uses it. If the CDN failed, the page still works (static + CSS).
+  // (Pinned to r149: last UMD build without a deprecation warning; ExtrudeGeometry API unchanged.)
+</script>
+<script src="app.js"></script>
+</body>
+</html>
