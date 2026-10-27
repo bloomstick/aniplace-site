@@ -65,6 +65,9 @@ header {
   box-shadow: var(--shadow);
   animation: wiggle 3s ease-in-out infinite;
 }
+img.logo-mark {
+  padding: 3px; object-fit: contain;
+}
 @keyframes wiggle { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 .logo small { display: block; font-size: 0.68rem; font-weight: 700; color: var(--ink-soft); }
 .nav-links { margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap; }
