@@ -10,7 +10,7 @@ mirror is the GitHub Pages repo `bloomstick/aniplace-site` (see [Deploy](#deploy
 | `styles.css` | Palette, layout, responsive rules, reduced-motion handling |
 | `app.js` | three.js hero (floating hearts, parallax, click bursts) + scroll reveal + counters |
 | `download.js` | Platform-aware CTAs: resolves the current release files and explains the platform's build |
-| `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (real app frames; `install-catalog.webp` is the install-guide crop); `qr-install.svg`, `og-cover.png` (generated) |
+| `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (six app-UI crops); `qr-install.svg`, `og-cover.png` (generated) |
 
 ## Palette
 
@@ -52,7 +52,7 @@ the filenames.**
 ```powershell
 python apps/animedream/tools/site/make_qr.py     # assets/qr-install.svg
 python apps/animedream/tools/site/make_og.py     # assets/og-cover.png (1200x630)
-python apps/animedream/tools/site/make_install_shot.py   # assets/shots/install-catalog.webp
+python apps/animedream/tools/site/make_app_shots.py   # assets/shots/app-*.webp (720x1280)
 ```
 
 The QR points at `https://ani.place/install.html` (the site's own download
@@ -66,18 +66,14 @@ required). Re-run it after a palette or hero-art change.
 
 ## Screenshots
 
-`assets/shots/*.png` are the six RuStore listing frames from
-`apps/animedream/docs/store/rustore/` (`01-catalog` … `06-search`), copied
-in because the site deploys standalone. They are the real app UI, but they
-are still 1080×1920 PNGs — ~5 MB for the set, all `loading="lazy"` below
-the fold. Web-sized WebP derivatives would cut that to a few hundred KB;
-they are not generated today (the listing frames are the only captures in
-the repo).
-
-The install guide does not use a full listing frame: `make_install_shot.py`
-perspective-crops the phone screen out of `01-catalog.png` into
-`assets/shots/install-catalog.webp` (720×1280), so step 4 shows the app UI
-instead of a poster with a marketing headline.
+`assets/shots/app-*.webp` are 720×1280 perspective crops of the phone
+screen from the six committed RuStore frames
+(`apps/animedream/docs/store/rustore/01-catalog.png` … `06-search.png`).
+The full frames are 1080×1920 marketing cards with a headline above the
+phone; they stay in `docs/store/` as the only real captures, while the
+site ships only the app-UI crops (about 0.5 MB for the set, all
+`loading="lazy"`). Regenerate them with `make_app_shots.py`; the quad is
+fixed to the store mockup's -7.5° phone.
 
 ## Pending
 

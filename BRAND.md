@@ -30,9 +30,11 @@ the house look, and the site must read as the same product as the app.
   outcome* ("Списки: смотрю, запланировано, просмотрено"), never the
   feature. Images are 9:16 (`aspect-ratio: 9 / 16`) and carry explicit
   `width`/`height` plus `loading="lazy"`.
-- The six shots are the real RuStore listing frames (see `README.md`);
-  they are the only real captures in the repo. `.poster`/`.art` blocks with
-  a bare gradient are placeholders with a TODO, not a style.
+- The six shots are 720×1280 crops of the phone screen from the real
+  RuStore listing frames (see `README.md`); the full frames in
+  `docs/store/rustore/` are the only real captures in the repo. `.poster`/
+  `.art` blocks with a bare gradient are placeholders with a TODO, not a
+  style.
 - Phone mockup (`.phone`) for in-context UI; tilt −4°, floaty anim.
 - Captions plain-language; no version numbers in copy (they rot) — release
   facts (version, file size) are filled in at runtime by `download.js`.
