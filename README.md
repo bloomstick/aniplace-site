@@ -1,35 +1,105 @@
 # Aniplace landing — apps/animedream/site (ani.place)
 
-Static landing, no build step. Deploy the folder as-is to `ani.place`.
+Static landing, no build step. The monorepo is the source; the published
+mirror is the GitHub Pages repo `bloomstick/aniplace-site` (see [Deploy](#deploy)).
 
 | File | Purpose |
 |---|---|
-| `index.html` | Main landing (hero, stats, screenshots, features, download, trending, FAQ) |
-| `install.html` | Install guide: Android APK + Windows, linked from the direct-download button |
-| `styles.css` | Cute bright light theme, primary warm pink-red `#ff3d5e → #e11d48` |
-| `app.js` | three.js interactive hero (floating hearts, parallax, click bursts) + scroll reveal + counters |
-| `assets/` | `mascot.png` (local art pipeline, animagine-xl-4.0), `poster-dream.webp` + `mio.webp` (noveldream), logo pending (🌸 placeholder) |
+| `index.html` | Main landing (hero, stats, screenshots, features, download + QR, catalog picks, FAQ) |
+| `install.html` | Install guide: RuStore first, then the APK path, then Windows; linked from the direct-download button |
+| `styles.css` | Palette, layout, responsive rules, reduced-motion handling |
+| `app.js` | three.js hero (floating hearts, parallax, click bursts) + scroll reveal + counters |
+| `download.js` | Platform-aware CTAs: resolves the current release files and explains the platform's build |
+| `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (real app frames); `qr-install.svg`, `og-cover.png` (generated) |
 
-Mascot gen provenance (`C:\my\projects\art-pipeline\gen.py`, ComfyUI 0.38.0):
-`--ckpt animagine-xl-4.0.safetensors --steps 24 --cfg 5 --w 1024 --h 1024 --seed 77`,
-prompt «cute anime mascot girl with pink hair, warm coral-red oversized hoodie
-with cat ears, happily waving hello, holding a smartphone, kawaii pastel sticker
-illustration…», downscaled to 600px via Pillow.
+## Palette
 
-## three.js highlight
+The site follows the app's brand tokens — `apps/animedream/lib/src/brand/
+aniplace_brand.dart` is the source of truth:
 
-`#sparkles` canvas in the hero renders floating 3D hearts + sparkle particles
-(three.js 0.160 via CDN, UMD + ESM fallback). Pointer moves the camera,
-clicks burst new hearts. Respects `prefers-reduced-motion`; page works offline
-without CDN (static content + CSS animations remain).
+| Token | Value | Role |
+| --- | --- | --- |
+| `--accent` | `#e11d48` | `kAniplaceActionRed`: buttons, links, highlights |
+| `--accent-deep` | `#be123c` | hover/pressed, small text links |
+| `--ink` / `--ink-soft` | `#1f2328` / `#5f6368` | text on light (`#5f6368` is `kAniplaceSeed`) |
+| `--ground` / `--card` | `#f6f7f8` / `#ffffff` | page ground and cards |
+| `--line` | `#dadce0` | borders |
+| `--footer` | `#202124` | footer/marquee ground |
 
-## Download wiring
+Change a colour in both places or the site and the app drift apart. The
+old pink family (`#ff3d5e` / cream / maroon footer) is gone; the three.js
+palette in `app.js` carries the same graphite + signal-red set.
 
-- Direct download button → `install.html` (meticulous steps + SHA-256 note).
-- GitHub button → https://github.com/bloomstick/aniplace-releases/releases/latest
-- RuStore button → disabled placeholder until the store link exists.
-- `install.html` step illustrations are styled text callouts — replace with real
-  device screenshots before public launch.
+## Platform-aware downloads (`download.js`)
+
+Markup stays static and working without JS; the script only upgrades it:
+
+- `data-dl="primary"` / `"bar"` / `"footer-android"` → the current Android APK.
+- `data-dl="windows"` / `"footer-windows"` → the current Windows `.zip` (portable, contains `Aniplace.exe`).
+- `data-dl="meta"` → the platform note paragraph (hidden until filled, so the page never shows a wrong guess).
+
+Platforms: Android gets the APK as its primary CTA; Windows keeps Android
+as the *main* offer (framed for the phone and paired with the QR) with the
+Windows build beside it; iOS/macOS/Linux get an honest note instead of an
+unusable file. Release filenames carry the version, so the current asset is
+resolved from the releases hub at load (cached in `sessionStorage` for
+30 min) with `FALLBACK` last-known-good direct links for when the API is
+rate-limited or unreachable — **bump `FALLBACK` whenever a release rotates
+the filenames.**
+
+## Generated assets
+
+```powershell
+python apps/animedream/tools/site/make_qr.py     # assets/qr-install.svg
+python apps/animedream/tools/site/make_og.py     # assets/og-cover.png (1200x630)
+```
+
+The QR points at `https://ani.place/install.html` (the site's own download
+guide), so scanning from a phone and clicking from a desktop land in the
+same place. It needs `qrcode` (pure Python).
+
+The share card is what `og:image` / `twitter:image` point at. It is built
+from the 1024 app icon, the catalog frame and the landing palette; the
+Nunito font is downloaded to `tools/site/.assets` on first run (Pillow
+required). Re-run it after a palette or hero-art change.
+
+## Screenshots
+
+`assets/shots/*.png` are the six RuStore listing frames from
+`apps/animedream/docs/store/rustore/` (`01-catalog` … `06-search`), copied
+in because the site deploys standalone. They are the real app UI, but they
+are still 1080×1920 PNGs — ~5 MB for the set, all `loading="lazy"` below
+the fold. Web-sized WebP derivatives would cut that to a few hundred KB;
+they are not generated today (the listing frames are the only captures in
+the repo).
+
+## Pending
+
+- `install.html`'s OS-level callouts (the system "Установить приложение?"
+  dialog, the unknown-sources toggle, Windows SmartScreen) are still styled
+  text: no such captures exist in the repo. Real photos replace them when
+  taken.
+- `assets/banner-hero.png` and `group-greeting.png` are the pre-rebrand
+  banner art (the anime-group illustration), kept as source art; neither
+  page nor the share card uses them today.
+
+## Deploy
+
+`ani.place` is GitHub Pages from **`bloomstick/aniplace-site`** (source:
+`main` / root, `CNAME` = `ani.place`). Copy this folder over a checkout of
+that repo, keep its `CNAME`, then commit and push:
+
+```powershell
+Copy-Item apps/animedream/site/* <aniplace-site>\ -Recurse -Force
+# keep <aniplace-site>\CNAME untouched
+git -C <aniplace-site> add -A
+git -C <aniplace-site> commit -m "Deploy site from dream-monorepo"
+git -C <aniplace-site> push origin main
+```
+
+Pages rebuilds in about a minute; `index.html`, `install.html`, `assets/`
+and both scripts are served as-is. Do not edit the Pages repo by hand — the
+monorepo copy is the source of truth.
 
 ## Local preview
 

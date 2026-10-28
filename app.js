@@ -26,7 +26,8 @@
     var group = new THREE.Group();
     scene.add(group);
 
-    var palette = [0xff3d5e, 0xff7597, 0xffb3c1, 0xffd166, 0xe11d48];
+    // Graphite grounds + the brand's signal red (aniplace_brand.dart).
+    var palette = [0xe11d48, 0xbe123c, 0x5f6368, 0x9aa0a6, 0xdadce0];
     var hearts = [];
     var heartGeo = heartGeometry(1.6);
 
@@ -67,16 +68,16 @@
       pos[j * 3 + 2] = (Math.random() - 0.5) * 10;
     }
     pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    var points = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xff8fa3, size: 0.22, transparent: true, opacity: 0.85 }));
+    var points = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xb3b8bd, size: 0.22, transparent: true, opacity: 0.85 }));
     group.add(points);
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.9));
     var dir = new THREE.DirectionalLight(0xffffff, 1.1);
     dir.position.set(6, 10, 8);
     scene.add(dir);
-    var pink = new THREE.PointLight(0xff3d5e, 12, 40);
-    pink.position.set(-6, -2, 6);
-    scene.add(pink);
+    var accentLight = new THREE.PointLight(0xe11d48, 12, 40);
+    accentLight.position.set(-6, -2, 6);
+    scene.add(accentLight);
 
     var mx = 0, my = 0, tx = 0, ty = 0;
     window.addEventListener('pointermove', function (e) {

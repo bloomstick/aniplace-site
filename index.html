@@ -3,8 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aniplace — Аниплейс | Твоё уютное место для аниме</title>
-<meta name="description" content="Aniplace (Аниплейс) — бесплатное приложение для любителей аниме: каталог, списки просмотра, рекомендации и сообщество. Скачай на Android и Windows.">
+<title>Aniplace — Аниплейс | Каталог аниме, списки и плеер для Android и Windows</title>
+<meta name="description" content="Aniplace (Аниплейс) — бесплатное приложение для аниме: каталог аниме и дунхуа, расписание серий, рекомендации, списки и плеер с выбором озвучки. Android 8.0+, Windows 10/11 и RuStore. Без аккаунтов.">
+<link rel="canonical" href="https://ani.place/">
+<meta name="theme-color" content="#f6f7f8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Aniplace">
+<meta property="og:title" content="Aniplace — Аниплейс: каталог аниме, списки и плеер">
+<meta property="og:description" content="Каталог аниме и дунхуа, расписание серий, рекомендации и плеер с выбором озвучки. Android, Windows и RuStore. Бесплатно и без аккаунтов.">
+<meta property="og:url" content="https://ani.place/">
+<meta property="og:image" content="https://ani.place/assets/og-cover.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aniplace — каталог аниме и дунхуа для Android и Windows">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aniplace — Аниплейс: каталог аниме, списки и плеер">
+<meta name="twitter:description" content="Каталог аниме и дунхуа, расписание, рекомендации, плеер с выбором озвучки. Android, Windows, RuStore.">
+<meta name="twitter:image" content="https://ani.place/assets/og-cover.png">
+<meta name="twitter:image:alt" content="Aniplace — каталог аниме и дунхуа для Android и Windows">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -12,13 +30,29 @@
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.149.0/build/three.module.js" } }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Aniplace",
+  "alternateName": "Аниплейс",
+  "applicationCategory": "EntertainmentApplication",
+  "operatingSystem": "Android, Windows",
+  "softwareVersion": "1.18.5",
+  "inLanguage": ["ru", "en"],
+  "url": "https://ani.place/",
+  "downloadUrl": "https://github.com/bloomstick/aniplace-releases/releases/latest",
+  "installUrl": "https://www.rustore.ru/catalog/app/place.ani",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "RUB" }
+}
+</script>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
 <header>
-  <nav class="nav">
-    <a class="logo" href="index.html"><img class="logo-mark" src="assets/logo.png" alt="Aniplace"><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
+  <nav class="nav" aria-label="Основная навигация">
+    <a class="logo" href="index.html"><img class="logo-mark" src="assets/logo.png" alt=""><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
     <div class="nav-links">
       <a href="#features">Возможности</a>
       <a href="#shots">Скриншоты</a>
@@ -34,71 +68,73 @@
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow">Бесплатно · без подписок · 18+</span>
+        <span class="eyebrow">Бесплатно · без аккаунтов · 16+</span>
         <h1>Аниме в твоём <span class="hl">кармане</span></h1>
-        <p class="lead">Открывай новые тайтлы, веди списки просмотра, обсуждай серии с друзьями и получай рекомендации, которые точно попадут в настроение.</p>
+        <p class="lead">Каталог аниме и дунхуа, расписание серий, рекомендации под твой вкус и плеер с выбором озвучки. Списки, история и настройки остаются на устройстве.</p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="#download">Скачать приложение</a>
+          <a class="btn btn-primary" data-dl="primary" href="#download">Скачать приложение</a>
           <a class="btn btn-ghost" href="install.html">Как установить?</a>
         </div>
-        <p class="hero-note">Android 8.0+ · Windows 10/11 · RuStore — скоро. Нажми на сердечки справа — они живые!</p>
+        <p class="hero-note">Android 8.0+ · Windows 10/11 · <a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a></p>
       </div>
       <div class="hero-visual">
         <canvas id="sparkles" title="Интерактив: двигай мышкой, кликай — вылетают сердечки"></canvas>
-        <div class="phone">
+        <div class="phone" aria-hidden="true">
           <div class="phone-screen">
             <div class="phone-bar"><span>Aniplace</span><span>♥ 9:41</span></div>
             <div class="app-row">
               <div class="poster" style="background-image:url('assets/poster-dream.webp')"></div>
-              <div class="poster" style="background:linear-gradient(135deg,#ff8fa3,#e11d48)"></div>
-              <div class="poster" style="background:linear-gradient(135deg,#ffd166,#ff7a18)"></div>
+              <div class="poster" style="background:linear-gradient(135deg,#e11d48,#7f1d3a)"></div>
+              <div class="poster" style="background:linear-gradient(135deg,#5f6368,#2b2f33)"></div>
             </div>
-            <div class="app-chip">💖 Для тебя: «Монолог фармацевта» — новая серия уже вышла!</div>
-            <div class="app-chip">📝 Ты смотришь: 12 тайтлов · запланировано: 34</div>
+            <div class="app-chip">▶ Продолжить: «Монолог фармацевта», серия 24</div>
+            <div class="app-chip">📝 Смотрю: 12 тайтлов · запланировано: 34</div>
           </div>
         </div>
-        <img class="mascot" id="mascot" src="assets/mascot.png" alt="Маскот Aniplace" onerror="this.style.display='none'">
+        <img class="mascot" id="mascot" src="assets/mascot.png" alt="Маскот Aniplace">
       </div>
     </div>
-    <div class="marquee"><span>🌸 смотри аниме 🌸 веди списки 🌸 обсуждай серии 🌸 получай рекомендации 🌸 смотри аниме 🌸 веди списки 🌸 обсуждай серии 🌸 получай рекомендации&nbsp;</span></div>
+    <div class="marquee" aria-hidden="true"><span>каталог аниме и дунхуа · расписание серий · списки и история · рекомендации · выбор озвучки · скачивание серий · каталог аниме и дунхуа · расписание серий · списки и история · рекомендации · выбор озвучки · скачивание серий&nbsp;</span></div>
   </section>
 
   <!-- STATS -->
   <section class="reveal">
-    <span class="eyebrow">Нас уже много</span>
-    <h2>Место, куда хочется возвращаться</h2>
+    <span class="eyebrow">Коротко</span>
+    <h2>Что внутри</h2>
     <div class="stats">
-      <div class="stat"><b><span data-count="7100">0</span>+</b><span>аниме в каталоге</span></div>
-      <div class="stat"><b><span data-count="650">0</span>+</b><span>дунхуа для марафонов</span></div>
-      <div class="stat"><b><span data-count="4.8" data-dec="1">0</span> ★</b><span>средняя оценка пользователей</span></div>
+      <div class="stat"><b><span data-count="24000">0</span>+</b><span>тайтлов в каталоге аниме и дунхуа</span></div>
+      <div class="stat"><b>RU + EN</b><span>интерфейс, светлая и тёмная темы</span></div>
+      <div class="stat"><b>0 ₽</b><span>бесплатно, без аккаунта и регистрации</span></div>
     </div>
   </section>
 
   <!-- SCREENSHOTS -->
   <section id="shots" class="reveal">
     <span class="eyebrow">Загляни внутрь</span>
-    <h2>Уютный интерфейс, всё под рукой</h2>
+    <h2>Как это выглядит</h2>
     <div class="shots">
-      <div class="shot"><img src="assets/poster-dream.webp" alt="Каталог"><p>Каталог с постерами и рейтингами</p></div>
-      <div class="shot"><img src="assets/mio.webp" alt="Персонажи"><p>Карточки тайтлов и героев</p></div>
-      <div class="shot"><img src="assets/mascot.png" alt="Рекомендации" onerror="this.parentElement.style.display='none'"><p>Рекомендации под твой вкус</p></div>
-      <div class="shot"><img src="assets/poster-dream.webp" alt="Списки" style="filter:hue-rotate(40deg)"><p>Списки: смотрю и запланировано</p></div>
+      <figure class="shot"><img src="assets/shots/catalog.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Каталог Aniplace: свежие эпизоды и онгоинги"><figcaption>Каталог: новинки сезона и онгоинги</figcaption></figure>
+      <figure class="shot"><img src="assets/shots/schedule.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Расписание выхода серий"><figcaption>Расписание: новые серии по дням</figcaption></figure>
+      <figure class="shot"><img src="assets/shots/season.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Онгоинги сезона сеткой"><figcaption>Все онгоинги сезона — одним списком</figcaption></figure>
+      <figure class="shot"><img src="assets/shots/title.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Страница тайтла: рейтинг, жанры, озвучки"><figcaption>Страница тайтла: рейтинг, жанры, озвучки</figcaption></figure>
+      <figure class="shot"><img src="assets/shots/lists.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Списки просмотра"><figcaption>Списки: смотрю, запланировано, просмотрено</figcaption></figure>
+      <figure class="shot"><img src="assets/shots/search.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Поиск по каталогу"><figcaption>Поиск: найди своё аниме за секунду</figcaption></figure>
     </div>
   </section>
 
   <!-- FEATURES -->
   <section id="features">
-    <span class="eyebrow">Для ценителей восточной культуры</span>
+    <span class="eyebrow">Возможности</span>
     <h2>Всё для твоего аниме-уюта</h2>
     <div class="features">
-      <div class="feature"><div class="ico">💖</div><h3>Рекомендации</h3><p>Приложение изучит твои вкусы и подберёт тайтлы, от которых невозможно оторваться.</p></div>
-      <div class="feature"><div class="ico">💬</div><h3>Обсуждения</h3><p>Делись эмоциями от серий в комментариях и находи единомышленников.</p></div>
-      <div class="feature"><div class="ico">📰</div><h3>Поток контента</h3><p>Подписывайся на блоги: новости, мемы и эстетичные арты каждый день.</p></div>
-      <div class="feature"><div class="ico">🔔</div><h3>Пуш-уведомления</h3><p>Новые серии любимых озвучек — сразу в шторке, ничего не пропустишь.</p></div>
-      <div class="feature"><div class="ico">📝</div><h3>Списки просмотра</h3><p>Не держи всё в голове: смотрю, просмотрено, запланировано.</p></div>
-      <div class="feature"><div class="ico">🎙️</div><h3>Выбор озвучки</h3><p>Персонажи оживают голосами. Выбирай студию, которая нравится тебе.</p></div>
-      <div class="feature"><div class="ico">📊</div><h3>Статистика</h3><p>Следи за прогрессом: часы просмотра, жанры и личные рекорды.</p></div>
-      <div class="feature"><div class="ico">🏅</div><h3>Достижения</h3><p>Смотри аниме и коллекционируй уникальные значки для профиля.</p></div>
+      <div class="feature"><div class="ico">✦</div><h3>Рекомендации</h3><p>Персональная лента подстраивается под то, что ты уже смотришь.</p></div>
+      <div class="feature"><div class="ico">▶</div><h3>Плеер и озвучки</h3><p>Выбор озвучки на серию и продолжение с места остановки.</p></div>
+      <div class="feature"><div class="ico">📝</div><h3>Списки и история</h3><p>Избранное, смотрю, запланировано, просмотрено, отложено, брошено — плюс статистика серий и часов.</p></div>
+      <div class="feature"><div class="ico">⬇</div><h3>Скачивание серий</h3><p>Сохраняй серии заранее и смотри без интернета.</p></div>
+      <div class="feature"><div class="ico">🗓</div><h3>Расписание</h3><p>Выход новых серий любимых тайтлов по дням недели.</p></div>
+      <div class="feature"><div class="ico">🃏</div><h3>Коллекция карточек</h3><p>Собирай карточки тайтлов — от обычных до золотых.</p></div>
+      <div class="feature"><div class="ico">📶</div><h3>Обмен по Wi-Fi</h3><p>Переноси список и скачанные серии между своими устройствами в локальной сети — без облака.</p></div>
+      <div class="feature"><div class="ico">🎨</div><h3>Темы и языки</h3><p>Светлая и тёмная темы, русский и английский интерфейс.</p></div>
     </div>
   </section>
 
@@ -110,24 +146,29 @@
       <div>
         <p class="lead">Выбери удобный способ. Прямая загрузка ведёт на пошаговую инструкцию с картинками — справится даже котик.</p>
         <div class="dl-buttons">
-          <a class="btn btn-primary" href="install.html">⬇ Прямое скачивание (APK / Windows)</a>
-          <a class="btn btn-ghost" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">GitHub: все релизы и changelog</a>
-          <button class="btn btn-ghost" disabled title="Скоро">RuStore — скоро 🏪</button>
+          <a class="btn btn-primary" data-dl="primary" href="install.html">⬇ Скачать приложение</a>
+          <a class="btn btn-ghost" data-dl="windows" href="install.html#windows">🖥 Windows (.zip с Aniplace.exe)</a>
+          <a class="btn btn-ghost" data-dl="rustore" href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">🏪 RuStore</a>
+          <a class="btn btn-ghost" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">GitHub: релизы и changelog</a>
         </div>
+        <p class="dl-meta" data-dl="meta" hidden></p>
       </div>
-      <div class="qr">QR-код<br>для скачивания<br>(скоро)</div>
+      <a class="qr" href="install.html" aria-label="Открыть инструкцию по установке">
+        <img src="assets/qr-install.svg" width="132" height="132" alt="QR-код: инструкция по установке на ani.place">
+        <span>Наведи камеру телефона — откроется инструкция по установке</span>
+      </a>
     </div>
   </section>
 
-  <!-- TRENDING -->
+  <!-- FROM THE CATALOG -->
   <section class="reveal">
-    <span class="eyebrow">Смотрят сегодня</span>
-    <h2>Сейчас в топе у сообщества</h2>
+    <span class="eyebrow">Из каталога</span>
+    <h2>Популярное на этой неделе</h2>
     <div class="trending">
-      <div class="tcard"><div class="art" style="background-image:url('assets/poster-dream.webp')"></div><div><b>Монолог фармацевта 2</b><span>24 эп · 4.9 ★</span></div></div>
-      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#3d1f2a,#e11d48)"></div><div><b>Поднятие уровня в одиночку 2</b><span>13 эп · 4.9 ★</span></div></div>
-      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#ff7a18,#ff3d5e)"></div><div><b>Дандадан</b><span>12 эп · 4.9 ★</span></div></div>
-      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#7a5cff,#ff3d5e)"></div><div><b>Ветролом</b><span>13 эп · 4.7 ★</span></div></div>
+      <div class="tcard"><div class="art" style="background-image:url('assets/poster-dream.webp')"></div><div><b>Монолог фармацевта 2</b><span>24 эп · рейтинг каталога 9.2</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#2b2f33,#5f6368)"></div><div><b>Поднятие уровня в одиночку 2</b><span>13 эп · рейтинг каталога 8.9</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#e11d48,#7f1d3a)"></div><div><b>Дандадан</b><span>12 эп · рейтинг каталога 8.7</span></div></div>
+      <div class="tcard"><div class="art" style="background:linear-gradient(135deg,#3f4550,#1f2328)"></div><div><b>Ветролом</b><span>13 эп · рейтинг каталога 8.4</span></div></div>
     </div>
   </section>
 
@@ -136,9 +177,10 @@
     <span class="eyebrow">Ответы на вопросы</span>
     <h2>Частые вопросы</h2>
     <div class="faq">
-      <details open><summary>Что умеет приложение?</summary><p>Aniplace — каталог аниме и дунхуа, персональные рекомендации, списки просмотра, выбор озвучки, уведомления о новинках, обсуждения и сообщество. Всё в одном уютном месте.</p></details>
-      <details><summary>На каких платформах доступно?</summary><p>Android-смартфоны, планшеты и ТВ (Android 8.0+), Windows 10/11. Версия в RuStore — на подходе.</p></details>
-      <details><summary>Это бесплатно?</summary><p>Да! Приложение полностью бесплатно и без встроенных покупок.</p></details>
+      <details open><summary>Что умеет приложение?</summary><p>Aniplace — каталог аниме и дунхуа с расписанием серий, рекомендациями, списками просмотра, историей и статистикой, скачиванием серий и плеером с выбором озвучки. Интерфейс — русский и английский, темы — светлая и тёмная.</p></details>
+      <details><summary>На каких платформах доступно?</summary><p>Android-смартфоны, планшеты и ТВ (Android 8.0+) и Windows 10/11. В <a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a> открыта страница приложения — обновляться удобнее всего через магазин. Версии для iPhone и iPad нет.</p></details>
+      <details><summary>Это бесплатно?</summary><p>Да. Приложение бесплатное, без подписок и встроенных покупок.</p></details>
+      <details><summary>Нужен ли аккаунт?</summary><p>Нет. Регистрации нет: списки, история, настройки и скачанные серии хранятся на твоём устройстве. Перенести их на другое устройство можно по Wi-Fi через встроенный обмен (приложение → Настройки → Обмен по Wi-Fi).</p></details>
       <details><summary>Почему нет Google Play?</summary><p>Мы распространяем приложение напрямую и через RuStore, чтобы быстрее выпускать обновления. Установка занимает пару минут — смотри <a href="install.html">пошаговую инструкцию</a>.</p></details>
       <details><summary>Это безопасно?</summary><p>Да. Сверяй SHA-256 суммы из раздела релиза на GitHub — так ты убедишься, что файл не подменили и он скачался целиком.</p></details>
     </div>
@@ -148,13 +190,14 @@
 <footer>
   <div class="wrap foot-grid">
     <div>
-      <b style="font-size:1.3rem">🌸 Aniplace</b>
-      <p>Твоё уютное место для аниме.<br>Присоединяйся к сообществу фанатов восточной анимации.</p>
+      <b style="font-size:1.25rem">Aniplace</b>
+      <p>Каталог аниме и дунхуа, списки и плеер.<br>Бесплатно, без аккаунтов.</p>
     </div>
     <div>
       <b>Скачать</b><br>
-      <a href="install.html">Android APK</a><br>
-      <a href="install.html#windows">Windows</a><br>
+      <a data-dl="footer-android" href="install.html">Android (APK)</a><br>
+      <a data-dl="footer-windows" href="install.html#windows">Windows (.zip)</a><br>
+      <a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a><br>
       <a href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub Releases</a>
     </div>
     <div>
@@ -163,10 +206,15 @@
       <a href="https://github.com/bloomstick/aniplace-releases/blob/main/CHANGELOG.md" target="_blank" rel="noopener">История обновлений</a><br>
       <a href="mailto:aniplace.app@gmail.com">Обратная связь</a>
     </div>
-    <div><span class="age">18+</span><p>Может содержать информацию,<br>не предназначенную для несовершеннолетних.</p></div>
+    <div><span class="age">16+</span><p>Может содержать информацию,<br>предназначенную для зрителей 16 лет и старше.</p></div>
   </div>
-  <div class="wrap" style="margin-top:24px;opacity:.8">© 2026 Aniplace Team · ani.place · Сделано с любовью к аниме 💖</div>
+  <div class="wrap" style="margin-top:24px;opacity:.8">© 2026 Aniplace Team · ani.place</div>
 </footer>
+
+<div class="mobile-bar">
+  <a class="btn btn-primary" data-dl="bar" href="install.html">⬇ Скачать</a>
+  <a class="btn btn-ghost btn-small" data-dl="bar-rustore" href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a>
+</div>
 
 <script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
 <script>
@@ -174,5 +222,6 @@
   // (Pinned to r149: last UMD build without a deprecation warning; ExtrudeGeometry API unchanged.)
 </script>
 <script src="app.js"></script>
+<script src="download.js"></script>
 </body>
 </html>

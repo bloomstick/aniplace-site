@@ -3,18 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Как установить Aniplace — Android и Windows | ani.place</title>
-<meta name="description" content="Пошаговая инструкция с картинками: установка Aniplace APK на Android и запуск на Windows.">
+<title>Как установить Aniplace — Android, RuStore и Windows | ani.place</title>
+<meta name="description" content="Пошаговая инструкция: установка Aniplace из RuStore или из APK на Android и запуск portable-сборки на Windows.">
+<link rel="canonical" href="https://ani.place/install.html">
+<meta name="theme-color" content="#f6f7f8">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Aniplace">
+<meta property="og:title" content="Как установить Aniplace — Android, RuStore и Windows">
+<meta property="og:description" content="Установка из RuStore или из APK на Android, запуск portable-сборки на Windows 10/11.">
+<meta property="og:url" content="https://ani.place/install.html">
+<meta property="og:image" content="https://ani.place/assets/og-cover.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aniplace — каталог аниме и дунхуа для Android и Windows">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Как установить Aniplace — Android, RuStore и Windows">
+<meta name="twitter:description" content="Установка из RuStore или из APK на Android, запуск portable-сборки на Windows 10/11.">
+<meta name="twitter:image" content="https://ani.place/assets/og-cover.png">
+<meta name="twitter:image:alt" content="Aniplace — каталог аниме и дунхуа для Android и Windows">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+<link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
 <header>
-  <nav class="nav">
-    <a class="logo" href="index.html"><span class="logo-mark">🌸</span><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
+  <nav class="nav" aria-label="Основная навигация">
+    <a class="logo" href="index.html"><img class="logo-mark" src="assets/logo.png" alt=""><span>Aniplace<small>Аниплейс · ani.place</small></span></a>
     <div class="nav-links">
       <a href="index.html#features">Возможности</a>
       <a href="index.html#download">Скачать</a>
@@ -28,23 +45,39 @@
   <section>
     <span class="eyebrow">Инструкция · с картинками</span>
     <h1>Установка за <span class="hl">5 минут</span></h1>
-    <p class="lead">Aniplace распространяется напрямую (мимо магазинов приложений), поэтому Android и Windows попросят одно подтверждение. Ниже — каждый шаг подробно.</p>
+    <p class="lead">Проще всего — через RuStore: страница приложения уже открыта, а обновления приходят сами. Хочешь напрямую — ниже по шагам разобран APK на Android и portable-сборка для Windows.</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">⬇ Скачать с GitHub Releases</a>
-      <a class="btn btn-ghost" href="#android">Сразу к Android</a>
-      <a class="btn btn-ghost" href="#windows">Сразу к Windows</a>
+      <a class="btn btn-primary" data-dl="primary" href="#android">⬇ Скачать для Android (APK)</a>
+      <a class="btn btn-ghost" href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">🏪 Установить из RuStore</a>
+      <a class="btn btn-ghost" href="#windows">🖥 Windows (.zip)</a>
+    </div>
+  </section>
+
+  <!-- CHOOSE -->
+  <section>
+    <span class="eyebrow">Способ установки</span>
+    <h2>RuStore или APK напрямую</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">A</div><div>
+        <h3>RuStore — рекомендуем</h3>
+        <p>Открой страницу приложения в <a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a>. Если приложение ещё в предзаказе, оформи его — установка придёт автоматически после публикации; когда оно опубликовано, жми «Установить». Если RuStore ещё нет — он поставит себя сам из того же файла. Обновления дальше приходят через магазин, вручную ничего качать не нужно.</p>
+      </div></div>
+      <div class="step"><div class="step-num">B</div><div>
+        <h3>APK напрямую</h3>
+        <p>Подходит, если RuStore не хочется. Android попросит один раз разрешить установку из браузера — пошагово это разобрано ниже. <a data-dl="primary" href="#android">Скачать APK</a></p>
+      </div></div>
     </div>
   </section>
 
   <!-- ANDROID -->
   <section id="android">
-    <span class="eyebrow">🤖 Android 8.0+</span>
+    <span class="eyebrow">Android 8.0+</span>
     <h2>Установка APK на телефон</h2>
     <div class="warn">⚠️ Файл скачивается из интернета, а не из Google Play — так и задумано. Сверь SHA-256 сумму со страницей релиза (инструкция в конце), и всё будет безопасно.</div>
     <div class="steps">
       <div class="step"><div class="step-num">1</div><div>
         <h3>Скачай APK-файл</h3>
-        <p>На телефоне открой страницу <a href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">последнего релиза</a> и нажми на файл <code>aniplace-*-android.apk</code>. Дождись окончания загрузки — в шторке появится уведомление «Загрузка завершена».</p>
+        <p>Нажми <a data-dl="primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">скачать APK</a>: файл <code>aniplace-*-android.apk</code> придёт прямо из раздела релизов. Дождись окончания загрузки — в шторке появится уведомление «Загрузка завершена».</p>
       </div></div>
       <div class="step"><div class="step-num">2</div><div>
         <h3>Открой скачанный файл</h3>
@@ -64,8 +97,9 @@
       </div></div>
       <div class="step"><div class="step-num">4</div><div>
         <h3>Подтверди установку и открой приложение</h3>
-        <p>Нажми <code>Установить</code> и подожди 10–30 секунд. Когда появится «Приложение установлено» — жми <code>Открыть</code>. Иконка 🌸 Aniplace уже на домашнем экране!</p>
-        <p>При первом запуске разреши уведомления — так ты узнаешь о новых сериях первым.</p>
+        <p>Нажми <code>Установить</code> и подожди 10–30 секунд. Когда появится «Приложение установлено» — жми <code>Открыть</code>. Иконка Aniplace уже на домашнем экране.</p>
+        <p>При первом запуске разреши уведомления — так видно прогресс скачивания серий вне приложения.</p>
+        <img class="shot-img" src="assets/shots/catalog.png" width="1080" height="1920" loading="lazy" decoding="async" alt="Каталог Aniplace после первого запуска">
       </div></div>
       <div class="step"><div class="step-num">5</div><div>
         <h3>Проверь файл (необязательно, но надёжно)</h3>
@@ -76,12 +110,13 @@
 
   <!-- WINDOWS -->
   <section id="windows">
-    <span class="eyebrow">🖥️ Windows 10 / 11</span>
+    <span class="eyebrow">Windows 10 / 11</span>
     <h2>Запуск на компьютере</h2>
+    <p class="lead">Основная версия Aniplace — Android: её ставят на телефон (для этого рядом есть QR-код). Но на Windows 10/11 есть и своя сборка — portable, установка не нужна.</p>
     <div class="steps">
       <div class="step"><div class="step-num">1</div><div>
         <h3>Скачай ZIP-сборку</h3>
-        <p>На странице <a href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">последнего релиза</a> скачай файл <code>aniplace-*-windows.zip</code> (portable — установка не нужна).</p>
+        <p><a data-dl="windows" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">Скачай</a> файл <code>aniplace-*-windows.zip</code> — внутри лежит <code>Aniplace.exe</code>. Ничего дополнительно устанавливать не нужно.</p>
       </div></div>
       <div class="step"><div class="step-num">2</div><div>
         <h3>Распакуй архив</h3>
@@ -112,25 +147,38 @@
     <div class="download-card">
       <div>
         <h2>Готово? Забирай приложение!</h2>
-        <p class="lead">Последние версии, changelog и контрольные суммы — на странице релизов.</p>
+        <p class="lead">Обновления, changelog и контрольные суммы — на странице релизов. В RuStore обновления приходят автоматически.</p>
         <div class="dl-buttons">
-          <a class="btn btn-primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">⬇ GitHub Releases — скачать</a>
+          <a class="btn btn-primary" data-dl="primary" href="https://github.com/bloomstick/aniplace-releases/releases/latest" target="_blank" rel="noopener">⬇ Скачать</a>
+          <a class="btn btn-ghost" href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">🏪 RuStore</a>
           <a class="btn btn-ghost" href="index.html">← На главную</a>
         </div>
+        <p class="dl-meta" data-dl="meta" hidden></p>
       </div>
-      <img src="assets/mascot.png" alt="Маскот Aniplace" style="width:170px;border-radius:24px;box-shadow:var(--shadow)" onerror="this.style.display='none'">
+      <a class="qr" href="index.html#download" aria-label="Открыть раздел загрузки">
+        <img src="assets/qr-install.svg" width="132" height="132" alt="QR-код: страница загрузки Aniplace">
+        <span>Наведи камеру телефона — откроется страница загрузки</span>
+      </a>
     </div>
   </section>
 </div>
 
 <footer>
   <div class="wrap foot-grid">
-    <div><b style="font-size:1.3rem">🌸 Aniplace</b><p>Твоё уютное место для аниме.</p></div>
-    <div><b>Ссылки</b><br><a href="index.html">Главная</a><br><a href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub Releases</a></div>
-    <div><span class="age">18+</span></div>
+    <div><b style="font-size:1.25rem">Aniplace</b><p>Каталог аниме и дунхуа, списки и плеер.</p></div>
+    <div><b>Ссылки</b><br><a href="index.html">Главная</a><br><a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a><br><a href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub Releases</a></div>
+    <div><b>Помощь</b><br><a href="mailto:aniplace.app@gmail.com">Обратная связь</a></div>
+    <div><span class="age">16+</span></div>
   </div>
   <div class="wrap" style="margin-top:24px;opacity:.8">© 2026 Aniplace Team · ani.place</div>
 </footer>
+
+<div class="mobile-bar">
+  <a class="btn btn-primary" data-dl="bar" href="index.html#download">⬇ Скачать</a>
+  <a class="btn btn-ghost btn-small" href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a>
+</div>
+
 <script src="app.js"></script>
+<script src="download.js"></script>
 </body>
 </html>
