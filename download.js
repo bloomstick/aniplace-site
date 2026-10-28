@@ -196,7 +196,7 @@
     var facts = apkSize ? 'APK ' + apkSize : 'APK';
     switch (platform) {
       case 'android':
-        return 'Android 8.0+ · ' + versionText(release) + facts +
+        return 'Android 7.0+ · ' + versionText(release) + facts +
           ' · ставится напрямую, без Google Play. В RuStore — то же приложение с автообновлением.';
       case 'windows':
         return 'Ты на Windows. Основная версия — Android: поставь её на телефон (наведи камеру на QR рядом), ' +
