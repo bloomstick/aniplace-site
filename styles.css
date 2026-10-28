@@ -294,7 +294,7 @@ h3 { font-size: 1.05rem; }
 .step p, .step li { color: var(--ink-soft); font-weight: 600; }
 .step a { color: var(--accent-deep); font-weight: 800; }
 .step code { background: var(--ground); padding: 2px 8px; border-radius: 8px; color: var(--ink); font-weight: 800; }
-.step img.shot-img { width: 100%; max-width: 320px; border-radius: 16px; margin-top: 12px; border: 1px solid var(--line); }
+.step img.shot-img { width: 100%; max-width: 320px; height: auto; border-radius: 16px; margin-top: 12px; border: 1px solid var(--line); }
 .warn { background: #fff8e6; border: 1px solid #f0c36d; border-radius: 16px; padding: 14px 18px; font-weight: 700; }
 .warn a { color: var(--accent-deep); }
 

@@ -10,7 +10,7 @@ mirror is the GitHub Pages repo `bloomstick/aniplace-site` (see [Deploy](#deploy
 | `styles.css` | Palette, layout, responsive rules, reduced-motion handling |
 | `app.js` | three.js hero (floating hearts, parallax, click bursts) + scroll reveal + counters |
 | `download.js` | Platform-aware CTAs: resolves the current release files and explains the platform's build |
-| `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (real app frames); `qr-install.svg`, `og-cover.png` (generated) |
+| `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (real app frames; `install-catalog.webp` is the install-guide crop); `qr-install.svg`, `og-cover.png` (generated) |
 
 ## Palette
 
@@ -52,6 +52,7 @@ the filenames.**
 ```powershell
 python apps/animedream/tools/site/make_qr.py     # assets/qr-install.svg
 python apps/animedream/tools/site/make_og.py     # assets/og-cover.png (1200x630)
+python apps/animedream/tools/site/make_install_shot.py   # assets/shots/install-catalog.webp
 ```
 
 The QR points at `https://ani.place/install.html` (the site's own download
@@ -72,6 +73,11 @@ are still 1080×1920 PNGs — ~5 MB for the set, all `loading="lazy"` below
 the fold. Web-sized WebP derivatives would cut that to a few hundred KB;
 they are not generated today (the listing frames are the only captures in
 the repo).
+
+The install guide does not use a full listing frame: `make_install_shot.py`
+perspective-crops the phone screen out of `01-catalog.png` into
+`assets/shots/install-catalog.webp` (720×1280), so step 4 shows the app UI
+instead of a poster with a marketing headline.
 
 ## Pending
 
