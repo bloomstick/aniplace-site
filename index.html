@@ -111,13 +111,26 @@
   <section id="shots" class="reveal">
     <span class="eyebrow">Загляни внутрь</span>
     <h2>Как это выглядит</h2>
-    <div class="shots">
-      <figure class="shot"><img src="assets/shots/app-catalog.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Каталог Aniplace: свежие эпизоды и онгоинги"><figcaption>Каталог: новинки сезона и онгоинги</figcaption></figure>
-      <figure class="shot"><img src="assets/shots/app-schedule.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Расписание выхода серий"><figcaption>Расписание: новые серии по дням</figcaption></figure>
-      <figure class="shot"><img src="assets/shots/app-season.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Онгоинги сезона сеткой"><figcaption>Все онгоинги сезона — одним списком</figcaption></figure>
-      <figure class="shot"><img src="assets/shots/app-title.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Страница тайтла: рейтинг, жанры, озвучки"><figcaption>Страница тайтла: рейтинг, жанры, озвучки</figcaption></figure>
-      <figure class="shot"><img src="assets/shots/app-lists.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Списки просмотра"><figcaption>Списки: смотрю, запланировано, просмотрено</figcaption></figure>
-      <figure class="shot"><img src="assets/shots/app-search.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Поиск по каталогу"><figcaption>Поиск: найди своё аниме за секунду</figcaption></figure>
+    <!-- Big swipeable strip: native scroll-snap without JS, arrows + dots
+         added by app.js. -->
+    <div class="shots-slider">
+      <div class="shots-viewport">
+        <div class="shots" id="shots-track" tabindex="0" role="group" aria-label="Скриншоты приложения — листайте свайпом или стрелками">
+          <figure class="shot"><img src="assets/shots/app-catalog.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Каталог Aniplace: свежие эпизоды и онгоинги"><figcaption>Каталог: новинки сезона и онгоинги</figcaption></figure>
+          <figure class="shot"><img src="assets/shots/app-schedule.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Расписание выхода серий"><figcaption>Расписание: новые серии по дням</figcaption></figure>
+          <figure class="shot"><img src="assets/shots/app-season.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Онгоинги сезона сеткой"><figcaption>Все онгоинги сезона — одним списком</figcaption></figure>
+          <figure class="shot"><img src="assets/shots/app-title.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Страница тайтла: рейтинг, жанры, озвучки"><figcaption>Страница тайтла: рейтинг, жанры, озвучки</figcaption></figure>
+          <figure class="shot"><img src="assets/shots/app-lists.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Списки просмотра"><figcaption>Списки: смотрю, запланировано, просмотрено</figcaption></figure>
+          <figure class="shot"><img src="assets/shots/app-search.webp" width="720" height="1280" loading="lazy" decoding="async" alt="Поиск по каталогу"><figcaption>Поиск: найди своё аниме за секунду</figcaption></figure>
+        </div>
+        <button class="shots-nav shots-prev" type="button" aria-controls="shots-track" aria-label="Предыдущий скриншот" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 4.5 7.5 12 15 19.5"/></svg>
+        </button>
+        <button class="shots-nav shots-next" type="button" aria-controls="shots-track" aria-label="Следующий скриншот" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 4.5 16.5 12 9 19.5"/></svg>
+        </button>
+      </div>
+      <div class="shots-dots" role="group" aria-label="Навигация по скриншотам" hidden></div>
     </div>
   </section>
 

@@ -6,6 +6,7 @@
 
   initReveal();
   initCounters();
+  initShots();
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -185,5 +186,116 @@
       });
       cio.observe(el);
     });
+  }
+
+  // Screenshots slider: the strip is a plain scroll-snap container (touch
+  // swipe, trackpad, keyboard already work), upgraded with arrows and page
+  // dots. Runs even under reduced motion — the scroll just stops animating.
+  function initShots() {
+    var track = document.getElementById('shots-track');
+    var slider = track && track.closest('.shots-slider');
+    if (!slider) return;
+    var cards = track.querySelectorAll('.shot');
+    var prev = slider.querySelector('.shots-prev');
+    var next = slider.querySelector('.shots-next');
+    var dots = slider.querySelector('.shots-dots');
+    if (!cards.length || !prev || !next || !dots) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var behavior = reduced ? 'auto' : 'smooth';
+    var nativeSmooth = 'scrollBehavior' in document.documentElement.style;
+    var pages = 0;
+    var frame = 0;
+
+    function gap() {
+      var g = parseFloat(window.getComputedStyle(track).columnGap);
+      return isNaN(g) ? 16 : g;
+    }
+    function step() {
+      return cards[0].getBoundingClientRect().width + gap();
+    }
+    function maxScroll() {
+      return Math.max(0, track.scrollWidth - track.clientWidth);
+    }
+    function pageTotal() {
+      var max = maxScroll();
+      if (max <= 2) return 1;
+      // One page per card step plus the clamped final page.
+      return Math.ceil(max / step() - 0.02) + 1;
+    }
+    function pageLeft(page) {
+      return Math.min(maxScroll(), Math.max(0, page) * step());
+    }
+    function activePage() {
+      var max = maxScroll();
+      if (max <= 2) return 0;
+      if (track.scrollLeft >= max - 2) return pages - 1;
+      return Math.min(pages - 1, Math.round(track.scrollLeft / step()));
+    }
+    function go(page) {
+      var left = pageLeft(page);
+      if (nativeSmooth) track.scrollTo({ left: left, behavior: behavior });
+      else track.scrollLeft = left;
+    }
+
+    function buildDots() {
+      var total = pageTotal();
+      if (total === pages && dots.children.length) return;
+      pages = total;
+      dots.textContent = '';
+      for (var i = 0; i < pages; i++) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'shots-dot';
+        dot.setAttribute('aria-controls', 'shots-track');
+        dot.setAttribute('aria-label', 'Часть ' + (i + 1) + ' из ' + pages);
+        dot.addEventListener('click', (function (page) {
+          return function () { go(page); };
+        })(i));
+        dots.appendChild(dot);
+      }
+    }
+
+    function sync() {
+      var active = activePage();
+      for (var i = 0; i < dots.children.length; i++) {
+        if (i === active) dots.children[i].setAttribute('aria-current', 'true');
+        else dots.children[i].removeAttribute('aria-current');
+      }
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= maxScroll() - 2;
+    }
+
+    function refresh() {
+      var scrollable = maxScroll() > 2;
+      prev.hidden = !scrollable;
+      next.hidden = !scrollable;
+      dots.hidden = !scrollable;
+      if (!scrollable) { pages = 0; return; }
+      buildDots();
+      sync();
+    }
+
+    prev.addEventListener('click', function () { go(activePage() - 1); });
+    next.addEventListener('click', function () { go(activePage() + 1); });
+
+    track.addEventListener('scroll', function () {
+      if (frame) return;
+      frame = requestAnimationFrame(function () { frame = 0; sync(); });
+    }, { passive: true });
+
+    track.addEventListener('keydown', function (e) {
+      var page = activePage();
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        go(page + (e.key === 'ArrowRight' ? 1 : -1));
+      } else if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        go(e.key === 'Home' ? 0 : pages - 1);
+      }
+    });
+
+    window.addEventListener('resize', refresh);
+    refresh();
   }
 })();

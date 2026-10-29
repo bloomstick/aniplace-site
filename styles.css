@@ -194,13 +194,26 @@ h3 { font-size: 1.05rem; }
 .stat b { display: block; font-size: 2rem; color: var(--accent); }
 .stat span { color: var(--ink-soft); font-weight: 700; }
 
-/* Screenshots — real RuStore frames (1080x1920). */
-.shots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-top: 26px; }
-@media (max-width: 1080px) { .shots { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 680px) { .shots { grid-template-columns: repeat(2, 1fr); } }
+/* Screenshots — real RuStore frames (720x1280), one large card at a time.
+   Native scroll-snap strip: touch swipe, trackpad, keyboard. app.js adds
+   arrows + page dots; the strip itself works without JS. */
+.shots-slider { position: relative; margin-top: 26px; }
+.shots-viewport { position: relative; }
+.shots {
+  display: flex; gap: 16px; margin: 0 -4px; padding: 4px 4px 24px;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.shots::-webkit-scrollbar { display: none; }
+.shots:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 18px; }
 .shot {
-  border-radius: var(--radius); overflow: hidden; background: var(--card); box-shadow: var(--shadow);
-  border: 1px solid var(--line); transition: transform 0.2s ease;
+  flex: 0 0 min(72vw, 330px);
+  scroll-snap-align: start; scroll-snap-stop: always;
+  border-radius: var(--radius); overflow: hidden; background: var(--card);
+  box-shadow: var(--shadow); border: 1px solid var(--line);
+  transition: transform 0.2s ease;
   margin: 0;
 }
 .shot:hover { transform: translateY(-4px); }
@@ -208,7 +221,38 @@ h3 { font-size: 1.05rem; }
   width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover;
   display: block; background: var(--line-soft);
 }
-.shot figcaption { padding: 12px 14px; font-size: 0.84rem; font-weight: 800; color: var(--ink-soft); }
+.shot figcaption { padding: 12px 16px; font-size: 0.9rem; font-weight: 800; color: var(--ink-soft); }
+.shots-nav {
+  position: absolute; top: 50%; z-index: 2;
+  width: var(--tap); height: var(--tap); padding: 0;
+  display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--card); color: var(--ink);
+  box-shadow: var(--shadow); cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.shots-nav svg {
+  width: 22px; height: 22px; fill: none; stroke: currentColor;
+  stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.shots-nav:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.shots-nav[disabled] { opacity: 0.35; cursor: default; box-shadow: none; }
+.shots-nav[disabled]:hover { background: var(--card); border-color: var(--line); color: var(--ink); }
+.shots-prev { left: -16px; }
+.shots-next { right: -16px; }
+@media (max-width: 760px) { .shots-nav { display: none; } }
+.shots-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 2px; }
+.shots-dot {
+  width: 28px; height: 24px; padding: 0; border: 0; background: none;
+  display: grid; place-items: center; cursor: pointer;
+}
+.shots-dot::before {
+  content: ""; width: 9px; height: 9px; border-radius: 999px;
+  background: var(--line); transition: width 0.2s ease, background 0.2s ease;
+}
+.shots-dot:hover::before { background: var(--ink-soft); }
+.shots-dot[aria-current="true"]::before { width: 26px; background: var(--accent); }
 
 /* Features */
 .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 26px; }
@@ -331,6 +375,7 @@ footer a:hover { color: var(--accent-wash); }
    already no-ops in app.js). */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .shots { scroll-behavior: auto; }
   .blob, .mascot, .phone, .marquee span, .logo-mark, .feature, .reveal {
     animation: none !important;
     transition: none !important;

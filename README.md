@@ -5,10 +5,10 @@ mirror is the GitHub Pages repo `bloomstick/aniplace-site` (see [Deploy](#deploy
 
 | File | Purpose |
 |---|---|
-| `index.html` | Main landing (hero, stats, screenshots, features, download + QR, catalog picks, FAQ) |
+| `index.html` | Main landing (hero, stats, screenshot slider, features, download + QR, catalog picks, FAQ) |
 | `install.html` | Install guide: RuStore first, then the APK path, then Windows; linked from the direct-download button |
-| `styles.css` | Palette, layout, responsive rules, reduced-motion handling |
-| `app.js` | three.js hero (floating hearts, parallax, click bursts) + scroll reveal + counters |
+| `styles.css` | Palette, layout, responsive rules, the screenshot slider, reduced-motion handling |
+| `app.js` | three.js hero (floating hearts, parallax, click bursts) + screenshot slider + scroll reveal + counters |
 | `download.js` | Platform-aware CTAs: resolves the current release files and explains the platform's build |
 | `assets/` | `logo.png`, `favicon.png`, `mascot.png`, `poster-dream.webp`, `mio.webp`, `banner-hero.png`, `group-greeting.png`; `shots/` (six app-UI crops); `qr-install.svg`, `og-cover.png` (generated) |
 
@@ -74,6 +74,12 @@ phone; they stay in `docs/store/` as the only real captures, while the
 site ships only the app-UI crops (about 0.5 MB for the set, all
 `loading="lazy"`). Regenerate them with `make_app_shots.py`; the quad is
 fixed to the store mockup's -7.5° phone.
+
+The gallery on the landing is a horizontal scroll-snap strip, not a grid:
+one large card (`min(72vw, 330px)` wide) at a time. Touch and trackpad swipe
+and the focused strip's arrow keys work with no JavaScript; `app.js` adds
+the arrow buttons, page dots and `Home`/`End`, and turns `scroll-behavior`
+off under `prefers-reduced-motion`.
 
 ## Pending
 
