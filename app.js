@@ -262,7 +262,10 @@
         if (i === active) dots.children[i].setAttribute('aria-current', 'true');
         else dots.children[i].removeAttribute('aria-current');
       }
-      prev.disabled = track.scrollLeft <= 2;
+      // Compare pages, not raw pixels: the track's 4px snap padding parks
+      // scrollLeft at 4 on the first page, so a pixel guard left the
+      // previous arrow looking live at the very start.
+      prev.disabled = active <= 0;
       next.disabled = track.scrollLeft >= maxScroll() - 2;
     }
 
