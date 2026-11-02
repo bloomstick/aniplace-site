@@ -1,82 +1,166 @@
-# Aniplace banner & brand style
+# place family hub — brand & page style
 
-Landing font is **Nunito** (Google Fonts): 900 for headings/buttons,
-600–700 body, 800-quirk eyebrow pills (uppercase, 0.05em tracking).
+The site at `ani.place` is the family hub for **Aniplace** (anime) and
+**Mangaplace** (manga). Russian only for v1. It is not an Aniplace-only
+landing; both products stay present on the page, with Mangaplace honestly
+marked **скоро** until its first public build.
 
-Palette (`styles.css`) mirrors the app's `aniplace_brand.dart` tokens:
-accent `--accent #e11d48` (`kAniplaceActionRed`) with `--accent-deep
-#be123c`, grounds `#f6f7f8`/`#ffffff`, ink `#1f2328` with `#5f6368`
-secondary (that grey *is* `kAniplaceSeed`), lines `#dadce0`, footer
-`#202124`. The pre-rebrand pink family (`#ff3d5e`, cream `#fff8f6`,
-maroon `#2b1220`) is retired — a graphite shell with loud red actions is
-the house look, and the site must read as the same product as the app.
+## Type
 
-## Text on banners
+- Display: **Unbounded** (500–800) — H1/H2/H3, versions, step numbers.
+- Body/UI: **Manrope** (400–800) — copy, buttons, labels.
+- Hand: **Caveat** (500–600) — short margin notes, the mascot caption, the
+  footer sign-off. Never use it for body copy or instructions.
+- Load from Google Fonts with `display=swap`; the page must remain readable
+  with the system fallback.
 
-- Headline: Nunito 900, white, over a **scrim** — never bare on busy art.
-  Scrim = `linear-gradient(100deg, rgba(32,33,36,.80), rgba(32,33,36,.25)
-  55%, transparent)` (dark side carries the text, faces stay clear).
-- Accent: at most 2 words in the `--accent → --accent-deep` gradient `.hl`
-  treatment; gradient text dies on light art, so `.hl` only on dark scrims.
-- Length: 6–8 words max on a banner; subline ≤ 140 chars, Nunito 700.
-- Zones: text block left third, subjects right two-thirds (or mirrored);
-  keep eyes/faces out of the text zone. Safe margins ≥ 64px at 1600px wide.
-- Language: RU primary (site is `lang="ru"`), EN wordmark `Aniplace` +
-  `ani.place` subline stays Latin everywhere.
+## Palette (`styles.css`)
 
-## Screenshot showcase
+| Token | Value | Role |
+| --- | --- | --- |
+| `--paper` | `#fdf4ec` | main ground, matches the mascot sheet |
+| `--paper-2` | `#f7e9dc` | screenshot / release bands |
+| `--ink` | `#2a2027` | text, borders, footer ground |
+| `--ink-soft` | `#6d5a63` | secondary copy on paper |
+| `--red` | `#e11d48` | Aniplace actions, stamps, checks |
+| `--red-deep` | `#b0133a` | small red text on paper |
+| `--navy` | `#202a4a` | Mangaplace room |
+| `--pink` | `#ffb6cf` | tape, footer links, selection |
+| `--pink-soft` | `#ffe3ec` | hero sun, marquee, callouts |
+| `--butter` | `#ffe4a3` | Mangaplace stamps and checks |
 
-- Cards are `<figure class="shot">` with a `<figcaption>` naming the *user
-  outcome* ("Списки: смотрю, запланировано, просмотрено"), never the
-  feature. Images are 9:16 (`aspect-ratio: 9 / 16`) and carry explicit
-  `width`/`height` plus `loading="lazy"`.
-- The six shots are 720×1280 crops of the phone screen from the real
-  RuStore listing frames (see `README.md`); the full frames in
-  `docs/store/rustore/` are the only real captures in the repo. `.poster`/
-  `.art` blocks with a bare gradient are placeholders with a TODO, not a
-  style.
-- Phone mockup (`.phone`) for in-context UI; tilt −4°, floaty anim.
-- Captions plain-language; no version numbers in copy (they rot) — release
-  facts (version, file size) are filled in at runtime by `download.js`.
+The red and navy are the app brands; keep them in step with
+`apps/animedream/lib/src/brand/aniplace_brand.dart` and the Mangaplace
+lockup. The cream/pink ground is the old handmade soul, not a generic pastel
+theme: keep the ink borders, hard shadows, paper grain and stamps.
 
-## Download card contract
+## Page structure
 
-- Primary CTA is Android (the app's main platform) on every visitor's
-  screen; Windows visitors additionally get the portable `.zip`, phrased as
-  a `.zip` that contains `Aniplace.exe`, never as an installer or a file a
-  PC can install as an APK.
-- `data-dl` hooks (`primary`, `windows`, `bar`, `meta`, footer variants)
-  are the contract with `download.js`; static `href`s must keep working
-  with JavaScript disabled.
-- The QR points at the site's install guide and doubles as the
-  "put it on your phone" affordance for desktop visitors.
+- **Header:** a paper masthead, not a glass bar. The red seam across the top,
+  the “place.” wordmark, the rotated “аниме + манга” tag, plain nav links and
+  a red stamp download button. On phones the tag disappears, the button stays,
+  and the full nav lives in the bordered paper menu. No app-icon row in the
+  header; the rooms carry the icons.
+- **Hero:** one mascot sticker sheet (taped, slightly rotated) plus one real
+  catalog screen in a straight frame. A Caveat note (“заходи, тут уютно”)
+  and a speech bubble are the only handwritten moments. “Место” is red with
+  the hand-drawn underline; the H1's second line is `.hero-line`
+  (`white-space: nowrap`) so “Одно место.” never breaks onto three lines;
+  reduce the font before removing the no-wrap.
+- **Rooms:** both apps visible at once, no tabs. Aniplace is the wide red/white
+  room with a real title-page screen, three ticks and the download CTA.
+  Mangaplace is the narrower navy cover, content centred, with an M watermark,
+  a butter “скоро” stamp and a GitHub watch link. The Manga room carries
+  `data-release-card="mangaplace"` and `data-when` hooks so it upgrades with
+  the release.
+- **Screenshots:** only real Aniplace captures: 720×1384 straight crops of the
+  raw 1080×2400 device shots, status/gesture bars trimmed. A contact sheet on
+  a page-sheet border with numbered captions, arrows and an `01 / 06` counter.
+  The selected frame carries a red border and hard red shadow; keep that
+  feedback visible even when the rail is clamped at max scroll.
+  No dots, no tilted marketing mockup, no perspective, no phone-in-phone.
+  Mangaplace has none; wait for real captures.
+- **Install:** three numbered steps and a taped paper card with the wizard
+  link + RuStore. The non-obvious warnings (Android permission, Windows
+  SmartScreen) are stated once. `install.html` is the real app/device wizard.
+- **Releases:** a ledger table (application / version / files / links), not
+  two cards. Aniplace is live; Mangaplace flips from “soon” to real files when
+  `download.js` finds a release.
+- **Changelog:** `changelog.html` is the ledger continued as a ruled history.
+  Each app gets an icon + name chapter, then a version timeline: version in
+  Unbounded, Russian date, and release notes. The latest entry is open; older
+  entries fold into `<details>` with a red/hollow timeline dot and a +/−
+  marker. The GitHub source note and both release links are static HTML; the
+  no-JS note is part of the page. No new art, no generic card grid.
+- **FAQ + footer:** editorial two-column questions, then an ink colophon with
+  both apps (the footer app icons link to their rooms), GitHub, RuStore
+  (Android alternative), 16+ and the “продолжение следует” sign-off.
+  «Что нового» lives in the «Ещё» column on all three pages; the current
+  page carries `aria-current="page"`.
 
-## Peculiarities (house style, don't smooth away)
+## Anti-template rules
 
-- Marquee ribbon, −1° tilt, graphite ground — section divider, not header.
-- Floaty mascot/phone; the logo tile no longer wiggles (that read as the
-  old cute identity).
-- Hearts canvas: interactive, pointer-driven; must no-op when CDN fails or
-  `prefers-reduced-motion` is set.
-- `16+` badge in the footer, always a bordered pill — it must match the
-  RuStore listing's age marking.
-- Keyboard focus is visible everywhere (`:focus-visible`, 3px accent);
-  decorative animations freeze under `prefers-reduced-motion` (CSS) — the
-  hearts canvas checks the same media query in `app.js`.
-- Favicon + nav logo-mark: real logo PNG, never the 🌸 placeholder (that
-  emoji is gone from both pages).
+The previous dark landing read as a SaaS template. Do not bring these back:
 
-## Banner specs
+- numbered eyebrow labels (`01 · …`) on every section;
+- identical section rhythm (eyebrow → h2 → lead → card grid) for every block;
+- equal product cards with a tab switch;
+- a dots carousel (use the counter/arrows contact sheet);
+- a three-column icon + title + line “trust” row;
+- neon glows, mesh gradients, glass blur, floating chips;
+- tilted/perspective screenshots inside fake phones;
+- stock “AI” phrasing (“Три шага — и ты внутри”, “Собери свою инструкцию”,
+  “Открытый changelog”, “GitHub — основной канал…”).
 
-- Wide hero: 1600×500, scrim left, logo lockup (mark 160px + Nunito 900
-  120px "Aniplace" + spaced `ANI.PLACE` subline) over group art.
-- Share card: **1200×630** (`assets/og-cover.png`) — graphite gradient,
-  the 1024 app icon, white Nunito 900 wordmark, the catalog frame on the
-  right, `ani.place` accent pill + outlined `16+` pill. Generated by
-  `tools/site/make_og.py`, never hand-edited; it is what `og:image` and
-  `twitter:image` point at.
-- Nav mark: 40px in the existing `.logo-mark` tile style.
-- Favicon: 64px PNG of the mark (die-cut border reads at 16px).
-- Files live in `site/assets/` (`banner-hero.png`, `logo.png`,
-  `favicon.png`, `og-cover.png`, `group-*.png` sources); this doc is the
-  contract.
+Warmth comes from specific things, not more decoration: the mascot, the
+paper grain, the tape, the stamps, the Caveat margin notes, the real screens.
+Use one or two per composition, not all at once.
+
+## Download contract
+
+- `data-dl-app` + `data-dl-os` (`aniplace|mangaplace` × `android|windows|auto`)
+  are the CTA hooks.
+- `data-release-app` + `data-release-field` fill version/date/sizes/release
+  URL/SHA URL/watch URL.
+- `data-dl-icon` must show the target platform in the CTA; `data-dl-ready`
+  marks a real file. A normal click opens the file in a separate tab and
+  opens the install guide at step 3 with
+  "Скачивание началось. Не скачивается? Повторить" in a full-width strip
+  above the wizard card. The guide navigation
+  must never cancel the attachment. A blocked popup falls back to a hidden
+  frame; the result and retry remain normal new-tab links. Modifier clicks
+  keep the browser’s own behaviour.
+- Android gets Android only: hide Windows offers with
+  `data-os-only="windows"` / `data-dl-platform="windows"` and skip the device
+  step in the wizard. Desktop keeps the Android/Windows choice.
+- Primary channel is **GitHub Releases**; RuStore is the visible Android
+  alternative.
+- The changelog header keeps a plain `install.html` «Скачать» link instead
+  of the `data-dl` hook, so that page loads no `download.js` and makes only
+  its two changelog API calls. Do not add platform-download behavior there
+  without also including the early platform script and `download.js`.
+- `download.js` accepts both `*-windows-setup.exe` and `*-windows.zip`, so
+  keep labels generic (“Windows”, “сборка”) and let the file name/size tell
+  the truth.
+- No dead direct links: if the API fails, Aniplace uses `FALLBACK`; if
+  Mangaplace has no release, the room/row stay “soon”.
+- The QR points at `https://ani.place/install.html`.
+
+## Motion & accessibility
+
+- Scroll reveal, the seamless marquee and hover lifts are CSS/JS only; all
+  freeze under `prefers-reduced-motion`.
+- Focus is visible everywhere (`:focus-visible`, 3px red).
+- No canvas/WebGL, no blur layers over scrolling content; the page is a
+  static site with small scripts.
+- One fixed paper-grain layer (`assets/grain.png`, generated by
+  `make_grain.py`) keeps the cream and ink from reading as flat fills. Keep
+  it low-opacity and pointer-events-none.
+- Marketing surfaces use `user-select: none`; FAQ, changelog release notes
+  and install instructions stay selectable. Do not disable selection on
+  code/paths.
+- Changelog release bodies are untrusted Markdown: escape first, then add
+  only the supported markup; never inject raw HTML. Version dates use
+  `<time datetime>`; release links open GitHub and carry
+  `rel="noopener noreferrer"`.
+- Lighthouse target for all three pages: 100 accessibility / best practices /
+  SEO. Keep contrast ≥ 4.5:1 for small text; use `--ink-soft` on paper, not
+  a lighter muted.
+
+## Share card
+
+- `assets/og-cover.png` is 1200×630, generated by
+  `apps/animedream/tools/site/make_og.py`; never hand-edit.
+- It carries the cream ground, the “place.” wordmark, the “Два мира. Одно
+  место.” headline with the red word, both app chips and the mascot sheet
+  with tape and a “заходи!” bubble. `og:image` / `twitter:image` point at it.
+- Favicon is the 64px “p” tile generated alongside the share card; the header
+  uses the same wordmark, not the old fox-only logo tile.
+
+## Legacy art
+
+`mascot.png` is the live host (served as `mascot.webp` + `mascot-360.webp`).
+`banner-hero.png`, `group-greeting.png`, `mio.webp` and `poster-dream.webp`
+are still unused by the hub. Keep them only for the store handoff docs or
+remove in a cleanup pass; do not reintroduce a second character or a cast
+wall without a design decision.

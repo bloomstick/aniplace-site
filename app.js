@@ -1,304 +1,277 @@
-// Aniplace hero: interactive three.js highlight — floating hearts + sparkles.
-// Pointer moves the camera (parallax), clicks burst new hearts.
-// Scroll-reveal + counters always run, even offline / reduced-motion / WebGL failure.
+// Home-page behavior: header/menu, seamless marquee, screenshot rail,
+// lightbox and scroll reveals. No dependencies; every interactive piece
+// has a static fallback in the HTML.
+
 (function () {
   'use strict';
 
-  initReveal();
-  initCounters();
-  initShots();
+  var doc = document;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // ---- header --------------------------------------------------------
 
-  var canvas = document.getElementById('sparkles');
-  if (!canvas || !window.THREE) return;
-  try {
-    initHearts(canvas);
-  } catch (e) {
-    /* WebGL/CDN failure: static page still fully usable */
+  var head = doc.querySelector('[data-head]');
+  function onScroll() {
+    if (!head) return;
+    head.classList.toggle('is-scrolled', window.scrollY > 8);
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ---- mobile nav ----------------------------------------------------
+
+  var menu = doc.querySelector('.menu-btn');
+  var nav = doc.getElementById('site-nav');
+
+  function closeNav() {
+    doc.body.classList.remove('nav-open');
+    if (menu) {
+      menu.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-label', 'Открыть меню');
+    }
   }
 
-  function initHearts(canvas) {
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camera.position.z = 26;
-
-    var group = new THREE.Group();
-    scene.add(group);
-
-    // Graphite grounds + the brand's signal red (aniplace_brand.dart).
-    var palette = [0xe11d48, 0xbe123c, 0x5f6368, 0x9aa0a6, 0xdadce0];
-    var hearts = [];
-    var heartGeo = heartGeometry(1.6);
-
-    function addHeart(burst) {
-      var mat = new THREE.MeshStandardMaterial({
-        color: palette[(Math.random() * palette.length) | 0],
-        roughness: 0.35, metalness: 0.05, transparent: true, opacity: 0.92
-      });
-      var m = new THREE.Mesh(heartGeo, mat);
-      var r = burst ? 4 : 9;
-      m.position.set((Math.random() - 0.5) * r * 2, (Math.random() - 0.5) * r * 1.4, (Math.random() - 0.5) * 6);
-      m.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
-      m.userData = {
-        spin: (Math.random() - 0.5) * 0.02,
-        floatAmp: 0.4 + Math.random() * 0.8,
-        floatSpeed: 0.4 + Math.random() * 0.8,
-        phase: Math.random() * Math.PI * 2,
-        life: burst ? 90 : Infinity
-      };
-      if (burst) {
-        m.userData.vel = new THREE.Vector3((Math.random() - 0.5) * 0.5, Math.random() * 0.5 + 0.15, (Math.random() - 0.5) * 0.3);
-        m.scale.setScalar(0.4);
-      } else {
-        m.scale.setScalar(0.7 + Math.random() * 0.9);
-      }
-      group.add(m);
-      hearts.push(m);
-    }
-
-    for (var i = 0; i < 22; i++) addHeart(false);
-
-    var pGeo = new THREE.BufferGeometry();
-    var pCount = 160;
-    var pos = new Float32Array(pCount * 3);
-    for (var j = 0; j < pCount; j++) {
-      pos[j * 3] = (Math.random() - 0.5) * 30;
-      pos[j * 3 + 1] = (Math.random() - 0.5) * 20;
-      pos[j * 3 + 2] = (Math.random() - 0.5) * 10;
-    }
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    var points = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xb3b8bd, size: 0.22, transparent: true, opacity: 0.85 }));
-    group.add(points);
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
-    var dir = new THREE.DirectionalLight(0xffffff, 1.1);
-    dir.position.set(6, 10, 8);
-    scene.add(dir);
-    var accentLight = new THREE.PointLight(0xe11d48, 12, 40);
-    accentLight.position.set(-6, -2, 6);
-    scene.add(accentLight);
-
-    var mx = 0, my = 0, tx = 0, ty = 0;
-    window.addEventListener('pointermove', function (e) {
-      var r = canvas.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+  if (menu && nav) {
+    menu.addEventListener('click', function () {
+      var open = doc.body.classList.toggle('nav-open');
+      menu.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     });
-    canvas.parentElement.addEventListener('click', function () {
-      for (var k = 0; k < 6; k++) addHeart(true);
+    nav.addEventListener('click', function (event) {
+      if (event.target.closest('a')) closeNav();
     });
-
-    function resize() {
-      var w = canvas.clientWidth || canvas.parentElement.clientWidth;
-      var h = canvas.clientHeight || 520;
-      renderer.setSize(w, h, false);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    var t = 0;
-    (function tick() {
-      requestAnimationFrame(tick);
-      t += 0.016;
-      mx += (tx - mx) * 0.05;
-      my += (ty - my) * 0.05;
-      group.rotation.y = mx * 0.45;
-      group.rotation.x = my * 0.25;
-      camera.position.x = mx * 2;
-      camera.position.y = -my * 1.4;
-      camera.lookAt(0, 0, 0);
-      for (var n = hearts.length - 1; n >= 0; n--) {
-        var m = hearts[n], u = m.userData;
-        m.rotation.y += u.spin;
-        m.rotation.x += u.spin * 0.7;
-        m.position.y += Math.sin(t * u.floatSpeed + u.phase) * 0.008 * u.floatAmp;
-        if (u.vel) {
-          m.position.add(u.vel);
-          u.vel.multiplyScalar(0.96);
-          m.scale.multiplyScalar(1.02);
-          if (--u.life <= 0) {
-            group.remove(m);
-            hearts.splice(n, 1);
-          }
-        }
-      }
-      points.rotation.y = t * 0.03;
-      renderer.render(scene, camera);
-    })();
-  }
-
-  function heartGeometry(size) {
-    var s = new THREE.Shape();
-    s.moveTo(5, 5);
-    s.bezierCurveTo(5, 5, 4, 0, 0, 0);
-    s.bezierCurveTo(-6, 0, -6, 7, -6, 7);
-    s.bezierCurveTo(-6, 11, -3, 15.4, 5, 19);
-    s.bezierCurveTo(13, 15.4, 16, 11, 16, 7);
-    s.bezierCurveTo(16, 7, 16, 0, 10, 0);
-    s.bezierCurveTo(7, 0, 5, 5, 5, 5);
-    var g = new THREE.ExtrudeGeometry(s, { depth: 2.5, bevelEnabled: true, bevelSize: 0.8, bevelThickness: 0.8, bevelSegments: 2, steps: 1 });
-    g.center();
-    g.scale(size / 22, size / 22, size / 22);
-    return g;
-  }
-
-  function initReveal() {
-    var els = document.querySelectorAll('.reveal, .feature');
-    if (!('IntersectionObserver' in window)) {
-      els.forEach(function (el) { el.classList.add('visible'); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('visible'); io.unobserve(en.target); }
-      });
-    }, { threshold: 0.15 });
-    els.forEach(function (el) { io.observe(el); });
-  }
-
-  function initCounters() {
-    document.querySelectorAll('[data-count]').forEach(function (el) {
-      var target = parseFloat(el.getAttribute('data-count'));
-      var dec = el.getAttribute('data-dec') ? 1 : 0;
-      function run() {
-        var start = null;
-        function step(ts) {
-          if (!start) start = ts;
-          var p = Math.min((ts - start) / 1400, 1);
-          var v = target * (1 - Math.pow(1 - p, 3));
-          el.textContent = dec ? v.toFixed(1) : Math.round(v).toLocaleString('ru-RU');
-          if (p < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      }
-      if (!('IntersectionObserver' in window)) { run(); return; }
-      var cio = new IntersectionObserver(function (es) {
-        es.forEach(function (en) {
-          if (!en.isIntersecting) return;
-          cio.disconnect();
-          run();
-        });
-      });
-      cio.observe(el);
+    doc.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && doc.body.classList.contains('nav-open')) closeNav();
     });
   }
 
-  // Screenshots slider: the strip is a plain scroll-snap container (touch
-  // swipe, trackpad, keyboard already work), upgraded with arrows and page
-  // dots. Runs even under reduced motion — the scroll just stops animating.
-  function initShots() {
-    var track = document.getElementById('shots-track');
-    var slider = track && track.closest('.shots-slider');
-    if (!slider) return;
-    var cards = track.querySelectorAll('.shot');
-    var prev = slider.querySelector('.shots-prev');
-    var next = slider.querySelector('.shots-next');
-    var dots = slider.querySelector('.shots-dots');
-    if (!cards.length || !prev || !next || !dots) return;
+  // ---- marquee seam --------------------------------------------------
 
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var behavior = reduced ? 'auto' : 'smooth';
-    var nativeSmooth = 'scrollBehavior' in document.documentElement.style;
-    var pages = 0;
-    var frame = 0;
+  var marqueeTrack = doc.querySelector('.marquee-track');
+  if (marqueeTrack) {
+    var marqueeBase = marqueeTrack.innerHTML;
+    var ensureMarquee = function () {
+      var guard = 0;
+      // The -50% loop needs one repeated half at least as wide as the
+      // viewport; otherwise the tail exposes a gap and then snaps back.
+      while (marqueeTrack.scrollWidth < window.innerWidth * 2 && guard < 8) {
+        marqueeTrack.innerHTML += marqueeBase;
+        guard += 1;
+      }
+      var half = marqueeTrack.scrollWidth / 2;
+      marqueeTrack.style.animationDuration = Math.max(30, Math.round(half / 45)) + 's';
+      marqueeTrack.classList.add('is-ready');
+    };
+    // Measure after the display font swaps: a fallback-width half can be
+    // narrower than the viewport and expose the seam.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(ensureMarquee);
+    } else {
+      ensureMarquee();
+    }
+    var marqueeFrame = 0;
+    window.addEventListener('resize', function () {
+      if (marqueeFrame) return;
+      marqueeFrame = window.requestAnimationFrame(function () {
+        marqueeFrame = 0;
+        ensureMarquee();
+      });
+    });
+  }
 
-    function gap() {
-      var g = parseFloat(window.getComputedStyle(track).columnGap);
-      return isNaN(g) ? 16 : g;
-    }
-    function step() {
-      return cards[0].getBoundingClientRect().width + gap();
-    }
-    function maxScroll() {
-      return Math.max(0, track.scrollWidth - track.clientWidth);
-    }
-    function pageTotal() {
-      var max = maxScroll();
-      if (max <= 2) return 1;
-      // One page per card step plus the clamped final page.
-      return Math.ceil(max / step() - 0.02) + 1;
-    }
-    function pageLeft(page) {
-      return Math.min(maxScroll(), Math.max(0, page) * step());
-    }
-    function activePage() {
-      var max = maxScroll();
-      if (max <= 2) return 0;
-      if (track.scrollLeft >= max - 2) return pages - 1;
-      return Math.min(pages - 1, Math.round(track.scrollLeft / step()));
-    }
-    function go(page) {
-      var left = pageLeft(page);
-      if (nativeSmooth) track.scrollTo({ left: left, behavior: behavior });
-      else track.scrollLeft = left;
-    }
+  // ---- screenshot rail ----------------------------------------------
 
-    function buildDots() {
-      var total = pageTotal();
-      if (total === pages && dots.children.length) return;
-      pages = total;
-      dots.textContent = '';
-      for (var i = 0; i < pages; i++) {
-        var dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'shots-dot';
-        dot.setAttribute('aria-controls', 'shots-track');
-        dot.setAttribute('aria-label', 'Часть ' + (i + 1) + ' из ' + pages);
-        dot.addEventListener('click', (function (page) {
-          return function () { go(page); };
-        })(i));
-        dots.appendChild(dot);
+  var track = doc.getElementById('shots-track');
+  var shots = track ? track.querySelectorAll('.shot') : [];
+  var counter = doc.querySelector('[data-shots-current]');
+  var prev = doc.querySelector('[data-shots-prev]');
+  var next = doc.querySelector('[data-shots-next]');
+  var activeShot = 0;
+  var raf = 0;
+  var programmaticUntil = 0;
+
+  function shotLeft(index) {
+    if (!track || !shots[index]) return 0;
+    var trackRect = track.getBoundingClientRect();
+    var shotRect = shots[index].getBoundingClientRect();
+    return track.scrollLeft + (shotRect.left - trackRect.left);
+  }
+
+  function maxScroll() {
+    return track ? Math.max(0, track.scrollWidth - track.clientWidth) : 0;
+  }
+
+  function currentShot() {
+    if (!track || !shots.length) return 0;
+    // At the end the last frame cannot reach the left edge: the browser
+    // clamps scrollLeft before its offset. Treat max scroll as the last
+    // frame so the counter can reach 06 instead of sticking on 05.
+    var max = maxScroll();
+    if (max > 2 && track.scrollLeft >= max - 2) return shots.length - 1;
+    var trackLeft = track.getBoundingClientRect().left;
+    var best = 0;
+    var bestDistance = Infinity;
+    for (var i = 0; i < shots.length; i++) {
+      var distance = Math.abs(shots[i].getBoundingClientRect().left - trackLeft);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
       }
     }
+    return best;
+  }
 
-    function sync() {
-      var active = activePage();
-      for (var i = 0; i < dots.children.length; i++) {
-        if (i === active) dots.children[i].setAttribute('aria-current', 'true');
-        else dots.children[i].removeAttribute('aria-current');
+  function renderShotUi(index) {
+    activeShot = index;
+    if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+    for (var i = 0; i < shots.length; i++) {
+      var on = i === index;
+      shots[i].classList.toggle('is-active', on);
+      var link = shots[i].querySelector('.shot-btn');
+      if (link) {
+        if (on) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
       }
-      // Compare pages, not raw pixels: the track's 4px snap padding parks
-      // scrollLeft at 4 on the first page, so a pixel guard left the
-      // previous arrow looking live at the very start.
-      prev.disabled = active <= 0;
-      next.disabled = track.scrollLeft >= maxScroll() - 2;
     }
+    var allVisible = maxScroll() <= 2;
+    if (prev) prev.disabled = allVisible || index <= 0;
+    if (next) next.disabled = allVisible || index >= shots.length - 1;
+  }
 
-    function refresh() {
-      var scrollable = maxScroll() > 2;
-      prev.hidden = !scrollable;
-      next.hidden = !scrollable;
-      dots.hidden = !scrollable;
-      if (!scrollable) { pages = 0; return; }
-      buildDots();
-      sync();
+  function updateShots() {
+    // Ignore the scroll events produced by an arrow click: on a wide rail
+    // the target frame clamps at max scroll, and the scroll position would
+    // otherwise snap the counter to a different frame.
+    if (Date.now() < programmaticUntil) return;
+    renderShotUi(currentShot());
+  }
+
+  function goToShot(index) {
+    if (!track || index < 0 || index >= shots.length) return;
+    var left = Math.min(shotLeft(index), maxScroll());
+    if (track.scrollTo) {
+      track.scrollTo({ left: left, behavior: reduceMotion ? 'auto' : 'smooth' });
+    } else {
+      track.scrollLeft = left;
     }
+    // A click at the clamped end causes no scroll event at all; update the
+    // counter and disabled state for the target frame right away.
+    renderShotUi(index);
+    programmaticUntil = Date.now() + 500;
+  }
 
-    prev.addEventListener('click', function () { go(activePage() - 1); });
-    next.addEventListener('click', function () { go(activePage() + 1); });
+  if (track && shots.length) {
+    if (prev) prev.addEventListener('click', function () { goToShot(activeShot - 1); });
+    if (next) next.addEventListener('click', function () { goToShot(activeShot + 1); });
 
     track.addEventListener('scroll', function () {
-      if (frame) return;
-      frame = requestAnimationFrame(function () { frame = 0; sync(); });
+      if (raf) return;
+      raf = window.requestAnimationFrame(function () {
+        raf = 0;
+        updateShots();
+      });
     }, { passive: true });
 
-    track.addEventListener('keydown', function (e) {
-      var page = activePage();
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        go(page + (e.key === 'ArrowRight' ? 1 : -1));
-      } else if (e.key === 'Home' || e.key === 'End') {
-        e.preventDefault();
-        go(e.key === 'Home' ? 0 : pages - 1);
+    // A manual swipe or wheel must take over immediately, even if it lands
+    // inside the arrow-click settling window.
+    ['pointerdown', 'touchstart', 'wheel'].forEach(function (type) {
+      track.addEventListener(type, function () { programmaticUntil = 0; }, { passive: true });
+    });
+
+    track.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goToShot(activeShot - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goToShot(activeShot + 1);
       }
     });
 
-    window.addEventListener('resize', refresh);
-    refresh();
+    window.addEventListener('resize', updateShots);
+    updateShots();
+  }
+
+  // ---- lightbox ------------------------------------------------------
+
+  var lightbox = doc.getElementById('lightbox');
+  var lightboxImg = doc.getElementById('lightbox-img');
+  var lightboxCaption = doc.getElementById('lightbox-caption');
+  var lightboxClose = doc.querySelector('[data-lightbox-close]');
+  var lightboxButtons = doc.querySelectorAll('[data-lightbox]');
+  var lastTrigger = null;
+  var lightboxIndex = 0;
+
+  function openLightbox(index) {
+    var button = lightboxButtons[index];
+    if (!button || !lightbox) return;
+    lightboxIndex = index;
+    lastTrigger = button;
+    if (lightboxImg) {
+      lightboxImg.src = button.getAttribute('data-lightbox');
+      var inner = button.querySelector('img');
+      lightboxImg.alt = inner ? inner.alt : '';
+    }
+    if (lightboxCaption) lightboxCaption.textContent = button.getAttribute('data-caption') || '';
+    if (lightbox.showModal) {
+      lightbox.showModal();
+    } else {
+      lightbox.setAttribute('open', '');
+      lightbox.classList.add('is-open');
+    }
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    if (lightbox.close) {
+      lightbox.close();
+    } else {
+      lightbox.removeAttribute('open');
+      lightbox.classList.remove('is-open');
+    }
+    if (lastTrigger) lastTrigger.focus();
+  }
+
+  for (var lb = 0; lb < lightboxButtons.length; lb++) {
+    (function (index) {
+      lightboxButtons[index].addEventListener('click', function (event) {
+        // The trigger is a real link, so a no-JS visitor opens the image
+        // directly. With JS, the lightbox replaces that navigation.
+        event.preventDefault();
+        openLightbox(index);
+      });
+    })(lb);
+  }
+  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+  if (lightbox) {
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox) closeLightbox();
+    });
+    lightbox.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        openLightbox((lightboxIndex - 1 + lightboxButtons.length) % lightboxButtons.length);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        openLightbox((lightboxIndex + 1) % lightboxButtons.length);
+      }
+    });
+  }
+
+  // ---- reveal on scroll ---------------------------------------------
+
+  var reveals = doc.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window) || reduceMotion) {
+    for (var r = 0; r < reveals.length; r++) reveals[r].classList.add('is-visible');
+  } else {
+    var observer = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          entries[i].target.classList.add('is-visible');
+          observer.unobserve(entries[i].target);
+        }
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    for (var q = 0; q < reveals.length; q++) observer.observe(reveals[q]);
   }
 })();

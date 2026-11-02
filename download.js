@@ -1,57 +1,104 @@
-// Platform-aware download wiring for the Aniplace landing.
+// GitHub release wiring for the family hub.
 //
-// The page ships with working static links (install.html / #windows), so
-// nothing here is required for the site to work — this script only
-// upgrades the CTAs to direct release files and explains which build
-// belongs to the visitor's platform:
+// Every download CTA is a normal link in the HTML, so the page works before
+// (and without) this script. The script upgrades those links to the current
+// release assets, fills in version/date/size/SHA, and flips the Mangaplace
+// card from "soon" to real buttons when the first public release appears.
 //
-//   * Android  -> the primary CTA becomes the current APK (direct file).
-//   * Windows  -> Android stays the main offer (it is the primary app),
-//                 framed for the phone and paired with the QR, while the
-//                 Windows build is offered as the portable .zip that
-//                 contains Aniplace.exe — never implied as installable
-//                 on a PC.
-//   * iOS      -> no iOS build exists; say so instead of offering a file.
-//   * macOS/Linux -> the same honest note, Android stays the offer.
-//
-// Filenames carry the version (`aniplace-1.18.5-android.apk`), so the
-// current asset is resolved from the releases hub at load time and cached
-// for the session. GitHub allows 60 unauthenticated calls per hour per IP,
-// so an unreachable or rate-limited API falls back to the last-known-good
-// direct links below — bump both when a release rotates the filenames.
-// (The alternative — a version-less asset alias published by the release
-// pipeline — would make a plain permanent URL possible; not done here.)
+// GitHub allows 60 unauthenticated API calls per hour per IP, so the parsed
+// releases are cached in sessionStorage for 30 minutes. If the API is
+// unreachable or rate-limited, Aniplace falls back to the last known-good
+// direct links below; Mangaplace stays honestly "soon" until a release
+// exists. Bump FALLBACK when a release rotates the Aniplace filenames.
 
 (function () {
   'use strict';
 
-  var HUB_API = 'https://api.github.com/repos/bloomstick/aniplace-releases';
-  var HUB_DL = 'https://github.com/bloomstick/aniplace-releases/releases/download';
-  var FALLBACK = {
-    version: '1.18.5',
-    apk: {
-      url: HUB_DL + '/v1.18.5/aniplace-1.18.5-android.apk',
-      size: 40717283
-    },
-    zip: {
-      url: HUB_DL + '/v1.18.5/aniplace-1.18.5-windows.zip',
-      size: 40062352
-    }
-  };
-  var CACHE_KEY = 'aniplace.release.v1';
+  var CACHE_KEY = 'place.releases.v1';
   var CACHE_TTL = 30 * 60 * 1000;
 
+  var APPS = {
+    aniplace: {
+      name: 'Aniplace',
+      repo: 'bloomstick/aniplace-releases',
+      api: 'https://api.github.com/repos/bloomstick/aniplace-releases',
+      releases: 'https://github.com/bloomstick/aniplace-releases/releases',
+      fallback: {
+        version: '1.18.7',
+        published: '2026-10-31T19:07:46Z',
+        releaseUrl: 'https://github.com/bloomstick/aniplace-releases/releases/tag/v1.18.7',
+        android: {
+          name: 'aniplace-1.18.7-android.apk',
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/aniplace-1.18.7-android.apk',
+          size: 40767771
+        },
+        windows: {
+          name: 'aniplace-1.18.7-windows.zip',
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/aniplace-1.18.7-windows.zip',
+          size: 40100273,
+          kind: 'zip'
+        },
+        sha: {
+          name: 'SHA256SUMS.txt',
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/SHA256SUMS.txt'
+        }
+      }
+    },
+    mangaplace: {
+      name: 'Mangaplace',
+      repo: 'moeplace/mangaplace-releases',
+      api: 'https://api.github.com/repos/moeplace/mangaplace-releases',
+      releases: 'https://github.com/moeplace/mangaplace-releases/releases',
+      fallback: null
+    }
+  };
+
+  var current = {
+    aniplace: APPS.aniplace.fallback,
+    mangaplace: null
+  };
+  var cache = readCache();
+  var listeners = [];
   var platform = detectPlatform();
+
   document.documentElement.setAttribute('data-platform', platform);
 
-  applyLabels(platform);
-  resolveRelease(function (release) {
-    if (!release) return;
-    applyLinks(release);
-    applyMeta(release, platform);
-  });
+  // Paint the known-good state immediately, then upgrade when GitHub answers.
+  applyApp('aniplace', current.aniplace);
+  applyApp('mangaplace', null);
+  resolveApp('aniplace');
+  resolveApp('mangaplace');
 
-  // ---- platform -----------------------------------------------------
+  // ---- public API ----------------------------------------------------
+
+  window.PlaceDownloads = {
+    apps: APPS,
+    get: function (app) { return current[app] || null; },
+    platform: function () { return platform; },
+    resolveOS: resolveOS,
+    onChange: function (fn) {
+      if (typeof fn !== 'function') return;
+      listeners.push(fn);
+      fn(current);
+    }
+  };
+
+  function startDownload(url) {
+    if (!url) return;
+    // A hidden iframe starts the attachment without navigating the page,
+    // so the install guide can open at step 3 while the file downloads.
+    var frame = document.createElement('iframe');
+    frame.style.display = 'none';
+    frame.title = 'Скачивание файла';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.src = url;
+    document.body.appendChild(frame);
+    window.setTimeout(function () {
+      if (frame.parentNode) frame.parentNode.removeChild(frame);
+    }, 120000);
+  }
+
+  // ---- platform ------------------------------------------------------
 
   function detectPlatform() {
     var ua = navigator.userAgent || '';
@@ -71,20 +118,34 @@
     return 'other';
   }
 
-  // ---- release resolution ------------------------------------------
+  function resolveOS(requested) {
+    if (requested && requested !== 'auto') return requested;
+    if (platform === 'windows') return 'windows';
+    return 'android';
+  }
 
-  function resolveRelease(done) {
-    var cached = readCache();
-    if (cached) {
-      done(cached);
+  // ---- release resolution -------------------------------------------
+
+  function resolveApp(app) {
+    if (!window.fetch) return;
+    var cached = cache && cache[app];
+    if (cached && cached.at && Date.now() - cached.at < CACHE_TTL) {
+      current[app] = cached.release;
+      applyApp(app, cached.release);
+      emit();
       return;
     }
-    if (!window.fetch) {
-      done(FALLBACK);
-      return;
+
+    var controller = null;
+    var timer = null;
+    if (window.AbortController) {
+      controller = new AbortController();
+      timer = setTimeout(function () { controller.abort(); }, 8000);
     }
-    fetch(HUB_API + '/releases?per_page=1', {
-      headers: { Accept: 'application/vnd.github+json' }
+
+    fetch(APPS[app].api + '/releases?per_page=5', {
+      headers: { Accept: 'application/vnd.github+json' },
+      signal: controller ? controller.signal : undefined
     })
       .then(function (res) {
         if (!res.ok) throw new Error('http ' + res.status);
@@ -92,14 +153,24 @@
       })
       .then(function (list) {
         var release = pickRelease(list);
-        if (!release) throw new Error('no release');
-        writeCache(release);
-        done(release);
+        cache[app] = { at: Date.now(), release: release };
+        writeCache(cache);
+        current[app] = release;
+        applyApp(app, release);
+        emit();
       })
       .catch(function () {
-        // Rate-limited, offline, or an unexpected payload: the static
-        // links and the last-known-good files still work.
-        done(FALLBACK);
+        // Keep the last-known-good Aniplace links; Mangaplace stays "soon".
+        // Cache the fallback too: a shared IP can hit GitHub's 60/hour limit
+        // and hammering the API on every page load only makes it worse.
+        current[app] = APPS[app].fallback;
+        cache[app] = { at: Date.now(), release: APPS[app].fallback };
+        writeCache(cache);
+        applyApp(app, APPS[app].fallback);
+        emit();
+      })
+      .then(function () {
+        if (timer) clearTimeout(timer);
       });
   }
 
@@ -108,118 +179,222 @@
     for (var i = 0; i < list.length; i++) {
       var entry = list[i];
       if (!entry || entry.draft || entry.prerelease) continue;
-      var out = { version: String(entry.tag_name || '').replace(/^v/, ''), apk: null, zip: null };
-      var assets = entry.assets || [];
-      for (var j = 0; j < assets.length; j++) {
-        var asset = assets[j] || {};
-        var url = asset.browser_download_url;
-        var size = asset.size;
-        if (!out.apk && /-android\.apk$/i.test(asset.name || '')) out.apk = { url: url, size: size };
-        if (!out.zip && /-windows\.zip$/i.test(asset.name || '')) out.zip = { url: url, size: size };
-      }
-      if (out.apk || out.zip) return out;
+      var out = parseRelease(entry);
+      if (out) return out;
     }
     return null;
   }
 
+  function parseRelease(entry) {
+    var out = {
+      version: String(entry.tag_name || '').replace(/^v/i, ''),
+      published: entry.published_at || entry.created_at || '',
+      releaseUrl: entry.html_url || '',
+      android: null,
+      windows: null,
+      sha: null
+    };
+    var assets = entry.assets || [];
+    for (var i = 0; i < assets.length; i++) {
+      var asset = assets[i] || {};
+      var name = String(asset.name || '');
+      if (!out.android && /\.apk$/i.test(name)) out.android = toAsset(asset);
+      if (!out.windows && /-windows.*\.(?:zip|exe)$/i.test(name)) {
+        out.windows = toAsset(asset);
+        out.windows.kind = /\.exe$/i.test(name) ? 'exe' : 'zip';
+      }
+      if (!out.sha && /sha256/i.test(name)) out.sha = toAsset(asset);
+    }
+    return out.android || out.windows ? out : null;
+  }
+
+  function toAsset(asset) {
+    return {
+      name: asset.name || '',
+      url: asset.browser_download_url || '',
+      size: asset.size || 0
+    };
+  }
+
+  // ---- cache ---------------------------------------------------------
+
   function readCache() {
     try {
       var raw = sessionStorage.getItem(CACHE_KEY);
-      if (!raw) return null;
+      if (!raw) return {};
       var box = JSON.parse(raw);
-      if (!box || !box.at || Date.now() - box.at > CACHE_TTL) return null;
-      return box.release && (box.release.apk || box.release.zip) ? box.release : null;
+      return box && typeof box === 'object' ? box : {};
     } catch (e) {
-      return null;
+      return {};
     }
   }
 
-  function writeCache(release) {
+  function writeCache(box) {
     try {
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), release: release }));
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(box));
     } catch (e) {
       /* private mode / quota: resolving again next load is fine */
     }
   }
 
-  // ---- DOM ----------------------------------------------------------
+  // ---- DOM -----------------------------------------------------------
+
+  function applyApp(app, release) {
+    var ready = !!(release && (release.android || release.windows));
+    var state = ready ? 'ready' : 'soon';
+
+    each('[data-release-card="' + app + '"]', function (card) {
+      card.setAttribute('data-release-state', state);
+      toggleWhen(card, state);
+    });
+
+    each('[data-release-app="' + app + '"]', function (el) {
+      var field = el.getAttribute('data-release-field');
+      if (!field) return;
+      var value = fieldValue(app, release, field);
+      if (value === null || value === undefined) return;
+      if (el.tagName === 'A') {
+        el.setAttribute('href', value);
+      } else {
+        el.textContent = value;
+      }
+    });
+
+    each('[data-dl-app="' + app + '"][data-dl-os]', function (el) {
+      var requested = el.getAttribute('data-dl-os');
+      var os = resolveOS(requested);
+      var asset = release && release[os];
+      var iconId = 'i-download';
+      if (requested === 'android' || (requested === 'auto' && platform === 'android')) {
+        iconId = 'i-android';
+      } else if (requested === 'windows' || (requested === 'auto' && platform === 'windows')) {
+        iconId = 'i-windows';
+      }
+      var icon = el.querySelector('[data-dl-icon]');
+      if (icon) {
+        var use = icon.querySelector('use');
+        if (use) use.setAttribute('href', '#' + iconId);
+      }
+
+      // A phone CTA on iOS/macOS/Linux must not hand out an APK: those
+      // visitors get the honest install guide with both platforms.
+      if (requested === 'auto' && platform !== 'android' && platform !== 'windows') {
+        el.setAttribute('href', 'install.html?app=' + app);
+        el.removeAttribute('data-dl-ready');
+        return;
+      }
+
+      if (asset && asset.url) {
+        el.setAttribute('href', asset.url);
+        el.setAttribute('rel', 'noopener');
+        el.setAttribute('data-dl-ready', '1');
+      } else if (app === 'mangaplace') {
+        el.setAttribute('href', APPS[app].releases);
+        el.setAttribute('rel', 'noopener');
+        el.removeAttribute('data-dl-ready');
+      } else {
+        el.setAttribute('href', 'install.html?app=' + app + '&os=' + os);
+        el.removeAttribute('data-dl-ready');
+      }
+    });
+  }
+
+  function toggleWhen(card, state) {
+    eachIn(card, '[data-when="soon"]', function (el) {
+      el.hidden = state === 'ready';
+    });
+    eachIn(card, '[data-when="ready"]', function (el) {
+      el.hidden = state !== 'ready';
+    });
+  }
+
+  function fieldValue(app, release, field) {
+    var appConf = APPS[app] || {};
+    var releases = appConf.releases || '';
+    if (field === 'version') return release && release.version ? release.version : '—';
+    if (field === 'date') return release && release.published ? formatDate(release.published) : '—';
+    if (field === 'apkSize') return release && release.android ? formatSize(release.android.size) : '—';
+    if (field === 'winSize') return release && release.windows ? formatSize(release.windows.size) : '—';
+    if (field === 'releaseUrl') return (release && release.releaseUrl) || releases + '/latest';
+    if (field === 'shaUrl') {
+      if (release && release.sha && release.sha.url) return release.sha.url;
+      return (release && release.releaseUrl) || releases + '/latest';
+    }
+    if (field === 'watchUrl') return releases;
+    return null;
+  }
+
+  function formatDate(iso) {
+    try {
+      return new Intl.DateTimeFormat('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(new Date(iso));
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function formatSize(bytes) {
+    if (!bytes) return '—';
+    return (bytes / 1000000).toFixed(1).replace('.', ',') + ' МБ';
+  }
+
+  // A CTA that has a real file starts that file and then opens the install
+  // guide at the finished step, where the "download started" note and the
+  // retry live. Modifier clicks keep the browser's own new-tab behavior.
+  document.addEventListener('click', function (event) {
+    if (event.defaultPrevented || event.button !== 0 ||
+        event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var target = event.target;
+    var cta = target && target.closest
+      ? target.closest('[data-dl-app][data-dl-os][data-dl-ready="1"]')
+      : null;
+    if (!cta) return;
+    var app = cta.getAttribute('data-dl-app');
+    var requested = cta.getAttribute('data-dl-os');
+    var os = resolveOS(requested);
+    var href = cta.getAttribute('href');
+    if (!href) return;
+    event.preventDefault();
+    var next = 'install.html?app=' + encodeURIComponent(app) +
+      '&os=' + encodeURIComponent(os) + '&step=3&started=1';
+
+    // Open the file in its own tab. Navigating this page straight to the
+    // guide would cancel an attachment that is still handshaking in a
+    // hidden frame; the new tab survives the guide navigation.
+    var win = window.open(href, '_blank');
+    if (win) {
+      try { win.opener = null; } catch (e) { /* cross-origin */ }
+      window.location.href = next;
+      return;
+    }
+
+    // Popup blocked: start the attachment in a hidden frame and give it a
+    // short head start before replacing the page.
+    startDownload(href);
+    window.setTimeout(function () { window.location.href = next; }, 250);
+  });
+
+  function emit() {
+    for (var i = 0; i < listeners.length; i++) {
+      try { listeners[i](current); } catch (e) { /* one bad listener must not break the page */ }
+    }
+    try {
+      document.dispatchEvent(new CustomEvent('place:releases', { detail: current }));
+    } catch (e) {
+      /* old WebView: direct listeners still work */
+    }
+  }
 
   function each(selector, fn) {
     var nodes = document.querySelectorAll(selector);
     for (var i = 0; i < nodes.length; i++) fn(nodes[i]);
   }
 
-  function applyLinks(release) {
-    var apk = release.apk || FALLBACK.apk;
-    var zip = release.zip || FALLBACK.zip;
-    if (apk && apk.url) {
-      each('[data-dl="primary"], [data-dl="bar"], [data-dl="footer-android"]', function (el) {
-        el.setAttribute('href', apk.url);
-        el.setAttribute('rel', 'noopener');
-      });
-    }
-    if (zip && zip.url) {
-      each('[data-dl="windows"], [data-dl="footer-windows"]', function (el) {
-        el.setAttribute('href', zip.url);
-        el.setAttribute('rel', 'noopener');
-      });
-    }
-  }
-
-  function applyLabels(platform) {
-    var android = platform === 'android';
-    var main = android ? '⬇ Скачать Aniplace (APK)' : '⬇ Скачать для Android (APK)';
-    // The sticky bar is narrow: keep its label short enough to stay on one
-    // line (the platform nuance lives in the download card's note).
-    var bar = android ? '⬇ Скачать APK' : '⬇ Скачать';
-    each('[data-dl="primary"]', function (el) { el.textContent = main; });
-    each('[data-dl="bar"]', function (el) { el.textContent = bar; });
-    // RuStore only makes sense on Android; desktop/other visitors keep the
-    // APK + Windows offers (the store link still lives in the hero/footer).
-    each('[data-dl="rustore"], [data-dl="bar-rustore"]', function (el) {
-      el.hidden = !android;
-    });
-  }
-
-  function applyMeta(release, platform) {
-    var text = metaText(release, platform);
-    if (!text) return;
-    each('[data-dl="meta"]', function (el) {
-      el.textContent = text;
-      el.hidden = false;
-    });
-  }
-
-  function metaText(release, platform) {
-    var apkSize = sizeText(release.apk && release.apk.size);
-    var zipSize = sizeText(release.zip && release.zip.size);
-    var facts = apkSize ? 'APK ' + apkSize : 'APK';
-    switch (platform) {
-      case 'android':
-        return 'Android 7.0+ · ' + versionText(release) + facts +
-          ' · ставится напрямую, без Google Play. В RuStore — то же приложение с автообновлением.';
-      case 'windows':
-        return 'Ты на Windows. Основная версия — Android: поставь её на телефон (наведи камеру на QR рядом), ' +
-          facts + '. Для этого компьютера — portable-сборка для Windows 10/11: ' +
-          (zipSize ? '.zip ' + zipSize : '.zip') + ', распаковать и запустить Aniplace.exe.';
-      case 'ios':
-        return 'Версии для iPhone и iPad нет: Aniplace работает на Android и Windows. ' +
-          'Поставь Android-версию на телефон — ' + facts + ' (наведи камеру на QR рядом).';
-      case 'macos':
-      case 'linux':
-        return 'Сборки для этой системы нет: Aniplace работает на Android (основная версия) и Windows. ' +
-          'Android-версию можно поставить на телефон — ' + facts + '.';
-      default:
-        return '';
-    }
-  }
-
-  function versionText(release) {
-    return release && release.version ? 'версия ' + release.version + ' · ' : '';
-  }
-
-  function sizeText(bytes) {
-    if (!bytes) return '';
-    return (bytes / 1048576).toFixed(1).replace('.', ',') + ' МБ';
+  function eachIn(root, selector, fn) {
+    var nodes = root.querySelectorAll(selector);
+    for (var i = 0; i < nodes.length; i++) fn(nodes[i]);
   }
 })();

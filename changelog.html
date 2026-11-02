@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Что нового — Aniplace и Mangaplace | place</title>
+<meta name="description" content="История версий Aniplace и Mangaplace: что изменилось в каждой сборке, даты и ссылки на релизы GitHub.">
+<link rel="canonical" href="https://ani.place/changelog.html">
+<meta name="theme-color" content="#fdf4ec">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="place">
+<meta property="og:title" content="Что нового — Aniplace и Mangaplace">
+<meta property="og:description" content="Что изменилось в каждой сборке Aniplace и Mangaplace. Заметки из GitHub, свежие сверху.">
+<meta property="og:url" content="https://ani.place/changelog.html">
+<meta property="og:image" content="https://ani.place/assets/og-cover.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="place — Aniplace и Mangaplace для Android и Windows">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Что нового — Aniplace и Mangaplace">
+<meta name="twitter:description" content="Что изменилось в каждой сборке Aniplace и Mangaplace. Заметки из GitHub, свежие сверху.">
+<meta name="twitter:image" content="https://ani.place/assets/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="changelog.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<script>document.documentElement.classList.replace('no-js', 'js');</script>
+</head>
+<body data-page="changelog">
+
+<svg class="svg-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M7 17 17 7m0 0H8m9 0v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4.2-4.2M12 14 7.8 9.8M4 20h16"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M5 5h14v15H5V5Zm0 5h14M9 3v4m6-4v4"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">К содержанию</a>
+
+<header class="site-head" data-head>
+  <div class="shell head-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-word">place<span class="brand-dot">.</span></span>
+      <span class="brand-tag">аниме + манга</span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Основная навигация">
+      <a href="index.html#aniplace">Aniplace</a>
+      <a href="index.html#mangaplace">Mangaplace</a>
+      <a href="index.html#install">Установка</a>
+      <a href="index.html#releases">Релизы</a>
+      <a class="site-nav__gh" href="https://github.com/bloomstick/aniplace-releases" target="_blank" rel="noopener">GitHub <svg class="icon icon--fill" aria-hidden="true"><use href="#i-github"/></svg></a>
+    </nav>
+    <div class="head-actions">
+      <a class="btn btn--stamp btn--sm" href="install.html"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg> Скачать</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Открыть меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="changelog-hero">
+    <div class="shell changelog-hero-inner">
+      <p class="hand reveal">журнал версий</p>
+      <h1 class="reveal">Что <span class="place-word">нового.<svg class="scribble" viewBox="0 0 220 18" aria-hidden="true" preserveAspectRatio="none"><path d="M3 12c38-6 92-8 143-5 24 1 47 4 71 2M8 16c50-4 109-4 160-1"/></svg></span></h1>
+      <p class="hero-lead reveal">Каждая сборка Aniplace и Mangaplace — короткая запись: что добавили, что починили и где скачать. Свежие записи сверху, старые прячутся под спойлером.</p>
+      <div class="changelog-tags reveal" aria-label="Коротко">
+        <span><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg> история версий</span>
+        <span><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg> заметки из GitHub</span>
+        <span>Android + Windows</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--changelog">
+    <div class="shell">
+      <div class="changelog-intro">
+        <div class="changelog-intro-copy">
+          <p class="hand reveal">без мелкого шрифта</p>
+          <h2 class="reveal">История версий</h2>
+          <p class="lead reveal">Заметки к релизам приходят из GitHub Releases. Здесь — только публичные сборки: черновики и пре-релизы остаются за кулисами. Нажми на версию, чтобы развернуть список изменений.</p>
+        </div>
+
+        <aside class="changelog-source" data-changelog-fallback aria-label="Релизы на GitHub">
+          <span class="tape tape--source" aria-hidden="true"></span>
+          <p><b>Первоисточник — GitHub.</b> Если живая лента не загрузится, ссылки ниже всё равно приведут к файлам, заметкам и контрольным суммам.</p>
+          <div class="changelog-source-links">
+            <a href="https://github.com/bloomstick/aniplace-releases/releases" target="_blank" rel="noopener noreferrer">Aniplace <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+            <a href="https://github.com/moeplace/mangaplace-releases/releases" target="_blank" rel="noopener noreferrer">Mangaplace <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+          </div>
+        </aside>
+      </div>
+
+      <noscript>
+        <p class="changelog-noscript"><b>Без JavaScript</b> живая лента не собирается, но ничего не потерялось: все версии, файлы и заметки лежат на GitHub. Открой <a href="https://github.com/bloomstick/aniplace-releases/releases" target="_blank" rel="noopener noreferrer">релизы Aniplace</a> или <a href="https://github.com/moeplace/mangaplace-releases/releases" target="_blank" rel="noopener noreferrer">релизы Mangaplace</a>.</p>
+      </noscript>
+
+      <div class="changelog-history" data-changelog-history aria-busy="true" hidden>
+        <section class="app-history app-history--ani" data-changelog-app="aniplace">
+          <header class="app-history-head">
+            <span class="app-sticker"><img src="assets/aniplace-icon.png" alt="" width="54" height="54" decoding="async"></span>
+            <div class="app-history-name">
+              <h3>Aniplace</h3>
+              <p>аниме и дунхуа</p>
+            </div>
+            <a class="text-link app-history-link" href="https://github.com/bloomstick/aniplace-releases/releases" target="_blank" rel="noopener noreferrer">Все релизы <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+          </header>
+          <div class="version-list" data-changelog-list="aniplace"></div>
+        </section>
+
+        <section class="app-history app-history--manga" data-changelog-app="mangaplace">
+          <header class="app-history-head">
+            <span class="app-sticker"><img src="assets/mangaplace-icon.png" alt="" width="54" height="54" decoding="async"></span>
+            <div class="app-history-name">
+              <h3>Mangaplace</h3>
+              <p>манга</p>
+            </div>
+            <a class="text-link app-history-link" href="https://github.com/moeplace/mangaplace-releases/releases" target="_blank" rel="noopener noreferrer">Все релизы <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+          </header>
+          <div class="version-list" data-changelog-list="mangaplace"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="shell">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="brand-word brand-word--foot">place<span class="brand-dot">.</span></span>
+        <p>Два приложения.<br>Одно место.</p>
+        <div class="foot-icons" role="group" aria-label="Приложения">
+          <a href="index.html#aniplace" aria-label="Aniplace"><img src="assets/aniplace-icon.png" alt="" width="36" height="36" loading="lazy" decoding="async"></a>
+          <a href="index.html#mangaplace" aria-label="Mangaplace"><img src="assets/mangaplace-icon.png" alt="" width="36" height="36" loading="lazy" decoding="async"></a>
+        </div>
+      </div>
+      <div class="foot-col"><b>Приложения</b><a href="index.html#aniplace">Aniplace</a><a href="index.html#mangaplace">Mangaplace</a><a href="install.html">Установка</a></div>
+      <div class="foot-col"><b>Скачать</b><a href="https://github.com/bloomstick/aniplace-releases/releases" target="_blank" rel="noopener">Aniplace на GitHub</a><a href="https://github.com/moeplace/mangaplace-releases/releases" target="_blank" rel="noopener">Mangaplace на GitHub</a><a href="https://www.rustore.ru/catalog/app/place.ani" target="_blank" rel="noopener">RuStore</a></div>
+      <div class="foot-col"><b>Ещё</b><a href="changelog.html" aria-current="page">Что нового</a><a href="mailto:aniplace.app@gmail.com">Связаться</a><a href="https://github.com/bloomstick/aniplace-releases/issues" target="_blank" rel="noopener">Issues</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 place · ani.place</span>
+      <span class="age">16+</span>
+      <span>Сделано на Flutter</span>
+      <span class="hand foot-hand">продолжение следует</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script src="changelog.js"></script>
+</body>
+</html>
