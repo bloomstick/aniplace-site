@@ -15,6 +15,7 @@
   var root = doc.documentElement;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  var lite = root.classList.contains('lite');
 
   var RELEASES = 'https://github.com/bloomstick/aniplace-releases/releases';
   var RELEASES_LATEST = RELEASES + '/latest';
@@ -297,7 +298,7 @@
   function initParallax() {
     var hero = doc.querySelector('[data-hero]');
     var art = doc.querySelector('[data-parallax]');
-    if (!hero || !art || reduceMotion || !finePointer) return;
+    if (!hero || !art || reduceMotion || !finePointer || lite) return;
 
     var frame = 0;
     var lastX = 0;
@@ -334,7 +335,7 @@
   // ---- card tilt + pointer glow -----------------------------------------
 
   function initTilt() {
-    if (reduceMotion || !finePointer) return;
+    if (reduceMotion || !finePointer || lite) return;
     var cards = doc.querySelectorAll('[data-tilt]');
     for (var i = 0; i < cards.length; i++) {
       (function (card) {

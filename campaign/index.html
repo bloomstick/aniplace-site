@@ -16,7 +16,13 @@
   else if (/windows/i.test(ua)) platform = 'windows';
   else if (/mac/i.test(ua)) platform = 'macos';
   else if (/linux|x11/i.test(ua)) platform = 'linux';
-  document.documentElement.setAttribute('data-platform', platform);
+  var root = document.documentElement;
+  root.setAttribute('data-platform', platform);
+  var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var saveData = connection && connection.saveData;
+  var lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
+  var lowCpu = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+  if (saveData || lowMemory || lowCpu) root.classList.add('lite');
 })();
 </script>
 <meta name="robots" content="index,follow">
@@ -39,7 +45,7 @@
 <meta name="twitter:image:alt" content="Aniplace — аниме, которое не надо искать: лиса-маскот и экраны приложения">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500..600&family=Manrope:wght@400..800&family=Unbounded:wght@500..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="campaign.css">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <script>document.documentElement.classList.replace('no-js', 'js');</script>
@@ -163,17 +169,17 @@
         <div class="phones">
           <div class="phone phone--left">
             <div class="phone__screen">
-              <img src="mockups/schedule.webp" alt="Макет расписания Aniplace: новые серии по дням" width="720" height="1558" decoding="async">
+              <img src="mockups/schedule.webp" srcset="mockups/schedule-320.webp 320w, mockups/schedule-480.webp 480w, mockups/schedule.webp 720w" sizes="(max-width: 760px) 38vw, 230px" alt="Макет расписания Aniplace: новые серии по дням" width="720" height="1558" fetchpriority="low" decoding="async">
             </div>
           </div>
           <div class="phone phone--right">
             <div class="phone__screen">
-              <img src="mockups/title.webp" alt="Макет страницы тайтла Aniplace: рейтинг, жанры и кнопка просмотра" width="720" height="1558" decoding="async">
+              <img src="mockups/title.webp" srcset="mockups/title-320.webp 320w, mockups/title-480.webp 480w, mockups/title.webp 720w" sizes="(max-width: 760px) 38vw, 230px" alt="Макет страницы тайтла Aniplace: рейтинг, жанры и кнопка просмотра" width="720" height="1558" fetchpriority="low" decoding="async">
             </div>
           </div>
           <div class="phone phone--main">
             <div class="phone__screen">
-              <img src="mockups/browse.webp" alt="Макет главного экрана Aniplace: афиша, поиск и продолжение просмотра" width="720" height="1558" fetchpriority="high" decoding="async">
+              <img src="mockups/browse.webp" srcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" sizes="(max-width: 760px) 52vw, 330px" alt="Макет главного экрана Aniplace: афиша, поиск и продолжение просмотра" width="720" height="1558" fetchpriority="high" decoding="async">
             </div>
           </div>
         </div>
@@ -246,7 +252,7 @@
       <div class="bento">
         <article class="bento__card bento__card--wide tilt" data-reveal data-tilt>
           <div class="bento__art bento__art--catalog">
-            <img src="mockups/browse.webp" alt="Макет каталога Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/browse.webp" srcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" sizes="(max-width: 760px) 46vw, 220px" alt="Макет каталога Aniplace" width="720" height="1558" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg> Каталог</span>
@@ -257,7 +263,7 @@
 
         <article class="bento__card bento__card--schedule tilt" data-reveal style="--d:80ms" data-tilt>
           <div class="bento__art bento__art--schedule">
-            <img src="mockups/schedule.webp" alt="Макет расписания выхода серий" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/schedule.webp" srcset="mockups/schedule-320.webp 320w, mockups/schedule-480.webp 480w, mockups/schedule.webp 720w" sizes="(max-width: 760px) 46vw, 220px" alt="Макет расписания выхода серий" width="720" height="1558" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg> Расписание</span>
@@ -268,7 +274,7 @@
 
         <article class="bento__card tilt" data-reveal style="--d:160ms" data-tilt>
           <div class="bento__art bento__art--player">
-            <img src="mockups/player.webp" alt="Макет плеера и озвучек Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/player.webp" srcset="mockups/player-320.webp 320w, mockups/player-480.webp 480w, mockups/player.webp 720w" sizes="(max-width: 760px) 46vw, 220px" alt="Макет плеера и озвучек Aniplace" width="720" height="1558" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-headphones"/></svg> Плеер</span>
@@ -279,7 +285,7 @@
 
         <article class="bento__card tilt" data-reveal style="--d:240ms" data-tilt>
           <div class="bento__art bento__art--lists">
-            <img src="mockups/lists-dark.webp" alt="Макет списков просмотра Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/lists-dark.webp" srcset="mockups/lists-dark-320.webp 320w, mockups/lists-dark-480.webp 480w, mockups/lists-dark.webp 720w" sizes="(max-width: 760px) 46vw, 220px" alt="Макет списков просмотра Aniplace" width="720" height="1558" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-list"/></svg> Списки</span>
@@ -290,7 +296,7 @@
 
         <article class="bento__card tilt" data-reveal style="--d:320ms" data-tilt>
           <div class="bento__art bento__art--offline">
-            <img src="mockups/activity.webp" alt="Макет активности и загрузок Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/activity.webp" srcset="mockups/activity-320.webp 320w, mockups/activity-480.webp 480w, mockups/activity.webp 720w" sizes="(max-width: 760px) 46vw, 220px" alt="Макет активности и загрузок Aniplace" width="720" height="1558" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg> Офлайн и синхронизация</span>
@@ -321,42 +327,42 @@
       <div class="rail" data-rail tabindex="0" role="group" aria-label="Макеты интерфейса Aniplace">
         <figure class="shot">
           <a class="shot__frame" href="mockups/browse.webp" data-zoom data-caption="Главная: афиша, поиск и продолжение">
-            <img src="mockups/browse.webp" alt="Макет главного экрана Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/browse.webp" srcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет главного экрана Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">01</span><b>Главная</b><span>афиша и продолжение</span></figcaption>
         </figure>
         <figure class="shot">
           <a class="shot__frame" href="mockups/browse-scrolled.webp" data-zoom data-caption="Лента после свайпа: поиск закреплён">
-            <img src="mockups/browse-scrolled.webp" alt="Макет ленты Aniplace после прокрутки" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/browse-scrolled.webp" srcset="mockups/browse-scrolled-320.webp 320w, mockups/browse-scrolled-480.webp 480w, mockups/browse-scrolled.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет ленты Aniplace после прокрутки" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">02</span><b>Лента</b><span>поиск закреплён</span></figcaption>
         </figure>
         <figure class="shot">
           <a class="shot__frame" href="mockups/activity.webp" data-zoom data-caption="Активность: новые серии и загрузки">
-            <img src="mockups/activity.webp" alt="Макет экрана активности Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/activity.webp" srcset="mockups/activity-320.webp 320w, mockups/activity-480.webp 480w, mockups/activity.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет экрана активности Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">03</span><b>Активность</b><span>серии и загрузки</span></figcaption>
         </figure>
         <figure class="shot">
           <a class="shot__frame" href="mockups/title.webp" data-zoom data-caption="Тайтл: постер, рейтинг и озвучки">
-            <img src="mockups/title.webp" alt="Макет страницы тайтла Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/title.webp" srcset="mockups/title-320.webp 320w, mockups/title-480.webp 480w, mockups/title.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет страницы тайтла Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">04</span><b>Тайтл</b><span>постер и озвучки</span></figcaption>
         </figure>
         <figure class="shot">
           <a class="shot__frame" href="mockups/schedule.webp" data-zoom data-caption="Расписание: серии по часам">
-            <img src="mockups/schedule.webp" alt="Макет расписания Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/schedule.webp" srcset="mockups/schedule-320.webp 320w, mockups/schedule-480.webp 480w, mockups/schedule.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет расписания Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">05</span><b>Расписание</b><span>серии по часам</span></figcaption>
         </figure>
         <figure class="shot">
           <a class="shot__frame" href="mockups/player.webp" data-zoom data-caption="Плеер: тёмный экран, тёплые контролы">
-            <img src="mockups/player.webp" alt="Макет плеера Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+            <img src="mockups/player.webp" srcset="mockups/player-320.webp 320w, mockups/player-480.webp 480w, mockups/player.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет плеера Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">рассмотреть</span>
           </a>
           <figcaption><span class="shot__num">06</span><b>Плеер</b><span>тёмный экран</span></figcaption>
@@ -416,7 +422,7 @@
               <li class="step"><span class="step__num">2</span><div><b>Запусти установку</b><p>Открой скачанный файл и следуй подсказкам мастера установки.</p></div></li>
               <li class="step"><span class="step__num">3</span><div><b>Запусти Aniplace.exe</b><p>SmartScreen: «Подробнее» → «Выполнить в любом случае». Это обычное предупреждение для новой сборки.</p></div></li>
             </ol>
-            <figure class="alt-install__shot"><img src="mockups/windows.webp" alt="Макет Aniplace для Windows" width="900" height="595" loading="lazy" decoding="async"></figure>
+            <figure class="alt-install__shot"><img src="mockups/windows.webp" srcset="mockups/windows-320.webp 320w, mockups/windows-480.webp 480w, mockups/windows-720.webp 720w" sizes="(max-width: 760px) 70vw, 480px" alt="Макет Aniplace для Windows" width="900" height="595" loading="lazy" decoding="async"></figure>
           </div>
         </details>
       </div>
@@ -554,11 +560,11 @@
 <dialog class="lightbox" id="lightbox" aria-label="Просмотр скриншота">
   <button class="lightbox__close" type="button" data-lightbox-close aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
   <figure>
-    <img id="lightbox-img" src="mockups/browse.webp" alt="">
+    <img id="lightbox-img" src="mockups/browse-320.webp" alt="" decoding="async">
     <figcaption id="lightbox-caption"></figcaption>
   </figure>
 </dialog>
 
-<script src="campaign.js"></script>
+<script src="campaign.js" defer></script>
 </body>
 </html>

@@ -57,8 +57,7 @@ body::before {
   pointer-events: none;
   background-image: url("../assets/grain.png");
   background-repeat: repeat;
-  opacity: 0.045;
-  mix-blend-mode: soft-light;
+  opacity: 0.035;
 }
 
 h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
@@ -210,10 +209,8 @@ html::-webkit-scrollbar-thumb {
 }
 .topbar.is-scrolled {
   padding: 9px 0;
-  background: rgba(11, 8, 16, 0.82);
+  background: rgba(11, 8, 16, 0.94);
   border-bottom-color: var(--line);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 .topbar__inner { display: flex; align-items: center; gap: 26px; }
@@ -1208,10 +1205,8 @@ h2 {
   padding: 10px 10px 10px 12px;
   border: 1px solid var(--line-strong);
   border-radius: 20px;
-  background: rgba(16, 11, 22, 0.94);
+  background: rgba(16, 11, 22, 0.96);
   box-shadow: 0 24px 50px -18px rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   transform: translateY(140%);
   transition: transform 0.5s var(--ease);
 }
@@ -1235,7 +1230,7 @@ h2 {
   background: transparent;
   overflow: auto;
 }
-.lightbox::backdrop { background: rgba(5, 3, 8, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.lightbox::backdrop { background: rgba(5, 3, 8, 0.94); }
 .lightbox[open] { display: grid; place-items: center; }
 .lightbox figure { display: grid; gap: 12px; justify-items: center; margin: 0; }
 .lightbox img { max-height: 82vh; width: auto; max-width: min(100%, 520px); border-radius: 22px; border: 1px solid var(--line-strong); box-shadow: 0 50px 100px -30px #000; }
@@ -1335,7 +1330,7 @@ html.js .bento__card[data-reveal].is-in { transform: perspective(1000px) rotateX
 }
 
 @media (max-width: 760px) {
-  .topbar { padding: 10px 0; background: rgba(11, 8, 16, 0.72); border-bottom-color: var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .topbar { padding: 10px 0; background: rgba(11, 8, 16, 0.94); border-bottom-color: var(--line); }
   .topbar__store { display: none !important; }
   .mobile-bar { display: flex; }
   .section__head--row { flex-direction: column; align-items: flex-start; gap: 18px; }
@@ -1434,3 +1429,39 @@ html.js .bento__card[data-reveal].is-in { transform: perspective(1000px) rotateX
   .mascot,
   .final__art img { transition: none !important; }
 }
+
+/* Narrow screens keep the composition but drop the compositor-heavy 3D and
+   infinite decoration work. The CTA, rail and reveal transitions stay live. */
+@media (max-width: 760px) {
+  body::before { display: none; }
+  .hero__art { perspective: none; }
+  .phone,
+  .bento__card { transform-style: flat; }
+  .aurora,
+  .stars,
+  .marquee__track,
+  .hero__halo,
+  .phone,
+  .pulse,
+  .shine { animation: none !important; }
+  .aurora { will-change: auto; }
+  html.js .bento__card[data-reveal] { transform: translateY(18px); }
+  html.js .bento__card[data-reveal].is-in { transform: none; }
+}
+
+/* Save-Data and genuinely small devices get the same static treatment at any
+   viewport width. */
+html.lite body::before { display: none; }
+html.lite .aurora,
+html.lite .stars,
+html.lite .marquee__track,
+html.lite .hero__halo,
+html.lite .phone,
+html.lite .pulse,
+html.lite .shine { animation: none !important; }
+html.lite .aurora { will-change: auto; }
+html.lite .hero__art { perspective: none; }
+html.lite .phone,
+html.lite .bento__card { transform-style: flat; }
+html.lite .bento__card[data-reveal] { transform: translateY(18px); }
+html.lite .bento__card[data-reveal].is-in { transform: none; }
