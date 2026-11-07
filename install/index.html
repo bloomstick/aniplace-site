@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Установка Aniplace — Android</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://ani.place/install.html">
+<!--
+  /install is the campaign's landing URL. GitHub Pages serves this
+  directory, and the page forwards to the real wizard's final step with the
+  download-started note. Defaults are explicit so a dropped query string
+  still lands on the instructions instead of the wizard's first screen.
+-->
+<script>
+(function () {
+  // Defaults are explicit, so the campaign's fixed `/install?...` URL and a
+  // bare `/install` both land on the final instructions step. The wizard
+  // rewrites its own query from `app`/`os`/`step` after load.
+  window.location.replace('../install.html?app=aniplace&os=android&step=3&started=1');
+})();
+</script>
+</head>
+<body>
+<p>Открываем <a href="../install.html?app=aniplace&amp;os=android&amp;step=3&amp;started=1">инструкцию по установке Aniplace</a>…</p>
+</body>
+</html>

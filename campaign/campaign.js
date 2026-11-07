@@ -2,8 +2,13 @@
 //
 // Conversion contract: every download CTA is a real link in the HTML (the
 // last known-good direct APK), so it works before this script runs. The
-// script upgrades those links to the current GitHub release assets, keeps
-// the RuStore link as the secondary path, and fills version/size labels.
+// script upgrades those links from the S3 `latest.js` manifest first (the
+// admin panel publishes it), falls back to GitHub when no latest build is on
+// S3, keeps RuStore as the secondary path, and fills version/size labels. The
+// script tag avoids CORS, which the storage does not provide.
+//
+// A click starts the APK and then opens the install guide's final step with
+// `started=1`, where the "Скачивание началось" note and the instructions live.
 //
 // Motion is opt-in: parallax and card tilt only on fine pointers, and every
 // animation is skipped for prefers-reduced-motion.
@@ -20,8 +25,17 @@
   var RELEASES = 'https://github.com/bloomstick/aniplace-releases/releases';
   var RELEASES_LATEST = RELEASES + '/latest';
   var API = 'https://api.github.com/repos/bloomstick/aniplace-releases';
-  var CACHE_KEY = 'ani.campaign.release.v1';
-  var CACHE_TTL = 30 * 60 * 1000;
+  var CACHE_KEY = 'ani.campaign.release.v3';
+  var CACHE_TTL = 10 * 60 * 1000;
+
+  // S3 download base written by Admin -> Downloads; keep it in sync with
+  // `releases_public_base_url` in repo/tools/cover_thumbs/config/upload.json.
+  var S3_BASE = 'https://3a4bb16ee9b5156df4f9712cffe6d7a4.bckt.ru/downloads/';
+  var S3_SCRIPT = S3_BASE + 'aniplace/latest.js';
+
+  // The wizard's result step: instructions plus the download-started note.
+  var INSTALL_URL =
+    '/install?app=aniplace&os=android&step=3&started=1';
 
   // Bump when a release rotates the Aniplace filenames. This is the state
   // painted before GitHub answers and the state used when the API is
@@ -181,6 +195,11 @@
     }
   }
 
+  function adopt(release) {
+    writeCache(release);
+    applyRelease(release);
+  }
+
   function resolveRelease() {
     var cached = readCache();
     if (cached) {
@@ -193,6 +212,83 @@
       return;
     }
 
+    resolveFromS3()
+      .then(function (release) {
+        if (release) adopt(release);
+        else resolveFromGithub();
+      })
+      .catch(function () { resolveFromGithub(); });
+  }
+
+  function resolveFromS3() {
+    return loadS3Manifest().then(parseS3Release);
+  }
+
+  // latest.js assigns window.__aniLatest.aniplace; a script tag is not subject
+  // to CORS, unlike fetch() of latest.json.
+  function loadS3Manifest() {
+    return new Promise(function (resolve) {
+      var script = doc.createElement('script');
+      var done = false;
+      var timer = window.setTimeout(function () { finish(null); }, 8000);
+      function finish(manifest) {
+        if (done) return;
+        done = true;
+        window.clearTimeout(timer);
+        script.onload = script.onerror = null;
+        if (script.parentNode) script.parentNode.removeChild(script);
+        resolve(manifest || null);
+      }
+      script.onload = function () {
+        var box = window.__aniLatest;
+        var manifest = box && box.aniplace;
+        if (box) delete box.aniplace;
+        finish(manifest);
+      };
+      script.onerror = function () { finish(null); };
+      script.src = S3_SCRIPT;
+      (doc.head || doc.documentElement).appendChild(script);
+    });
+  }
+
+  function parseS3Release(manifest) {
+    if (!manifest || !manifest.version) return null;
+    function asset(entry, kind) {
+      if (!entry || !entry.name) return null;
+      var name = String(entry.name);
+      var out = {
+        name: name,
+        url: entry.url ? String(entry.url)
+          : S3_BASE + 'aniplace/' + name.replace(/^\/+/, ''),
+        size: entry.size || 0
+      };
+      if (kind) out.kind = kind;
+      return out;
+    }
+    var android = asset(manifest.android);
+    var windows = asset(
+      manifest.windows,
+      manifest.windows && /\.exe$/i.test(String(manifest.windows.name))
+        ? 'exe' : 'zip'
+    );
+    // The campaign's primary CTA is Android; an S3 manifest without an APK is
+    // not a usable latest build, so GitHub stays the source.
+    if (!android) return null;
+    return {
+      version: String(manifest.version),
+      published: manifest.published || '',
+      releaseUrl: manifest.githubReleaseUrl || RELEASES_LATEST,
+      android: android,
+      windows: windows,
+      sha: asset(manifest.sha256) || {
+        name: 'SHA256SUMS.txt',
+        url: S3_BASE + 'aniplace/SHA256SUMS.txt'
+      },
+      source: 's3'
+    };
+  }
+
+  function resolveFromGithub() {
     var controller = null;
     var timer = null;
     if (window.AbortController) {
@@ -215,8 +311,7 @@
           if (picked) break;
         }
         if (!picked) throw new Error('no release assets');
-        writeCache(picked);
-        applyRelease(picked);
+        adopt(picked);
       })
       .catch(function () {
         writeCache(FALLBACK);
@@ -226,6 +321,46 @@
         if (timer) window.clearTimeout(timer);
       });
   }
+
+  // ---- download, then the install guide ----------------------------------
+
+  // Fallback when the popup is blocked: start the attachment in a hidden
+  // frame so the guide navigation cannot cancel it. Mirrors download.js.
+  function startDownload(url) {
+    if (!url) return false;
+    var frame = doc.createElement('iframe');
+    frame.style.display = 'none';
+    frame.title = 'Скачивание файла';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.src = url;
+    doc.body.appendChild(frame);
+    window.setTimeout(function () {
+      if (frame.parentNode) frame.parentNode.removeChild(frame);
+    }, 120000);
+    return true;
+  }
+
+  doc.addEventListener('click', function (event) {
+    if (event.defaultPrevented || event.button !== 0 ||
+        event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var link = event.target && event.target.closest
+      ? event.target.closest('[data-dl-primary]')
+      : null;
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href) return;
+    event.preventDefault();
+    // The file opens in its own tab, which the browser closes once the
+    // download takes over; this page can then move to the guide immediately.
+    var win = window.open(href, '_blank');
+    if (win) {
+      try { win.opener = null; } catch (e) { /* cross-origin */ }
+      window.location.href = INSTALL_URL;
+      return;
+    }
+    startDownload(href);
+    window.setTimeout(function () { window.location.href = INSTALL_URL; }, 250);
+  });
 
   // ---- scroll reveals ----------------------------------------------------
 

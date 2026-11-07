@@ -5,21 +5,32 @@
 // release assets, fills in version/date/size/SHA, and flips the Mangaplace
 // card from "soon" to real buttons when the first public release appears.
 //
-// GitHub allows 60 unauthenticated API calls per hour per IP, so the parsed
-// releases are cached in sessionStorage for 30 minutes. If the API is
-// unreachable or rate-limited, Aniplace falls back to the last known-good
-// direct links below; Mangaplace stays honestly "soon" until a release
-// exists. Bump FALLBACK when a release rotates the Aniplace filenames.
+// Downloads come from S3 first: the admin panel publishes one `latest.js`
+// manifest per app (stable object names, no older builds kept), and the site
+// loads it with a script tag before asking GitHub. A script tag is not
+// subject to CORS, so this works on storages that cannot return ACAO. When the manifest is absent, stale or
+// unreachable, the GitHub release API is the fallback. GitHub allows 60
+// unauthenticated API calls per hour per IP, so parsed releases are cached in
+// sessionStorage for 30 minutes. If both sources fail, Aniplace falls back to
+// the last known-good direct links below; Mangaplace stays honestly "soon"
+// until a release exists. Bump FALLBACK when release filenames rotate.
 
 (function () {
   'use strict';
 
-  var CACHE_KEY = 'place.releases.v1';
+  // v3: entries written by the GitHub-only resolver must not hide the S3
+  // manifest for the rest of the session after a site deploy.
+  var CACHE_KEY = 'place.releases.v3';
   var CACHE_TTL = 30 * 60 * 1000;
+
+  // S3 download base written by Admin -> Downloads. It must match
+  // `releases_public_base_url` in repo/tools/cover_thumbs/config/upload.json.
+  var S3_BASE = 'https://3a4bb16ee9b5156df4f9712cffe6d7a4.bckt.ru/downloads/';
 
   var APPS = {
     aniplace: {
       name: 'Aniplace',
+      slug: 'aniplace',
       repo: 'bloomstick/aniplace-releases',
       api: 'https://api.github.com/repos/bloomstick/aniplace-releases',
       releases: 'https://github.com/bloomstick/aniplace-releases/releases',
@@ -46,6 +57,7 @@
     },
     mangaplace: {
       name: 'Mangaplace',
+      slug: 'mangaplace',
       repo: 'moeplace/mangaplace-releases',
       api: 'https://api.github.com/repos/moeplace/mangaplace-releases',
       releases: 'https://github.com/moeplace/mangaplace-releases/releases',
@@ -135,7 +147,100 @@
       emit();
       return;
     }
+    // S3 first, GitHub only when no latest manifest is published there.
+    resolveFromS3(app)
+      .then(function (release) {
+        if (release) {
+          adopt(app, release);
+          return;
+        }
+        resolveFromGithub(app);
+      })
+      .catch(function () {
+        resolveFromGithub(app);
+      });
+  }
 
+  function adopt(app, release) {
+    current[app] = release;
+    cache[app] = { at: Date.now(), release: release };
+    writeCache(cache);
+    applyApp(app, release);
+    emit();
+  }
+
+  function resolveFromS3(app) {
+    var slug = APPS[app].slug;
+    if (!slug || !S3_BASE) return Promise.resolve(null);
+    return loadS3Manifest(slug).then(function (manifest) {
+      return parseS3Release(app, manifest);
+    });
+  }
+
+  // The publisher assigns the manifest to window.__aniLatest[slug]. Loading it
+  // as a script avoids the cross-origin fetch that the storage blocks.
+  function loadS3Manifest(slug) {
+    return new Promise(function (resolve) {
+      var script = document.createElement('script');
+      var done = false;
+      var timer = window.setTimeout(function () { finish(null); }, 8000);
+      function finish(manifest) {
+        if (done) return;
+        done = true;
+        window.clearTimeout(timer);
+        script.onload = script.onerror = null;
+        if (script.parentNode) script.parentNode.removeChild(script);
+        resolve(manifest || null);
+      }
+      script.onload = function () {
+        var box = window.__aniLatest;
+        var manifest = box && box[slug];
+        if (box) delete box[slug];
+        finish(manifest);
+      };
+      script.onerror = function () { finish(null); };
+      script.src = S3_BASE + slug + '/latest.js';
+      (document.head || document.documentElement).appendChild(script);
+    });
+  }
+
+  function parseS3Release(app, manifest) {
+    if (!manifest || !manifest.version) return null;
+    var base = S3_BASE + APPS[app].slug + '/';
+    function asset(entry, kind) {
+      if (!entry || !entry.name) return null;
+      var name = String(entry.name);
+      var out = {
+        name: name,
+        url: entry.url ? String(entry.url) : base + name.replace(/^\/+/, ''),
+        size: entry.size || 0
+      };
+      if (kind) out.kind = kind;
+      return out;
+    }
+    var android = asset(manifest.android);
+    var windows = asset(
+      manifest.windows,
+      manifest.windows && /\.exe$/i.test(String(manifest.windows.name))
+        ? 'exe' : 'zip'
+    );
+    if (!android && !windows) return null;
+    return {
+      version: String(manifest.version),
+      published: manifest.published || '',
+      releaseUrl: manifest.githubReleaseUrl ||
+        (APPS[app].releases + '/latest'),
+      android: android,
+      windows: windows,
+      sha: asset(manifest.sha256) || {
+        name: 'SHA256SUMS.txt',
+        url: base + 'SHA256SUMS.txt'
+      },
+      source: 's3'
+    };
+  }
+
+  function resolveFromGithub(app) {
     var controller = null;
     var timer = null;
     if (window.AbortController) {
@@ -143,7 +248,7 @@
       timer = setTimeout(function () { controller.abort(); }, 8000);
     }
 
-    fetch(APPS[app].api + '/releases?per_page=5', {
+    return fetch(APPS[app].api + '/releases?per_page=5', {
       headers: { Accept: 'application/vnd.github+json' },
       signal: controller ? controller.signal : undefined
     })
@@ -152,12 +257,7 @@
         return res.json();
       })
       .then(function (list) {
-        var release = pickRelease(list);
-        cache[app] = { at: Date.now(), release: release };
-        writeCache(cache);
-        current[app] = release;
-        applyApp(app, release);
-        emit();
+        adopt(app, pickRelease(list));
       })
       .catch(function () {
         // Keep the last-known-good Aniplace links; Mangaplace stays "soon".

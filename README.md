@@ -19,8 +19,85 @@ GitHub-first release links.
 | `app.js` | Header, mobile menu, seamless marquee, screenshot rail, lightbox, scroll reveals |
 | `install.js` | App/device choice, URL deep links, release-aware result, copy-to-clipboard, wizard navigation |
 | `changelog.js` | GitHub changelog resolver, 30-minute session cache, safe Markdown renderer for untrusted release bodies |
-| `download.js` | GitHub release resolver for both apps; fills version/date/size/SHA links and flips Mangaplace from “soon” to real buttons |
+| `download.js` | S3-first download resolver for both apps (GitHub fallback); fills version/date/size/SHA links and flips Mangaplace from “soon” to real buttons |
+| `campaign/` | Aniplace-only ad landing (`index.html`, `campaign.css`, `campaign.js`, `og-campaign.png`): animated midnight hero, design-concept screens, Android-first direct APK / RuStore CTAs, desktop QR, optional Windows install, dedicated share card |
 | `assets/` | `mascot.png` (source art) + `mascot.webp` / `mascot-360.webp`, both app icons, `favicon.png`, `grain.png` (texture); `shots/` (six straight Aniplace screens, 720×1384); `qr-install.svg`, `og-cover.png` (generated) |
+
+## Campaign landing (`campaign/`)
+
+Aniplace-only conversion page for paid traffic: **https://ani.place/campaign/**.
+One job: install the app on Android. The primary CTA is always the signed
+Android APK served directly from the GitHub release, on every platform;
+RuStore is the secondary path (hidden only on iOS). Desktop shows a QR to the
+live Android install wizard; Windows is an optional `<details>` block with
+its setup steps, never the primary CTA. iPhone/iPad get an honest no-build
+note and no store link.
+
+| File | Purpose |
+|---|---|
+| `campaign/index.html` | Campaign page: hero, design-concept screens, features, Android install, optional Windows details, FAQ, final CTA |
+| `campaign/campaign.css` | Source for the midnight-poster design, 3D phone stack, aurora, marquee, rail progress, responsive and reduced-motion rules |
+| `campaign/campaign.js` | Source for Android-primary release links, counters, reveals, parallax/tilt, screenshot rail, lightbox, sticky bar |
+| `campaign/campaign.min.css`, `campaign/campaign.min.js` | Generated minified assets served by the page; edit the source files above, then regenerate with `npx --yes esbuild … --minify` |
+| `campaign/mockups/` | Eight optimized design-concept screens: seven 720×1558 phone screens and a 900×595 Windows screen, plus committed 320/480-wide WebP renditions (and a 720-wide Windows copy) selected with `srcset` |
+| `campaign/qr-android.svg` | Generated QR to `https://ani.place/install.html?app=aniplace&os=android`, shown on desktop |
+
+**Design.** A midnight screening poster rather than a second copy of the paper
+hub: deep plum ground, signal red/pink light, Unbounded headlines, the
+cozy-modern design-concept screens as the product imagery, and the fox mascot
+as host. The page labels them «макеты»; they are a design direction, not
+shipped-app captures. Motion is CSS-first; `campaign.js` adds only pointer
+parallax, tilt, scroll reveals and the rail. `prefers-reduced-motion` disables
+all of it.
+
+**CTA contract.** Every download link is a real `<a>` in the HTML, so the page
+works before the script. `data-dl-primary` links start at the last known-good
+direct asset (v1.22.4 APK) and are then upgraded to the newest build: S3 first
+(`<S3_BASE>aniplace/latest.js`, published by the admin panel's **Downloads**
+screen and loaded with a script tag, so no CORS is involved), GitHub second
+(`ani.campaign.release.v3`, 10-minute session cache, 8s timeout). When S3 has no manifest and the GitHub API is rate-limited or
+unreachable, the same fallback is painted and cached; bump `FALLBACK` in
+`campaign.js` when release filenames rotate. `data-dl-label`,
+`data-dl-meta`, `data-dl-size`, `data-version`, `data-sha-link`,
+`data-dl-windows` and `data-release-link` are filled from the resolved release.
+`data-dl-primary` always resolves to the Android APK; it never switches to
+Windows. A normal click starts that file in a hidden frame and then opens the
+install wizard's result step at `/install?app=aniplace&os=android&step=3&started=1`
+(`install/index.html` forwards to `install.html`), where the instructions and
+the «Скачивание началось» note live; modifier clicks keep the browser's own
+behaviour. `data-platform` on `<html>` handles visibility only: RuStore CTAs
+(`data-android-only`) hide on iOS, the optional Windows `<details>`
+(`data-windows-optional`) hides on Android/iOS, and the QR card shows on
+desktop. The Android steps stay the no-JS default because Android is the
+campaign's primary path.
+
+**Assets.** Product imagery comes from `campaign/mockups/`: seven 720×1558
+phone screens and one 900×595 Windows screen optimized from
+`docs/static/design/aniplace-cozy-modern/`. The family hub keeps its own
+straight `../assets/shots/` captures. The campaign also reuses the mascot, app
+icon and grain from `../assets/`. Relative links reach the hub, changelog and
+privacy page; GitHub/RuStore destinations are absolute. There is no build step. Campaign mockups are screen-only exports: the
+design concept's numbered presentation pins and baked phone bezel are
+intentionally absent, so the page draws one frame around each screen.
+`campaign/qr-android.svg` is generated by
+`python apps/animedream/tools/site/make_campaign_qr.py`; it points at the live
+Android install wizard, so the QR remains useful before the campaign itself is
+published. Re-run it only if that URL moves.
+
+**Share card.** `campaign/og-campaign.png` (1200×630) is generated from the
+real mascot, catalog/title screens, app icon, grain and the app's own
+Unbounded/Manrope variable fonts by
+`python apps/animedream/tools/site/make_campaign_og.py`. `og:image`,
+`og:image:secure_url`, `twitter:image` and the JSON-LD `image` point at it;
+re-run the script after brand art or headline changes. The sibling hub pages
+keep the family `assets/og-cover.png` card.
+
+**Local preview.** From `apps/animedream/site`: `python -m http.server 8000`,
+then open `http://localhost:8000/campaign/`.
+
+**Deploy.** Same as the hub (copy this folder over `bloomstick/aniplace-site`,
+keep `CNAME`, commit, push). The campaign is a subfolder, so it publishes at
+`ani.place/campaign/` with the hub untouched.
 
 ## Design intent
 
@@ -85,15 +162,29 @@ The red and navy are the app brands; keep them in step with
 lockup. The old three.js hero is gone; the page is CSS + small vanilla
 scripts.
 
-## GitHub release resolution (`download.js`)
+## Download resolution (`download.js`)
 
 Every download CTA is a normal link in the HTML, so the page works before
-the script runs. The script upgrades those links to the current release
-assets:
+the script runs. The script upgrades those links in this order:
 
-- Aniplace hub: `bloomstick/aniplace-releases`.
-- Mangaplace hub: `moeplace/mangaplace-releases`.
-- Cached in `sessionStorage` for 30 minutes; 8-second timeout.
+1. **S3 latest** — `<S3_BASE><app>/latest.js`, written by the admin panel's
+   **Downloads** screen and loaded with a `<script>` tag into
+   `window.__aniLatest[<app>]`. A publish overwrites the stable names and
+   deletes every older object under that app prefix, so the script always
+   describes the one current build; `latest.json` carries the same data for
+   tooling. `S3_BASE` in `download.js` and `campaign.js` must match
+   `releases_public_base_url` in
+   `repo/tools/cover_thumbs/config/upload.json`.
+2. **GitHub** — only when S3 has no usable manifest (404, bad body or a
+   network error). Aniplace hub: `bloomstick/aniplace-releases`; Mangaplace
+   hub: `moeplace/mangaplace-releases`.
+- Cached in `sessionStorage` for 30 minutes after either source resolves;
+  8-second timeout per request. The key was bumped to `v3` so a cached
+  GitHub-only resolution cannot outlive the S3 rollout.
+- The bucket does **not** need CORS: `latest.js` is loaded as a script, which
+  browsers do not subject to the cross-origin fetch rules. `latest.json` is
+  still published for tooling and for any client that fetches it; those
+  readers need the usual `Access-Control-Allow-Origin`.
 - On API failure, Aniplace falls back to the last known-good versioned
   direct links in `FALLBACK` (bump these when a release rotates filenames).
   The fallback is cached too, so a rate-limited IP does not hammer the API.
@@ -142,7 +233,7 @@ static HTML plus `changelog.js`; there is no build step.
   newest-first.
 - **Cache:** parsed releases live in `sessionStorage` under
   `place.changelog.v1` for 30 minutes. This is a separate key from
-  `download.js` (`place.releases.v1`), so the two features cannot poison
+  `download.js` (`place.releases.v3`), so the two features cannot poison
   each other. Failures are not cached, so the next visit can retry.
 - **Fallback:** the source note and both GitHub release links are static
   HTML, and a `<noscript>` note points no-JS visitors at both release
@@ -193,6 +284,11 @@ static HTML plus `changelog.js`; there is no build step.
 
 ```powershell
 python apps/animedream/tools/site/make_og.py       # family OG card + 64px favicon
+python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png
+python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg
+python apps/animedream/tools/site/make_campaign_screens.py  # 320/480 mockup renditions
+npx --yes esbuild apps/animedream/site/campaign/campaign.css --minify --outfile=apps/animedream/site/campaign/campaign.min.css
+npx --yes esbuild apps/animedream/site/campaign/campaign.js --minify --outfile=apps/animedream/site/campaign/campaign.min.js
 python apps/animedream/tools/site/make_qr.py       # assets/qr-install.svg
 python apps/animedream/tools/site/make_grain.py    # assets/grain.png
 python apps/animedream/tools/site/make_mascot.py   # assets/mascot.webp + mascot-360.webp
@@ -214,6 +310,11 @@ no marketing phone frame). The raw captures are deliberately not committed
 because they can contain the tester's personal library; the RuStore
 marketing frames (`docs/store/rustore/01-catalog.png` …) are a separate
 store artifact, not the site source.
+
+`campaign/mockups/*.webp` are exported from the cozy-modern design concept in
+`docs/static/design/aniplace-cozy-modern/`, not shipped-app captures. The
+campaign page calls them «макеты» and keeps the family hub's real captures
+separate; do not present the concept exports as device screenshots.
 
 Mangaplace has no screenshots; do not add drawn mockups — capture from the
 Windows build when a public release exists.
@@ -244,6 +345,28 @@ cd apps/animedream/site
 python -m http.server 8000
 # open http://localhost:8000/ or /changelog.html
 ```
+
+## Smoke test
+
+`apps/animedream/tools/site/smoke` drives the shipped pages in headless
+Chromium against a local server with GitHub-Pages path handling
+(`/campaign/` and extensionless `/install`) and stubs every S3/GitHub response,
+so it needs no credentials and no network:
+
+```powershell
+cd apps/animedream/tools/site/smoke
+npm install
+npx playwright install chromium   # first time only
+npm test
+```
+
+It asserts that the campaign CTA starts the APK and lands on `/install`'s final
+step with «Скачивание началось», that `download.js` and `campaign.js` take
+version, size, SHA and links from `latest.js` first, and that they fall back
+to the GitHub API when that manifest is missing, malformed or has no APK. With
+a real `tools/cover_thumbs/config/upload.json` present (or `--config <path>`),
+it also checks the site's S3 base against the admin publisher's derived public
+base. See the smoke test's `README.md` for flags and scope.
 
 ## Pending
 
