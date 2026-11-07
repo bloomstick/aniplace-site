@@ -39,6 +39,7 @@ note and no store link.
 | `campaign/campaign.css` | Source for the midnight-poster design, 3D phone stack, aurora, marquee, rail progress, responsive and reduced-motion rules |
 | `campaign/campaign.js` | Source for Android-primary release links, counters, reveals, parallax/tilt, screenshot rail, lightbox, sticky bar |
 | `campaign/campaign.min.css`, `campaign/campaign.min.js` | Generated minified assets served by the page; edit the source files above, then regenerate with `npx --yes esbuild … --minify` |
+| `campaign/fonts/` | Self-hosted Caveat, Manrope and Unbounded variable faces for Cyrillic, Latin and Latin-ext; Unbounded Cyrillic is the only preloaded face |
 | `campaign/mockups/` | Eight optimized design-concept screens: seven 720×1558 phone screens and a 900×595 Windows screen, plus committed 320/480-wide WebP renditions (and a 720-wide Windows copy) selected with `srcset` |
 | `campaign/qr-android.svg` | Generated QR to `https://ani.place/install.html?app=aniplace&os=android`, shown on desktop |
 
@@ -154,8 +155,9 @@ a three-column trust row, neon glows and glass blur.
 - Body/UI: **Manrope** (400–800) — copy, controls, navigation.
 - Hand: **Caveat** (500–600) — margin notes, mascot caption, footer sign-off.
   Use it for a few short lines only; it is a spice, not body copy.
-- Both display/body fonts load from Google Fonts with `display=swap`; the page
-  must remain readable with the system fallback.
+- The three families are self-hosted as subset `woff2` files under
+  `campaign/fonts/` (`unicode-range` split per face); there is no Google Fonts
+  request, and the page must remain readable with the system fallback.
 
 The red and navy are the app brands; keep them in step with
 `apps/animedream/lib/src/brand/aniplace_brand.dart` and the Mangaplace
