@@ -46,7 +46,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/unbounded-cyrillic.woff2" crossorigin>
 <!-- Preload only the LCP mockup. imagesrcset mirrors the hero img so the browser
      picks 320/480/720 from the same sizes; href is the no-imagesrcset fallback. -->
-<link rel="preload" as="image" href="mockups/browse-480.webp" imagesrcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" imagesizes="(max-width: 760px) 52vw, 330px" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/shots/app-schedule.webp" imagesizes="(max-width: 760px) 52vw, 330px" fetchpriority="high">
 <link rel="stylesheet" href="campaign.min.css">
 <link rel="icon" type="image/png" href="../assets/favicon.png">
 <script>document.documentElement.classList.replace('no-js', 'js');</script>
@@ -175,12 +175,12 @@
           </div>
           <div class="phone phone--right">
             <div class="phone__screen">
-              <img src="mockups/title.webp" srcset="mockups/title-320.webp 320w, mockups/title-480.webp 480w, mockups/title.webp 720w" sizes="(max-width: 760px) 38vw, 230px" alt="Макет страницы тайтла Aniplace: рейтинг, жанры и описание" width="720" height="1558" fetchpriority="low" decoding="async">
+              <img src="mockups/lists-dark.webp" srcset="mockups/lists-dark-320.webp 320w, mockups/lists-dark-480.webp 480w, mockups/lists-dark.webp 720w" sizes="(max-width: 760px) 38vw, 230px" alt="Макет списков Aniplace: коллекции в тёмной теме" width="720" height="1558" fetchpriority="low" decoding="async">
             </div>
           </div>
           <div class="phone phone--main">
             <div class="phone__screen">
-              <img src="mockups/browse.webp" srcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" sizes="(max-width: 760px) 52vw, 330px" alt="Макет главного экрана Aniplace: афиша, поиск и списки" width="720" height="1558" fetchpriority="high" decoding="async">
+              <img src="../assets/shots/app-schedule.webp" sizes="(max-width: 760px) 52vw, 330px" alt="Расписание Aniplace: новые серии по дням" width="720" height="1384" fetchpriority="high" decoding="async">
             </div>
           </div>
         </div>
@@ -252,7 +252,7 @@
       <div class="bento">
         <article class="bento__card bento__card--wide tilt" data-reveal data-tilt>
           <div class="bento__art bento__art--catalog">
-            <img src="../assets/shots/app-catalog.webp" alt="Каталог Aniplace: новинки сезона и онгоинги" width="720" height="1384" loading="lazy" decoding="async">
+            <img src="../assets/shots/app-season.webp" alt="Каталог Aniplace: онгоинги сезона сеткой" width="720" height="1384" loading="lazy" decoding="async">
           </div>
           <div class="bento__copy">
             <span class="bento__tag"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg> Каталог</span>
@@ -319,53 +319,25 @@
         </div>
         <div class="rail-tools" data-reveal style="--d:180ms">
           <button class="rail-btn" type="button" data-rail-prev aria-label="Предыдущий скриншот"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
-          <span class="rail-count" aria-live="polite"><b data-rail-current>01</b> / 06</span>
+          <span class="rail-count" aria-live="polite"><b data-rail-current>01</b> / 02</span>
           <button class="rail-btn" type="button" data-rail-next aria-label="Следующий скриншот"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
         </div>
       </header>
 
       <div class="rail" data-rail tabindex="0" role="group" aria-label="Макеты интерфейса Aniplace">
         <figure class="shot">
-          <a class="shot__frame" href="mockups/browse.webp" data-zoom data-caption="Главная: афиша и поиск">
-            <img src="mockups/browse.webp" srcset="mockups/browse-320.webp 320w, mockups/browse-480.webp 480w, mockups/browse.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет главного экрана Aniplace" width="720" height="1558" loading="lazy" decoding="async">
-            <span class="shot__zoom" aria-hidden="true">увеличить</span>
-          </a>
-          <figcaption><span class="shot__num">01</span><b>Главная</b><span>афиша и поиск</span></figcaption>
-        </figure>
-        <figure class="shot">
-          <a class="shot__frame" href="mockups/browse-scrolled.webp" data-zoom data-caption="Лента после свайпа: поиск закреплён">
-            <img src="mockups/browse-scrolled.webp" srcset="mockups/browse-scrolled-320.webp 320w, mockups/browse-scrolled-480.webp 480w, mockups/browse-scrolled.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет ленты Aniplace после прокрутки" width="720" height="1558" loading="lazy" decoding="async">
-            <span class="shot__zoom" aria-hidden="true">увеличить</span>
-          </a>
-          <figcaption><span class="shot__num">02</span><b>Лента</b><span>поиск закреплён</span></figcaption>
-        </figure>
-        <figure class="shot">
-          <a class="shot__frame" href="mockups/activity.webp" data-zoom data-caption="Активность: новые серии">
-            <img src="mockups/activity.webp" srcset="mockups/activity-320.webp 320w, mockups/activity-480.webp 480w, mockups/activity.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет экрана активности Aniplace" width="720" height="1558" loading="lazy" decoding="async">
-            <span class="shot__zoom" aria-hidden="true">увеличить</span>
-          </a>
-          <figcaption><span class="shot__num">03</span><b>Активность</b><span>новые серии</span></figcaption>
-        </figure>
-        <figure class="shot">
-          <a class="shot__frame" href="mockups/title.webp" data-zoom data-caption="Тайтл: постер и рейтинг">
-            <img src="mockups/title.webp" srcset="mockups/title-320.webp 320w, mockups/title-480.webp 480w, mockups/title.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет страницы тайтла Aniplace" width="720" height="1558" loading="lazy" decoding="async">
-            <span class="shot__zoom" aria-hidden="true">увеличить</span>
-          </a>
-          <figcaption><span class="shot__num">04</span><b>Тайтл</b><span>постер и рейтинг</span></figcaption>
-        </figure>
-        <figure class="shot">
           <a class="shot__frame" href="mockups/schedule.webp" data-zoom data-caption="Расписание: серии по часам">
             <img src="mockups/schedule.webp" srcset="mockups/schedule-320.webp 320w, mockups/schedule-480.webp 480w, mockups/schedule.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет расписания Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">увеличить</span>
           </a>
-          <figcaption><span class="shot__num">05</span><b>Расписание</b><span>серии по часам</span></figcaption>
+          <figcaption><span class="shot__num">01</span><b>Расписание</b><span>серии по часам</span></figcaption>
         </figure>
         <figure class="shot">
-          <a class="shot__frame" href="mockups/player.webp" data-zoom data-caption="Тёмная тема: тёплые контролы">
-            <img src="mockups/player.webp" srcset="mockups/player-320.webp 320w, mockups/player-480.webp 480w, mockups/player.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет тёмной темы Aniplace" width="720" height="1558" loading="lazy" decoding="async">
+          <a class="shot__frame" href="mockups/lists-dark.webp" data-zoom data-caption="Тёмная тема: списки и коллекции">
+            <img src="mockups/lists-dark.webp" srcset="mockups/lists-dark-320.webp 320w, mockups/lists-dark-480.webp 480w, mockups/lists-dark.webp 720w" sizes="(max-width: 760px) 70vw, 286px" alt="Макет тёмной темы Aniplace" width="720" height="1558" loading="lazy" decoding="async">
             <span class="shot__zoom" aria-hidden="true">увеличить</span>
           </a>
-          <figcaption><span class="shot__num">06</span><b>Темы</b><span>тёмная тема</span></figcaption>
+          <figcaption><span class="shot__num">02</span><b>Темы</b><span>тёмная тема</span></figcaption>
         </figure>
       </div>
       <div class="rail-progress" data-rail-progress aria-hidden="true"><span data-rail-progress-thumb></span></div>
@@ -562,7 +534,7 @@
 <dialog class="lightbox" id="lightbox" aria-label="Увеличенный скриншот">
   <button class="lightbox__close" type="button" data-lightbox-close aria-label="Закрыть"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
   <figure>
-    <img id="lightbox-img" src="mockups/browse-320.webp" alt="" decoding="async">
+    <img id="lightbox-img" src="mockups/schedule-320.webp" alt="" decoding="async">
     <figcaption id="lightbox-caption"></figcaption>
   </figure>
 </dialog>
