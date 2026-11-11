@@ -118,19 +118,28 @@ anything, so browser visitors pay zero extra requests and the page
 behaves exactly as above. Inside Telegram (the `tgWebApp*` query
 Telegram appends, or the Telegram UA) it loads `telegram-web-app.js`
 and: `ready()` + `expand()`, header/background `#0b0810`; every
-`[data-dl-primary]` tap opens
+`[data-dl-primary]` tap first tries the direct send — `POST
+{initData}` to `DL_ENDPOINT` (top of `tg.js`, empty by default), where
+the bot (`POST /api/dl`, see `tools/telegram-bot/`) HMAC-validates the
+user and drops the cached APK straight into their chat, no START
+needed. This is the only path that works for returning users: a
+`t.me/bot?start=` link delivers its payload solely on the very first
+START, so their taps would otherwise reach no bot-side event at all.
+On `{ok:true}` the page shows «Файл уже в чате» and closes itself.
+Anything else (no endpoint configured, network failure, `need_start`
+for first-timers, no cached build) falls back to opening
 `https://t.me/aniplacebot?start=apk_<version>` via
-`Telegram.WebApp.openTelegramLink` — the bot (see
-`tools/telegram-bot/`) sends the APK as a chat document, because a Mini
-App WebView cannot reliably download + install an APK in place; an
-«Открываю чат с ботом» note appears, the QR card and the Windows block
-hide, `go.js` yields its download-then-guide handler via
-`window.__aniTgMode`, and the Mini App closes itself — the user then
-presses START once in the opened chat, which Telegram mandates before
-any bot file arrives (a zero-tap flow needs the VPS direct-send
-endpoint, not built yet). `BOT_USERNAME` at the top of `tg.js` must
-match the BotFather username and `BOT_USERNAME` in the bot backend's
-`bot.env` — change both together, then rebuild `tg.min.js`.
+`Telegram.WebApp.openTelegramLink` with an «отправь туда /start» note —
+and bare `/start` answers with the welcome plus the latest build, so
+the fallback lands for everyone. Either way the QR card and the
+Windows block hide and `go.js` yields via `window.__aniTgMode`.
+
+`BOT_USERNAME` at the top of `tg.js` must match the BotFather username
+and `BOT_USERNAME` in the bot backend's `bot.env`; `DL_ENDPOINT` needs
+a public HTTPS URL of the bot's `--pair-port` (VPS, or a tunnel for a
+local PC, e.g. `cloudflared tunnel --url http://localhost:8087` —
+`http://` LAN URLs are blocked as mixed content from the `https://`
+page). Change constants, rebuild `tg.min.js`.
 
 **BotFather setup** (operator, once): `/newbot` (username
 `@aniplacebot`) → `/newapp` → attach to the bot, URL
