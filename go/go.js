@@ -41,23 +41,23 @@
   // painted before GitHub answers and the state used when the API is
   // unreachable or rate-limited (60 requests/hour per IP).
   var FALLBACK = {
-    version: '1.22.4',
-    published: '2026-11-06T19:52:38Z',
-    releaseUrl: RELEASES + '/tag/v1.22.4',
+    version: '1.24.1',
+    published: '2026-11-10T02:00:42Z',
+    releaseUrl: RELEASES + '/tag/v1.24.1',
     android: {
-      name: 'aniplace-1.22.4-android.apk',
-      url: RELEASES + '/download/v1.22.4/aniplace-1.22.4-android.apk',
-      size: 45064232
+      name: 'aniplace-1.24.1-android.apk',
+      url: RELEASES + '/download/v1.24.1/aniplace-1.24.1-android.apk',
+      size: 45140372
     },
     windows: {
-      name: 'aniplace-1.22.4-windows-setup.exe',
-      url: RELEASES + '/download/v1.22.4/aniplace-1.22.4-windows-setup.exe',
-      size: 31919747,
+      name: 'aniplace-1.24.1-windows-setup.exe',
+      url: RELEASES + '/download/v1.24.1/aniplace-1.24.1-windows-setup.exe',
+      size: 31956127,
       kind: 'exe'
     },
     sha: {
       name: 'SHA256SUMS.txt',
-      url: RELEASES + '/download/v1.22.4/SHA256SUMS.txt'
+      url: RELEASES + '/download/v1.24.1/SHA256SUMS.txt'
     }
   };
 

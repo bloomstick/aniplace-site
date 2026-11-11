@@ -54,7 +54,7 @@ all of it.
 
 **CTA contract.** Every download link is a real `<a>` in the HTML, so the page
 works before the script. `data-dl-primary` links start at the last known-good
-direct asset (v1.22.4 APK) and are then upgraded to the newest build: S3 first
+direct asset (v1.24.1 APK) and are then upgraded to the newest build: S3 first
 (`<S3_BASE>aniplace/latest.js`, published by the admin panel's **Downloads**
 screen and loaded with a script tag, so no CORS is involved), GitHub second
 (`ani.campaign.release.v3`, 10-minute session cache, 8s timeout). When S3 has no manifest and the GitHub API is rate-limited or
