@@ -112,6 +112,34 @@ design or copy changes.
 **Local preview.** From `apps/animedream/site`: `python -m http.server 8000`,
 then open `http://localhost:8000/campaign/` or `http://localhost:8000/go/`.
 
+**Telegram Mini App** (`go/tg.js` + `go/tg.min.js`, built with esbuild
+like the rest). Outside Telegram the file returns before loading
+anything, so browser visitors pay zero extra requests and the page
+behaves exactly as above. Inside Telegram (the `tgWebApp*` query
+Telegram appends, or the Telegram UA) it loads `telegram-web-app.js`
+and: `ready()` + `expand()`, header/background `#0b0810`; every
+`[data-dl-primary]` tap opens
+`https://t.me/aniplacebot?start=apk_<version>` via
+`Telegram.WebApp.openTelegramLink` — the bot (see
+`tools/telegram-bot/`) sends the APK as a chat document, because a Mini
+App WebView cannot reliably download + install an APK in place; an
+«Открываю чат с ботом» note appears, the QR card and the Windows block
+hide, `go.js` yields its download-then-guide handler via
+`window.__aniTgMode`, and the Mini App closes itself — the user then
+presses START once in the opened chat, which Telegram mandates before
+any bot file arrives (a zero-tap flow needs the VPS direct-send
+endpoint, not built yet). `BOT_USERNAME` at the top of `tg.js` must
+match the BotFather username and `BOT_USERNAME` in the bot backend's
+`bot.env` — change both together, then rebuild `tg.min.js`.
+
+**BotFather setup** (operator, once): `/newbot` (username
+`@aniplacebot`) → `/newapp` → attach to the bot, URL
+`https://ani.place/go/`, short name e.g. `go`. Telegram links the app
+as `t.me/aniplacebot/go`; promoting that link (channel post, Telegram
+Ads) opens the landing inside Telegram with the bot one tap away. The
+bot process must be running (`tools/telegram-bot/run.cmd`) or taps
+land in an empty chat.
+
 **Deploy.** Same as the hub (copy this folder over `bloomstick/aniplace-site`,
 keep `CNAME`, commit, push). The campaign is a subfolder, so it publishes at
 `ani.place/campaign/` with the hub untouched.

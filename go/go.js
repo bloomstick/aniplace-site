@@ -341,6 +341,10 @@
   }
 
   doc.addEventListener('click', function (event) {
+    // Telegram Mini App mode (go/tg.js) owns primary CTAs: the tap opens
+    // the bot chat instead of starting a WebView download + guide hop.
+    // The flag is read at click time so late adapter init still wins.
+    if (window.__aniTgMode) return;
     if (event.defaultPrevented || event.button !== 0 ||
         event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     var link = event.target && event.target.closest
