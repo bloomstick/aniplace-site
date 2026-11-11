@@ -138,16 +138,15 @@
       var note = ensureNote();
       note.textContent =
         'Открываю чат с ботом — нажми там START, и файл прилетит в чат.';
-      // Get out of the way: the handoff is done, the chat is opening.
-      // Delayed so the link wins the race on slow clients; guarded —
-      // older clients simply keep the page open.
-      window.setTimeout(function () {
-        try {
-          if (tg.close) tg.close();
-        } catch (e) {
-          /* staying open is a valid fallback */
-        }
-      }, 350);
+      // Get out of the way in the same tick: openTelegramLink only queues
+      // the navigation, so closing right away cannot preempt it — while a
+      // delayed close can land mid-animation and cancel the handoff.
+      // Guarded: clients without close() simply keep the page open.
+      try {
+        if (tg.close) tg.close();
+      } catch (e) {
+        /* staying open is a valid fallback */
+      }
     });
   }
 
