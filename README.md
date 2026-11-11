@@ -21,6 +21,7 @@ GitHub-first release links.
 | `changelog.js` | GitHub changelog resolver, 30-minute session cache, safe Markdown renderer for untrusted release bodies |
 | `download.js` | S3-first download resolver for both apps (GitHub fallback); fills version/date/size/SHA links and flips Mangaplace from “soon” to real buttons |
 | `campaign/` | Aniplace-only ad landing (`index.html`, `campaign.css`, `campaign.js`, `og-campaign.png`): animated midnight hero, design-concept screens, Android-first direct APK / RuStore CTAs, desktop QR, optional Windows install, dedicated share card |
+| `go/` | RuStore-free copy of the ad landing (`index.html`, `go.css`, `go.js`, `og-go.png`): same midnight hero and direct-APK flow as `campaign/`, no store mentions or buttons |
 | `assets/` | `mascot.png` (source art) + `mascot.webp` / `mascot-360.webp`, both app icons, `favicon.png`, `grain.png` (texture); `shots/` (six straight Aniplace screens, 720×1384); `qr-install.svg`, `og-cover.png` (generated) |
 
 ## Campaign landing (`campaign/`)
@@ -93,8 +94,23 @@ Unbounded/Manrope variable fonts by
 re-run the script after brand art or headline changes. The sibling hub pages
 keep the family `assets/og-cover.png` card.
 
+## Go landing (`go/`)
+
+RuStore-free copy of the campaign page for paid traffic:
+**https://ani.place/go/**. Same midnight-poster design, same conversion job
+(direct Android APK install), same CTA contract, same tooling — but no store
+mentions anywhere: no RuStore buttons, no `data-android-only` hooks, no store
+wording in meta/OG/FAQ copy, and the share card footer reads `ani.place/go`.
+The page is a full copy, not a skin: `go/index.html`, `go/go.css`,
+`go/go.js` (session cache key `ani.go.release.v1`), `go/go.min.css`,
+`go/go.min.js`, plus its own `go/fonts/`, `go/mockups/`,
+`go/qr-android.svg` and `go/og-go.png`. The generator scripts emit both
+variants in one run (`make_campaign_og.py`, `make_campaign_qr.py`,
+`make_campaign_screens.py`); keep `campaign/` and `go/` in step when the
+design or copy changes.
+
 **Local preview.** From `apps/animedream/site`: `python -m http.server 8000`,
-then open `http://localhost:8000/campaign/`.
+then open `http://localhost:8000/campaign/` or `http://localhost:8000/go/`.
 
 **Deploy.** Same as the hub (copy this folder over `bloomstick/aniplace-site`,
 keep `CNAME`, commit, push). The campaign is a subfolder, so it publishes at
@@ -286,11 +302,13 @@ static HTML plus `changelog.js`; there is no build step.
 
 ```powershell
 python apps/animedream/tools/site/make_og.py       # family OG card + 64px favicon
-python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png
-python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg
-python apps/animedream/tools/site/make_campaign_screens.py  # 320/480 mockup renditions
+python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png + go/og-go.png
+python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg + go/qr-android.svg
+python apps/animedream/tools/site/make_campaign_screens.py  # 320/480 mockup renditions for campaign/ and go/
 npx --yes esbuild apps/animedream/site/campaign/campaign.css --minify --outfile=apps/animedream/site/campaign/campaign.min.css
 npx --yes esbuild apps/animedream/site/campaign/campaign.js --minify --outfile=apps/animedream/site/campaign/campaign.min.js
+npx --yes esbuild apps/animedream/site/go/go.css --minify --outfile=apps/animedream/site/go/go.min.css
+npx --yes esbuild apps/animedream/site/go/go.js --minify --outfile=apps/animedream/site/go/go.min.js
 python apps/animedream/tools/site/make_qr.py       # assets/qr-install.svg
 python apps/animedream/tools/site/make_grain.py    # assets/grain.png
 python apps/animedream/tools/site/make_mascot.py   # assets/mascot.webp + mascot-360.webp
@@ -313,9 +331,10 @@ because they can contain the tester's personal library; the RuStore
 marketing frames (`docs/store/rustore/01-catalog.png` …) are a separate
 store artifact, not the site source.
 
-`campaign/mockups/*.webp` are exported from the cozy-modern design concept in
+`campaign/mockups/*.webp` (and their `go/mockups/` copies) are exported from
+the cozy-modern design concept in
 `docs/static/design/aniplace-cozy-modern/`, not shipped-app captures. The
-campaign page calls them «макеты» and keeps the family hub's real captures
+campaign and go pages call them «макеты» and keep the family hub's real captures
 separate; do not present the concept exports as device screenshots.
 
 Mangaplace has no screenshots; do not add drawn mockups — capture from the
@@ -352,7 +371,7 @@ python -m http.server 8000
 
 `apps/animedream/tools/site/smoke` drives the shipped pages in headless
 Chromium against a local server with GitHub-Pages path handling
-(`/campaign/` and extensionless `/install`) and stubs every S3/GitHub response,
+(`/campaign/`, `/go/` and extensionless `/install`) and stubs every S3/GitHub response,
 so it needs no credentials and no network:
 
 ```powershell
@@ -362,8 +381,8 @@ npx playwright install chromium   # first time only
 npm test
 ```
 
-It asserts that the campaign CTA starts the APK and lands on `/install`'s final
-step with «Скачивание началось», that `download.js` and `campaign.js` take
+It asserts that the campaign and go CTAs start the APK and land on `/install`'s final
+step with «Скачивание началось», that `download.js`, `campaign.js` and `go.js` take
 version, size, SHA and links from `latest.js` first, and that they fall back
 to the GitHub API when that manifest is missing, malformed or has no APK. With
 a real `tools/cover_thumbs/config/upload.json` present (or `--config <path>`),
