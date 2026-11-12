@@ -1,7 +1,8 @@
 # place family hub — apps/animedream/site (ani.place)
 
-Static family hub for **Aniplace** and **Mangaplace**, no build step. The
-monorepo is the source; the published mirror is the GitHub Pages repo
+Static family hub for **Aniplace** and **Mangaplace**, no runtime build step
+(generated assets and catalog shards are committed). The monorepo is the
+source; the published mirror is the GitHub Pages repo
 `bloomstick/aniplace-site` (see [Deploy](#deploy)).
 
 Russian only for v1. The two products share one page: a warm paper zine
@@ -22,6 +23,10 @@ GitHub-first release links.
 | `download.js` | S3-first download resolver for both apps (GitHub fallback); fills version/date/size/SHA links and flips Mangaplace from “soon” to real buttons |
 | `campaign/` | Aniplace-only ad landing (`index.html`, `campaign.css`, `campaign.js`, `og-campaign.png`): animated midnight hero, design-concept screens, Android-first direct APK / RuStore CTAs, desktop QR, optional Windows install, dedicated share card |
 | `go/` | RuStore-free copy of the ad landing (`index.html`, `go.css`, `go.js`, `og-go.png`): same midnight hero and direct-APK flow as `campaign/`, no store mentions or buttons |
+| `catalog/` | Public title pages at `/catalog/<slug>-<id>` (`index.html`, `catalog.css`, `catalog.js`, `data/titles-*.json`): cover, names, description, genres/tags and facts; the same play-button CTA opens the app or installs it |
+| `404.html` | GitHub Pages fallback: forwards `/catalog/...` to the catalog shell with the original path preserved (the shell restores the pretty URL), otherwise shows a small not-found page |
+| `.well-known/assetlinks.json` | Android App Links verification: `place.ani`, release + debug signing fingerprints |
+| `.nojekyll` | Disables Jekyll so GitHub Pages serves `.well-known/assetlinks.json` (dot-directories are otherwise omitted) |
 | `assets/` | `mascot.png` (source art) + `mascot.webp` / `mascot-360.webp`, both app icons, `favicon.png`, `grain.png` (texture); `shots/` (six straight Aniplace screens, 720×1384); `qr-install.svg`, `og-cover.png` (generated) |
 
 ## Campaign landing (`campaign/`)
@@ -152,6 +157,83 @@ land in an empty chat.
 **Deploy.** Same as the hub (copy this folder over `bloomstick/aniplace-site`,
 keep `CNAME`, commit, push). The campaign is a subfolder, so it publishes at
 `ani.place/campaign/` with the hub untouched.
+
+## Title pages (`catalog/`)
+
+One public page per covered title: **https://ani.place/catalog/&lt;slug&gt;-&lt;id&gt;**
+(e.g. `/catalog/kovboy-bibop-1`). The slug is cosmetic; the trailing id is
+authoritative. The page shows the S3 cover, RU/EN names, description, genres
+and tags, rating/votes, type/status/year/season, episode count, studio,
+director, source work, release date, age rating, licence and Shikimori/MAL
+links.
+
+**Routing.** GitHub Pages cannot rewrite a pretty path to one file, so
+`404.html` forwards `/catalog/...` to `/catalog/?path=<original>`. The shell
+reads `path`, calls `history.replaceState` back to the pretty URL, and then
+does its work — the address bar and canonical URL stay
+`/catalog/<slug>-<id>`. `/catalog/` itself is the shell; anything without a
+numeric `-<id>` shows the not-found state.
+
+**Data.** The site is still static and has no runtime catalog API. The
+published DreamDB snapshot is compiled once into per-id-range shards:
+
+```powershell
+python apps/animedream/tools/site/build_catalog.py
+# or from a local tools/anime_db build:
+python apps/animedream/tools/site/build_catalog.py --catalog tools/anime_db/build/out
+```
+
+`build_catalog.py` reads `manifest.json`, the `meta-*.json` chunks and
+`covers.json` from the public `bloomstick/anime-db` `v1` tag (or the local
+directory). It keeps only titles present in the S3 cover inventory (the same
+“no cover = not visible” rule as the app) and writes 256-id buckets under
+`catalog/data/titles-<bucket>.json`:
+
+```json
+{"version":1,"coverBase":"https://…/covers/","rows":{"1":{"id":1,"slug":"kovboy-bibop","name":"Ковбой Бибоп",…}}}
+```
+
+The page computes `floor(id / 256)` and fetches exactly that one file — a
+same-origin request, roughly 2–160 KB, no meta-chunk scan and no CORS. Every
+shard carries the cover base URL as published by the S3 index, so the site
+never hard-codes a second copy of it. Empty/absent buckets are a 404 and the
+page shows the honest not-found state. Regenerate the data whenever the
+DreamDB snapshot or cover inventory changes; the generated files are
+committed, like the OG cards and QR assets.
+
+**App Links.** The Android manifest declares an `autoVerify` intent filter
+for `https://ani.place/catalog/`; `assetlinks.json` carries the release
+signing key (from the shipped 1.25.0 APK) and a debug key. On a normal
+Android browser the OS opens Aniplace directly when it is installed, before
+the page loads. `packages/dream_core`’s `parseDreamLink` turns the URL into
+the canonical `dream:<id>` link, which the shell’s existing deep-link handler
+already opens. In an in-app browser that does not dispatch HTTPS App Links,
+the page’s CTA uses an `intent://` URL with `S.browser_fallback_url` instead.
+
+**CTA contract.** The button is the app’s play button on paper: red card,
+white play medallion, uppercase eyebrow, bold target, chevron.
+
+- **Android:** an `intent://title/dream%3A<id>#Intent;scheme=aniplace;package=place.ani;…`
+  URL. If Aniplace is installed, it opens the title; otherwise the fallback
+  loads `/install.html?app=aniplace&os=android&step=3&started=1&auto=1`,
+  which starts the current APK and shows the instruction step.
+- **Windows / macOS / Linux:** the same install URL (label
+  «Установить Aniplace»), so one tap downloads the APK and opens the guide.
+  Windows additionally shows a QR card for the phone.
+- **iOS:** no build exists; the action is hidden and an honest note points
+  the visitor to Android.
+- The install page (`download.js` + `install.js`) is shared with the rest of
+  the site. `auto=1` is the only new install-wizard mode: it starts the asset after a
+  short release-resolution delay, and only for the title-page fallback (a QR
+  or a normal wizard visit never auto-downloads). The known-good fallback in
+  `download.js` is kept at the current release so an immediate tap still
+  gets a live file.
+
+**Verification.** `apps/animedream/tools/site/smoke` serves the shipped tree
+with GitHub-Pages-style 404 handling and checks the pretty URL, the single
+shard request, the S3 cover, the desktop install hand-off and auto-download,
+the Android `intent://` URL, the missing-title state, and the assetlinks
+fingerprints. It needs no network.
 
 ## Design intent
 
@@ -338,6 +420,7 @@ static HTML plus `changelog.js`; there is no build step.
 ## Generated assets
 
 ```powershell
+python apps/animedream/tools/site/build_catalog.py  # catalog/data/titles-*.json shards
 python apps/animedream/tools/site/make_og.py       # family OG card + 64px favicon
 python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png + go/og-go.png
 python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg + go/qr-android.svg
@@ -384,12 +467,18 @@ Windows build when a public release exists.
 that repo, keep its `CNAME`, then commit and push:
 
 ```powershell
-Copy-Item apps/animedream/site/* <aniplace-site>\ -Recurse -Force
-# keep <aniplace-site>\CNAME untouched
+robocopy apps/animedream/site <aniplace-site> /E /XD .git /XF CNAME
+# /E copies hidden files too: .nojekyll and .well-known/assetlinks.json
+# are required for App Links verification. Keep <aniplace-site>\CNAME.
 git -C <aniplace-site> add -A
 git -C <aniplace-site> commit -m "Deploy family hub from dream-monorepo"
 git -C <aniplace-site> push origin main
 ```
+
+After the first deploy, verify the App Links file publicly:
+`https://ani.place/.well-known/assetlinks.json` must return 200 JSON (not
+404 HTML). If it does not, `.nojekyll` did not reach the published repo root
+or the hosting root differs from the domain root.
 
 `manga.ani.place` is the old standalone landing (`apps/mangaplace/site`).
 The hub now carries the Mangaplace presentation in-page. To consolidate,
@@ -402,7 +491,12 @@ page) after the hub is live; do not keep two drifting Mangaplace landings.
 cd apps/animedream/site
 python -m http.server 8000
 # open http://localhost:8000/ or /changelog.html
+# title page (plain python server has no 404 bridge):
+# http://localhost:8000/catalog/?path=/catalog/kovboy-bibop-1
 ```
+
+Use the smoke test's Pages-style server to exercise the real pretty URL
+(`/catalog/kovboy-bibop-1`) and the `404.html` bridge.
 
 ## Smoke test
 
@@ -421,9 +515,14 @@ npm test
 It asserts that the campaign and go CTAs start the APK and land on `/install`'s final
 step with «Скачивание началось», that `download.js`, `campaign.js` and `go.js` take
 version, size, SHA and links from `latest.js` first, and that they fall back
-to the GitHub API when that manifest is missing, malformed or has no APK. With
-a real `tools/cover_thumbs/config/upload.json` present (or `--config <path>`),
-it also checks the site's S3 base against the admin publisher's derived public
+to the GitHub API when that manifest is missing, malformed or has no APK. The
+title-page block serves `404.html` like GitHub Pages, follows the pretty URL
+to the shell, checks the single shard request and S3 cover, exercises the
+desktop install hand-off and its automatic APK start, checks the Android
+`intent://` URL and the missing-title state, and validates the App Links
+fingerprints, `.nojekyll` and the known-good download fallback. With a real
+`tools/cover_thumbs/config/upload.json` present (or `--config <path>`), it
+also checks the site's S3 base against the admin publisher's derived public
 base. See the smoke test's `README.md` for flags and scope.
 
 ## Pending

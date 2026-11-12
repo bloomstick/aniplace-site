@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Страница не найдена — place</title>
+<link rel="stylesheet" href="/styles.css">
+<script>
+  (function () {
+    var path = location.pathname;
+    // GitHub Pages has no rewrites: the pretty title URL lands here (404)
+    // and is handed to the real catalog shell with the original path kept
+    // in ?path=. The shell restores the pretty URL with replaceState.
+    if (path === '/catalog' || path.indexOf('/catalog/') === 0) {
+      location.replace(
+        '/catalog/?path=' +
+          encodeURIComponent(path + location.search + location.hash)
+      );
+    }
+  })();
+</script>
+</head>
+<body>
+<main class="shell" style="max-width:760px;padding:72px 20px 96px">
+  <p class="hand" style="font-family:var(--font-hand);font-size:1.5rem;color:var(--red-deep)">потерялись?</p>
+  <h1 style="font-family:var(--font-display);font-size:clamp(2rem,5vw,3.4rem);line-height:1.02;letter-spacing:-0.05em">Страница не найдена</h1>
+  <p style="margin-top:14px;color:var(--ink-soft);line-height:1.65">Такой страницы нет. Вернись на главную или открой каталог в приложении.</p>
+  <p style="margin-top:26px;display:flex;flex-wrap:wrap;gap:12px">
+    <a class="btn btn--primary" href="/">На главную</a>
+    <a class="btn btn--ghost" href="/install.html">Установить Aniplace</a>
+  </p>
+</main>
+</body>
+</html>

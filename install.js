@@ -78,6 +78,14 @@
   var startedRequested = params.started === '1';
   var lastReady = false;
 
+  // `auto=1` is the title page's "Open in the app" fallback: the intent
+  // URL lands here when no app is installed, and this page starts the APK
+  // by itself before showing the instructions. A plain wizard visit (or a
+  // QR scan) never carries the flag and never downloads on its own.
+  var autoRequested = params.auto === '1';
+  var autoStarted = false;
+  var autoTimer = null;
+
   var deviceStep = doc.querySelector('[data-wizard-step="2"]');
   var guideStep = doc.querySelector('[data-wizard-step="3"]');
   if (androidOnly) {
@@ -239,6 +247,21 @@
     renderStarted();
   }
 
+  /// Start an attachment without navigating the wizard away from its
+  /// instructions. Mirrors the hidden-frame path in `download.js`.
+  function startDownload(url) {
+    if (!url) return;
+    var frame = doc.createElement('iframe');
+    frame.style.display = 'none';
+    frame.title = 'Скачивание файла';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.src = url;
+    doc.body.appendChild(frame);
+    window.setTimeout(function () {
+      if (frame.parentNode) frame.parentNode.removeChild(frame);
+    }, 120000);
+  }
+
   var startedWasVisible = false;
 
   function renderStarted() {
@@ -328,6 +351,7 @@
       button.addEventListener('click', function () {
         state.app = button.getAttribute('data-app-choice');
         startedRequested = false;
+        cancelAuto();
         render();
       });
     })(appButtons[a]);
@@ -337,6 +361,7 @@
       button.addEventListener('click', function () {
         state.os = button.getAttribute('data-os-choice');
         startedRequested = false;
+        cancelAuto();
         render();
       });
     })(osButtons[o]);
@@ -462,6 +487,38 @@
     });
   } else {
     doc.addEventListener('place:releases', renderResult);
+  }
+
+  function cancelAuto() {
+    autoRequested = false;
+    if (autoTimer !== null) {
+      window.clearTimeout(autoTimer);
+      autoTimer = null;
+    }
+  }
+
+  /// Start the current Android asset once the title page's intent fallback
+  /// lands here. The short delay lets the S3 manifest replace the known-good
+  /// fallback first; a user who changes app/device cancels it.
+  function maybeAutoStart() {
+    if (!autoRequested || autoStarted || state.app !== 'aniplace' || state.os !== 'android') {
+      return;
+    }
+    var release = window.PlaceDownloads ? window.PlaceDownloads.get('aniplace') : null;
+    var asset = release ? release.android : null;
+    if (!asset || !asset.url) return;
+    autoStarted = true;
+    startedRequested = true;
+    startDownload(asset.url);
+    render();
+    window.requestAnimationFrame(function () { scrollToWizard(false); });
+  }
+
+  if (autoRequested && state.app === 'aniplace') {
+    autoTimer = window.setTimeout(function () {
+      autoTimer = null;
+      maybeAutoStart();
+    }, 1200);
   }
 
   render();

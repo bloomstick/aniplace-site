@@ -35,23 +35,23 @@
       api: 'https://api.github.com/repos/bloomstick/aniplace-releases',
       releases: 'https://github.com/bloomstick/aniplace-releases/releases',
       fallback: {
-        version: '1.18.7',
-        published: '2026-10-31T19:07:46Z',
-        releaseUrl: 'https://github.com/bloomstick/aniplace-releases/releases/tag/v1.18.7',
+        version: '1.25.0',
+        published: '2026-11-11T20:52:38Z',
+        releaseUrl: 'https://github.com/bloomstick/aniplace-releases/releases/tag/v1.25.0',
         android: {
-          name: 'aniplace-1.18.7-android.apk',
-          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/aniplace-1.18.7-android.apk',
-          size: 40767771
+          name: 'aniplace-1.25.0-android.apk',
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.25.0/aniplace-1.25.0-android.apk',
+          size: 45176384
         },
         windows: {
-          name: 'aniplace-1.18.7-windows.zip',
-          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/aniplace-1.18.7-windows.zip',
-          size: 40100273,
-          kind: 'zip'
+          name: 'aniplace-1.25.0-windows-setup.exe',
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.25.0/aniplace-1.25.0-windows-setup.exe',
+          size: 31974902,
+          kind: 'exe'
         },
         sha: {
           name: 'SHA256SUMS.txt',
-          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.18.7/SHA256SUMS.txt'
+          url: 'https://github.com/bloomstick/aniplace-releases/releases/download/v1.25.0/SHA256SUMS.txt'
         }
       }
     },

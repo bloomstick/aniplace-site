@@ -1,0 +1,574 @@
+/* ani.place/catalog/<slug>-<id> — the public title page.
+   Warm paper, one loud red action, the app's own play-button anatomy.
+   Layout and palette stay in step with ../styles.css; this file only owns
+   the title-card pieces. */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.title-page {
+  padding: clamp(24px, 4vw, 48px) 0 clamp(40px, 6vw, 76px);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: clamp(18px, 3vw, 30px);
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.crumbs a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+}
+.crumbs a:hover {
+  color: var(--red-deep);
+  border-bottom-color: var(--red);
+}
+.crumbs span[aria-hidden] { color: var(--line-strong); }
+.crumbs span[aria-current] {
+  max-width: 46ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+/* ---------- Loading skeleton ---------- */
+
+.title-loading {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+.title-loading__cover,
+.title-loading__line,
+.title-loading__chips i {
+  background: linear-gradient(100deg, var(--paper-2) 30%, var(--white) 50%, var(--paper-2) 70%);
+  background-size: 220% 100%;
+  animation: title-shimmer 1.6s var(--ease) infinite;
+}
+.title-loading__cover {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border: 2px solid var(--line-strong);
+  border-radius: 14px;
+}
+.title-loading__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+.title-loading__line {
+  display: block;
+  width: 78%;
+  height: 15px;
+  border-radius: 5px;
+}
+.title-loading__line.is-short { width: 26%; height: 10px; }
+.title-loading__line.is-title { width: 72%; height: 42px; }
+.title-loading__line.is-mid { width: 54%; }
+.title-loading__chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.title-loading__chips i {
+  display: block;
+  width: 82px;
+  height: 30px;
+  border-radius: 999px;
+}
+@keyframes title-shimmer {
+  to { background-position: -220% 0; }
+}
+
+/* ---------- Title card ---------- */
+
+.title-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: clamp(26px, 4.5vw, 64px);
+  align-items: start;
+}
+
+.title-cover-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+.title-cover {
+  position: relative;
+  margin: 0;
+  padding: 7px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 8px 8px 0 rgba(42, 32, 39, 0.16);
+  transform: rotate(-1deg);
+}
+.title-cover img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 9px;
+  background: var(--paper-2);
+}
+.title-cover img.is-missing {
+  visibility: hidden;
+}
+.title-cover::after {
+  content: "нет обложки";
+  position: absolute;
+  inset: 7px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--ink-soft);
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  opacity: 0;
+  pointer-events: none;
+}
+.title-cover:has(img.is-missing)::after { opacity: 1; }
+.title-cover__tape {
+  top: -14px;
+  left: 50%;
+  width: 92px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-5deg);
+}
+.title-cover__note {
+  margin-top: 14px;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  text-align: center;
+  transform: rotate(-1.5deg);
+}
+
+.title-copy { min-width: 0; }
+
+.title-copy h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.8vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.title-alt {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.title-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-top: 22px;
+}
+.title-fact {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 2px 2px 0 rgba(42, 32, 39, 0.08);
+}
+.title-fact span {
+  color: var(--ink-soft);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.title-fact b {
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+.title-fact b.is-ongoing { color: #1d7a45; }
+.title-fact b.is-released { color: var(--ink-soft); }
+.title-fact b.is-announcement { color: #a55a00; }
+
+.title-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+.title-tag {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid rgba(225, 29, 72, 0.26);
+  border-radius: 999px;
+  background: var(--pink-soft);
+  color: var(--red-deep);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.title-tag--tag {
+  border-color: var(--line-strong);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+}
+
+.title-description {
+  margin-top: clamp(22px, 3vw, 32px);
+  max-width: 70ch;
+}
+.title-description h2,
+.title-install__copy h2,
+.title-details__inner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.title-description p {
+  margin-top: 9px;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.72;
+  white-space: pre-line;
+}
+.title-description p.is-empty {
+  font-family: var(--font-hand);
+  font-size: 1.18rem;
+  line-height: 1.35;
+}
+
+.title-ios-note {
+  display: none;
+  max-width: 48ch;
+  margin-top: 26px;
+  padding: 13px 15px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.55;
+}
+[data-platform="ios"] .title-ios-note { display: block; }
+
+/* ---------- The app's play button, on paper ---------- */
+
+.title-action {
+  margin-top: clamp(26px, 4vw, 38px);
+  max-width: 540px;
+}
+.title-play {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 68px;
+  padding: 13px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--red);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease), background 0.18s ease;
+}
+.title-play:hover {
+  background: var(--red-deep);
+  transform: translate(-1px, -1px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.title-play:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.title-play__badge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+}
+.title-play__badge .icon { width: 21px; height: 21px; }
+.title-play__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  text-align: left;
+}
+.title-play__copy small {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.title-play__copy b {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.title-play__chev { margin-left: auto; flex: none; }
+.title-action__note {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+.title-install-link {
+  margin-top: 14px;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+}
+.title-install-link a {
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 2px;
+}
+
+/* The play CTA is meaningless on iOS (there is no build); the page keeps
+   the honest note and the install link instead. */
+[data-platform="ios"] .title-action,
+[data-platform="ios"] .title-install-link { display: none; }
+
+/* ---------- Windows install strip ---------- */
+
+.title-install {
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-2);
+  padding: clamp(28px, 4vw, 46px) 0;
+}
+.title-install__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(22px, 4vw, 52px);
+  align-items: center;
+}
+.title-install__qr {
+  margin: 0;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 5px 5px 0 rgba(42, 32, 39, 0.14);
+  transform: rotate(-1.5deg);
+}
+.title-install__qr img { width: 180px; height: 180px; }
+.title-install__qr figcaption {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  text-align: center;
+}
+.title-install__copy p:not(.kicker) {
+  max-width: 58ch;
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.title-install__copy .btn { margin-top: 18px; }
+
+/* ---------- Details ---------- */
+
+.title-details {
+  padding: clamp(30px, 5vw, 58px) 0;
+}
+.title-details__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(200px, 0.5fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: start;
+}
+.title-dl {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.4fr) minmax(0, 1fr);
+  gap: 0;
+  margin: 18px 0 0;
+  border-top: 1px solid var(--line);
+}
+.title-dl dt,
+.title-dl dd {
+  margin: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.title-dl dt {
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+.title-dl dd { font-weight: 700; }
+.title-dl dd a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 2px;
+}
+
+.title-side {
+  padding: 20px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 5px 5px 0 rgba(42, 32, 39, 0.12);
+}
+.title-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.title-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.title-links a:hover {
+  border-color: var(--red);
+  color: var(--red-deep);
+}
+.title-links .icon { width: 15px; height: 15px; flex: none; }
+.title-side__app {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.title-side__app img {
+  border-radius: 11px;
+  box-shadow: 0 2px 0 rgba(42, 32, 39, 0.2);
+}
+.title-side__app p {
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.title-side__empty {
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* ---------- Not found / fetch failure ---------- */
+
+.title-empty {
+  max-width: 580px;
+  padding: clamp(28px, 5vw, 52px) 0;
+}
+.title-empty .hand { font-size: 1.35rem; }
+.title-empty h1 {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -0.05em;
+}
+.title-empty p:not(.hand) {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.title-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .title-loading,
+  .title-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .title-cover-wrap {
+    width: min(270px, 74vw);
+    margin: 0 auto;
+  }
+  .title-copy { text-align: left; }
+  .title-copy h1 { font-size: clamp(1.9rem, 8vw, 3rem); }
+  .title-install__inner,
+  .title-details__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .title-install__qr {
+    width: fit-content;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .title-page { padding-top: 20px; }
+  .title-cover-wrap { width: min(230px, 78vw); }
+  .title-facts { gap: 7px; }
+  .title-fact { padding: 6px 9px; }
+  .title-play { padding: 12px; }
+  .title-play__copy b { font-size: 0.98rem; }
+  .title-dl { grid-template-columns: minmax(96px, 0.45fr) minmax(0, 1fr); }
+  .title-dl dt,
+  .title-dl dd { font-size: 0.76rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-loading__cover,
+  .title-loading__line,
+  .title-loading__chips i {
+    animation: none;
+  }
+  .title-play,
+  .title-cover {
+    transition: none;
+  }
+  .title-play:hover,
+  .title-play:active {
+    transform: none;
+  }
+}
