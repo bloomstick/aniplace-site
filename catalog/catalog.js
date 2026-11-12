@@ -294,7 +294,7 @@
 
     if (platformName === 'android') {
       if (eyebrow) eyebrow.textContent = 'Откроется в приложении';
-      if (label) label.textContent = 'Смотреть в Aniplace';
+      if (label) label.textContent = 'Открыть в Aniplace';
       if (note) {
         note.textContent = 'Если приложение уже установлено, откроется оно. Если нет — начнётся загрузка APK и откроется инструкция.';
       }
