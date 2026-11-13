@@ -183,12 +183,21 @@
     var episodes = episodeText(row);
     var alt = altNames(row, name);
 
-    doc.title = name + ' — Aniplace';
-    setMeta('name', 'description', summary(row, name));
-    setMeta('property', 'og:title', name + ' — Aniplace');
-    setMeta('property', 'og:description', summary(row, name));
+    doc.title = name + ' — в приложении Аниплейс';
+    var pageSummary = summary(row, name);
+    setMeta('name', 'description', pageSummary);
+    setMeta('property', 'og:title', name + ' — в приложении Аниплейс');
+    setMeta('property', 'og:description', pageSummary);
     setMeta('property', 'og:image', coverUrl || 'https://ani.place/assets/og-cover.png');
+    setMeta('property', 'og:image:alt', 'Обложка: ' + name);
+    setMeta('name', 'twitter:title', name + ' — в приложении Аниплейс');
+    setMeta('name', 'twitter:description', pageSummary);
     setMeta('name', 'twitter:image', coverUrl || 'https://ani.place/assets/og-cover.png');
+    // App Links hooks for clients that read meta instead of dispatching
+    // verified HTTPS links (messenger in-app browsers): same deep link the
+    // Android intent filter and `parseDreamLink` already understand.
+    setMeta('property', 'al:android:url', 'aniplace://title/dream:' + id);
+    setMeta('property', 'al:web:url', location.origin + canonical);
 
     var canonicalEl = doc.getElementById('canonical');
     if (canonicalEl) canonicalEl.setAttribute('href', location.origin + canonical);
@@ -208,10 +217,11 @@
     var descEl = doc.getElementById('title-description');
     if (descEl && !row.description) descEl.classList.add('is-empty');
 
-    renderCover(coverUrl, name);
+    renderCover(coverUrl, fullCoverUrl(data, row, id), name);
     renderFacts(row, statusLabel, statusClass(row.status), typeLabel, seasonLabel, episodes);
     renderTags(row);
     renderAction(row, id, platform);
+    attemptAppOpen(id, platform);
     renderDetails(row, typeLabel, statusLabel, seasonLabel, episodes);
     renderLinks(row);
 
@@ -219,16 +229,30 @@
     if (article) article.hidden = false;
   }
 
-  function renderCover(url, name) {
+  function renderCover(url, fullUrl, name) {
     var img = doc.getElementById('title-cover');
     if (!img) return;
     img.alt = 'Обложка: ' + name;
     img.addEventListener('error', function () {
+      // The shard row exists, so the card thumbnail should too — but when
+      // it 404s (slow inventory roll, pruned object), try the hero
+      // rendition before painting the neutral "no cover" state.
+      if (fullUrl && img.getAttribute('data-cover-try') !== 'full') {
+        img.setAttribute('data-cover-try', 'full');
+        img.src = fullUrl;
+        return;
+      }
       // Keep the URL (the smoke test and devtools read it); CSS hides the
       // broken image and paints the neutral "no cover" state underneath.
       img.classList.add('is-missing');
-    }, { once: true });
+    });
     if (url) img.src = url;
+  }
+
+  function fullCoverUrl(data, row, id) {
+    var coverBase = String(data && data.coverBase || '');
+    if (!coverBase) return '';
+    return coverBase + 'full/' + id + '.webp';
   }
 
   function renderFacts(row, statusLabel, statusCls, typeLabel, seasonLabel, episodes) {
@@ -332,6 +356,29 @@
   function isChromiumAndroid() {
     var ua = navigator.userAgent || '';
     return /Chrome|CriOS|Chromium|EdgA|SamsungBrowser|Opera|YaBrowser/i.test(ua);
+  }
+
+  function attemptAppOpen(id, platformName) {
+    // Verified App Links open the installed app before this page even loads
+    // (system browser). Messenger in-app browsers don't dispatch them, so on
+    // Android the shell fires one silent custom-scheme attempt itself: with
+    // Aniplace installed the app opens the title and this page is never
+    // seen; without it the navigation fails inside the hidden frame and the
+    // page with its install action stays. No fallback URL here on purpose —
+    // the visible CTA owns the install path.
+    if (platformName !== 'android') return;
+    if (doc.getElementById('title-auto-open')) return;
+    try {
+      var frame = doc.createElement('iframe');
+      frame.id = 'title-auto-open';
+      frame.setAttribute('aria-hidden', 'true');
+      frame.setAttribute('tabindex', '-1');
+      frame.setAttribute('title', '');
+      frame.style.cssText =
+        'position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none;';
+      frame.src = 'aniplace://title/' + encodeURIComponent('dream:' + id);
+      doc.body.appendChild(frame);
+    } catch (e) { /* stay on the page */ }
   }
 
   function renderDetails(row, typeLabel, statusLabel, seasonLabel, episodes) {
@@ -458,11 +505,15 @@
   }
 
   function summary(row, name) {
+    // Mirrors `og_description()` in `tools/site/build_catalog.py`: the shim
+    // files bake this text for crawlers, the shell refreshes it for humans.
     if (row.description) {
       var text = String(row.description).replace(/\s+/g, ' ').trim();
-      return text.length > 158 ? text.slice(0, 155).trim() + '…' : text;
+      if (text.length > 160) text = text.slice(0, 157).trim() + '…';
+      return text + ' — смотреть в приложении Аниплейс.';
     }
-    return name + ' — карточка тайтла в каталоге Aniplace: описание, жанры, теги и обложка.';
+    return 'Смотреть аниме «' + name + '» в приложении Аниплейс: ' +
+      'описание, жанры и рейтинг.';
   }
 
   function formatRating(value) {
