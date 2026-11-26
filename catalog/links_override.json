@@ -6,18 +6,64 @@
     "10370": [
       "readmanga:persona_3__A5288"
     ],
+    "10443": [
+      "readmanga:ia_prevratilsia_v_devochku_volshebnicu"
+    ],
+    "1091": [
+      "readmanga:liupen_melkii"
+    ],
+    "1135": [
+      "readmanga:memorist",
+      "readmanga:zapomnit__A533b"
+    ],
+    "1200": [
+      "readmanga:history_s_strongest_another_stories"
+    ],
     "12102": [
       "readmanga:vse_sezony_"
+    ],
+    "1244": [
+      "readmanga:napadaiuchii"
+    ],
+    "1261": [
+      "readmanga:apocalypse_meow"
     ],
     "1325": [
       "1403--naruto-shinden",
       "readmanga:naruto__novyi_akt__A35c96"
     ],
+    "1482": [
+      "readmanga:lunnaia_zemlia__A5288"
+    ],
+    "1614": [
+      "readmanga:igrushki"
+    ],
+    "16586": [
+      "readmanga:sinii_drakon"
+    ],
     "17961": [
       "172766--one-punch-man-ot-avtora-yumiko-honda"
     ],
+    "1863": [
+      "readmanga:drakonii_jemchug_super__A533b"
+    ],
+    "19490": [
+      "readmanga:kantai_collection_dj___bad_girl"
+    ],
+    "19493": [
+      "readmanga:drakonii_jemchug_sd__A5275"
+    ],
     "19732": [
       "251901--chainsaw-man-fan-one-shot-reze-and-yuki-story"
+    ],
+    "20302": [
+      "readmanga:kantai_collection_dj___bad_girl"
+    ],
+    "20569": [
+      "readmanga:les_bijoux"
+    ],
+    "2160": [
+      "readmanga:kamidori__A1ec180"
     ],
     "22": [
       "169667--berserkir",
@@ -26,24 +72,106 @@
       "readmanga:berserker_8718",
       "readmanga:berserkir"
     ],
+    "22514": [
+      "readmanga:morchinka"
+    ],
+    "22836": [
+      "readmanga:samuraika"
+    ],
+    "2311": [
+      "readmanga:proishojdenie"
+    ],
+    "23134": [
+      "readmanga:formula_iuiu"
+    ],
     "23203": [
       "readmanga:familia",
       "readmanga:family"
     ],
+    "23312": [
+      "readmanga:vampire__itsuki_nasumi"
+    ],
+    "2377": [
+      "readmanga:to_love"
+    ],
+    "23863": [
+      "readmanga:blagoslovenie"
+    ],
     "23942": [
-      "readmanga:mstitel_09"
+      "readmanga:mstitel_09",
+      "readmanga:mstiteli"
+    ],
+    "2434": [
+      "readmanga:pojiratel",
+      "readmanga:pojiratel_2025",
+      "readmanga:pojiratel_dush_not",
+      "readmanga:soul_eater_dj___i_wanna_be_your_dog",
+      "readmanga:soul_eater_dj___m",
+      "readmanga:soul_eater_dj___rendezvous_pitch_maneuver",
+      "readmanga:soul_eater_dj___soulmaka",
+      "readmanga:soul_eater_dj___strawberries_and_mint",
+      "readmanga:soul_eater_dj___upright",
+      "readmanga:the_soul_eater_cursed_girl__ga_rei_"
+    ],
+    "2943": [
+      "readmanga:umnaia_boginia"
+    ],
+    "3183": [
+      "readmanga:v_poiskah_polnoi_luny__A5288"
     ],
     "320": [
       "readmanga:love_mate_2"
     ],
+    "388": [
+      "readmanga:on___starsheklassnica___A533b"
+    ],
+    "4217": [
+      "readmanga:semnadcat",
+      "readmanga:semnadcat_let__A5288"
+    ],
+    "4343": [
+      "readmanga:touhou_dj___hikari_yori_hayaku"
+    ],
     "4650": [
       "readmanga:persona_3__A5288"
+    ],
+    "4761": [
+      "readmanga:stranstvuiuchii_voin_ares"
+    ],
+    "496": [
+      "readmanga:vozvrachenie_koi__A5274"
+    ],
+    "5150": [
+      "readmanga:pojiratel",
+      "readmanga:pojiratel_2025",
+      "readmanga:pojiratel_ulinia"
+    ],
+    "521": [
+      "readmanga:muza"
+    ],
+    "5563": [
+      "readmanga:batteri"
     ],
     "668": [
       "readmanga:disgaea_2"
     ],
+    "670": [
+      "readmanga:on___starsheklassnica___A533b"
+    ],
+    "7004": [
+      "readmanga:mobile_suit_gundam_f90"
+    ],
     "7142": [
       "readmanga:vse_sezony_"
+    ],
+    "722": [
+      "readmanga:frei",
+      "readmanga:grei_2014",
+      "readmanga:rein"
+    ],
+    "740": [
+      "readmanga:dream_catcher",
+      "readmanga:dreamcatcher__yanahri_"
     ],
     "8021": [
       "172766--one-punch-man-ot-avtora-yumiko-honda"
@@ -56,6 +184,6 @@
     ]
   },
   "links": {},
-  "notes": "Manual anime->manga links. Keys are anime ids (strings), values are lists of qualified manga slugs: bare 'NNNN--slug' (MangaLib), 'remanga:<dir>' (Remanga), 'readmanga:<linkName>' (ReadManga). 'links' entries always win over auto-matches; 'exclude' slugs are removed from auto-matches. Curated 2026-11-25 from live top-50 refresh audit: every excluded slug was verified a wrong work (parody/fanfic 'yumiko_honda' One-Punch-Man doujinshi, 'berserkir' parody, Persona 3 manga for Persona 4/5 anime, Naruto Shinden novel-entry for Shippuden, 'vse_sezony_' season compilations, Disgaea 2 for the Disgaea 1 anime, Reze fan one-shot for the Reze movie, 'love_mate_2' alt-name collision for Suzuka, 'mstitel_09' for REVENGER, 'familia' short-string collision). No invented links: anything without a verified source stays unresolved in link_report.json.",
+  "notes": "Manual anime->manga links. Keys are anime ids (strings), values are lists of qualified manga slugs: bare 'NNNN--slug' (MangaLib), 'remanga:<dir>' (Remanga), 'readmanga:<linkName>' (ReadManga). 'links' entries always win over auto-matches; 'exclude' slugs are removed from auto-matches. Curated 2026-11-25 from live top-50 refresh audit plus 2026-11-26 full-catalog (28k) audit: every excluded slug was verified a wrong work (parody/fanfic 'yumiko_honda' One-Punch-Man doujinshi, 'berserkir' parody, Kantai/Touhou DJ doujinshi, Persona 3 manga for Persona 4/5 anime, Naruto Shinden novel-entry for Shippuden, 'vse_sezony_' season compilations, Disgaea 2 for the Disgaea 1 anime, Gundam F90 for Gundam-san parody, Reze fan one-shot for the Reze movie, Soul Eater Not!/Kenichi Gaiden spinoffs for main anime, Dragon Ball Super for DB Specials, Daima vs SD spins, 'love_mate_2' alt-name collision for Suzuka, 'mstitel_09'/'mstiteli' for REVENGER, 'familia' short-string collision, plus full-catalog alt-name/short-string hits: Ray/Fray, To-Y/Toys, Midori/Kamidori, Fumoon/Full Moon, Apocalypse Zero/Meow, Moonlight Mile/Moon Land, Dark/Smart goddess, Lie Eater/Monster Eater, To Love Ru/To Love, Elf 17/Seventeen, Mini/Blue Dragon, Aria Origination/OriginS, Aria Benedizione/Bless, Ruri Rocks/Les Bijoux, Wife/He schoolgirl, Memories/Memorist, Mouse/Muse, Dream Users/Catcher, Lupin III/Small, Cat/Koi Returns, Bats&Terry/Battery, Samurai/Samuraika, Formula/Formula YY, Nya-vampire/Vampire, Shia/Wrinkle, Creator/Ares warrior). No invented links: anything without a verified source stays unresolved in link_report.json.",
   "version": 1
 }
