@@ -274,31 +274,40 @@ chat crawlers read that title's `<title>`/Open Graph tags
 tail, cover `og:image`) plus the `al:android:*` (`mangaplace://title/<slug>`,
 package `place.ani.manga`) and `twitter:app:*` hooks. Human browsers follow
 the instant redirect to `/manga/?path=<original>`; the shell restores the
-pretty URL with `replaceState`. Anything unmapped (or the whole surface
-before WS2 lands the map) falls through to `404.html` with a 404 status and
+pretty URL with `replaceState`. Anything uncovered (or the whole surface
+while sources are uncrawled) falls through to `404.html` with a 404 status and
 shows the honest not-found state.
 
 **Data.** `apps/animedream/tools/site/build_manga_catalog.py` reads the
 slug set from the WS2 map (`apps/mangaplace/assets/anime_manga.json`,
-`{"version":1,"links":{animeId:[slugs]}}`) and the display fields from
-`site/manga/data/manga_meta.json` (`{"version":1,"titles":[{slug,name,...}]}`),
-then writes `site/manga/data/titles.json` (`{"version":1,"rows":{slug:row}}`,
-keyed by the raw provider slug exactly as `parseDreamLink` decodes it) plus
-the shims, deleting retired ones:
+`{"version":1,"links":{animeId:[slugs]}}`) plus the full-catalog snapshot
+(`site/catalog/manga_catalog/manga-*.json`, sharded 500/shard, written by
+`tools/site/crawl_manga_catalog.py` from the reachable-source listings —
+ReadManga fully, MangaLib bounded, Remanga best-effort) and the display
+fields from `site/manga/data/manga_meta.json`
+(`{"version":1,"titles":[{slug,name,...}]}`), then writes
+`site/manga/data/titles.json` (`{"version":1,"rows":{slug:row}}`,
+keyed by the raw provider slug exactly as `parseDreamLink` decodes it)
+plus the shims, deleting retired ones. Slugs whose repo-relative shim
+path exceeds 200 chars are excluded with a loud warning (stock Windows
+git cannot check out longer paths; 29 ReadManga titlestrips hit this).
+The build also writes `apps/mangaplace/assets/manga_served_slugs.json`
+(`{"version":1,"slugs":[...]}`, the exact served set) — the app's share
+gate reads it (skip with `--no-served-asset`):
 
 ```powershell
 python apps/animedream/tools/site/build_manga_catalog.py
-# or: --map <path> --meta <path> (defaults above)
+# or: --map <path> --meta <path> --snapshot-dir <dir> (defaults above)
 ```
 
-A missing or empty map is a green build publishing zero pages (the surface
-stays deployable while WS2 curates); a non-empty map is strict — a mapped
-slug without metadata, or without its shim after the write, fails the
-build. Regenerate and commit whenever the map or metadata changes.
-`manga_meta.json` display fields for mapped slugs come from
-`tools/site/refresh_manga_meta.py`, which detail-fetches each slug
-(MangaLib + ReadManga, Remanga best-effort) into
-`catalog/manga_snapshot/snapshot.json` and rewrites the mapped meta rows:
+An empty slug set is a green build publishing zero pages (the surface
+stays deployable while sources are uncrawled); a non-empty set is
+strict — a served slug without metadata, or without its shim after the
+write, fails the build. Regenerate and commit whenever the map,
+snapshot or metadata changes. `manga_meta.json` display fields come from
+`tools/site/refresh_manga_meta.py` (mapped slugs, detail-fetched) merged
+with `tools/site/crawl_manga_catalog.py --write-meta` (crawled long
+tail, curated detail rows kept verbatim):
 
 ```powershell
 python apps/animedream/tools/site/refresh_manga_meta.py
@@ -504,7 +513,7 @@ static HTML plus `changelog.js`; there is no build step.
 
 ```powershell
 python apps/animedream/tools/site/build_catalog.py  # catalog/data/titles-*.json shards
-python apps/animedream/tools/site/build_manga_catalog.py  # manga/data/titles.json + per-slug shims (zero pages until the WS2 map lands)
+python apps/animedream/tools/site/build_manga_catalog.py  # manga/data/titles.json + per-slug shims (map + catalog snapshot; zero pages while both are empty)
 python apps/animedream/tools/site/make_og.py       # family OG card + 64px favicon
 python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png + go/og-go.png
 python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg + go/qr-android.svg
