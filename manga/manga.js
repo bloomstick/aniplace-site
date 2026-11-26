@@ -99,13 +99,39 @@
     }
   }
 
+  function mangaPathForSlug(slug) {
+    // Mirrors WS1 `buildMangaCatalogLink` (dream_core) without the host:
+    // bare ids stay one segment, `src:dir` nests as `/manga/<src>/<dir>`.
+    // Dirs never contain `/`; a stray slash nests deeper and parses back
+    // via the join below. `encodeURIComponent` keeps current safe dirs
+    // readable and encodes the rest once.
+    var clean = String(slug || '').trim();
+    var colon = clean.indexOf(':');
+    if (colon < 0) return '/manga/' + encodeURIComponent(clean);
+    var src = clean.slice(0, colon).trim();
+    var rest = clean.slice(colon + 1).trim();
+    var parts = rest.split('/').filter(function (p) { return p.trim(); })
+      .map(function (p) { return encodeURIComponent(p.trim()); });
+    return '/manga/' + encodeURIComponent(src) + '/' + parts.join('/');
+  }
+
   function parseMangaPath(raw) {
     var clean = String(raw || '').split('#')[0].split('?')[0];
     var parts = clean.split('/').filter(Boolean);
     if (parts.length < 2 || parts[0] !== 'manga') return null;
-    var slug = safeDecode(parts[1]).trim();
-    if (!slug) return null;
-    return { slug: slug };
+    if (parts.length === 2) {
+      // Bare slug, or a legacy single-segment `%3A` URL (decodes to `:`).
+      var slug = safeDecode(parts[1]).trim();
+      if (!slug) return null;
+      return { slug: slug };
+    }
+    var src = safeDecode(parts[1]).trim();
+    if (!src) return null;
+    var rest = parts.slice(2).map(safeDecode).map(function (s) {
+      return String(s || '').trim();
+    }).filter(Boolean);
+    if (!rest.length) return null;
+    return { slug: src + ':' + rest.join('/') };
   }
 
   function getPlatform() {
@@ -123,7 +149,10 @@
       return;
     }
 
-    fetch('data/titles.json', { headers: { Accept: 'application/json' } })
+    // Absolute path: after `replaceState` the pretty URL may be nested
+    // (`/manga/<src>/<dir>`), and a relative fetch would resolve under
+    // `/manga/<src>/`. Single-segment URLs worked by accident.
+    fetch('/manga/data/titles.json', { headers: { Accept: 'application/json' } })
       .then(function (response) {
         if (response.status === 404) return null;
         if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -161,7 +190,7 @@
 
     var name = String(row.name || '');
     var slug = String(row.slug || '');
-    var canonical = '/manga/' + encodeURIComponent(slug);
+    var canonical = mangaPathForSlug(slug);
     var coverUrl = String(row.cover || OG_FALLBACK);
     var statusLabel = labelFor(STATUS_LABELS, row.status, row.status);
     var typeLabel = String(row.type || '');

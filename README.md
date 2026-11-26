@@ -24,7 +24,7 @@ GitHub-first release links.
 | `campaign/` | Aniplace-only ad landing (`index.html`, `campaign.css`, `campaign.js`, `og-campaign.png`): animated midnight hero, design-concept screens, Android-first direct APK / RuStore CTAs, desktop QR, optional Windows install, dedicated share card |
 | `go/` | RuStore-free copy of the ad landing (`index.html`, `go.css`, `go.js`, `og-go.png`): same midnight hero and direct-APK flow as `campaign/`, no store mentions or buttons |
 | `catalog/` | Public title pages at `/catalog/<slug>-<id>` (`index.html`, `catalog.css`, `catalog.js`, `data/titles-*.json`, per-title `<slug>-<id>.html` crawler shims): cover, names, description, genres/tags and facts; the same play-button CTA opens the app or installs it |
-| `manga/` | Public manga pages at `/manga/<slug>` (`index.html`, `manga.js`, `data/titles.json`, per-slug `<encodeComponent slug>.html` crawler shims): cover, names, description and genre/tag chips; same play-button CTA, Mangaplace edition. Built by `build_manga_catalog.py` from the WS2 map + `data/manga_meta.json`; zero pages until the map lands |
+| `manga/` | Public manga pages at `/manga/...` (`index.html`, `manga.js`, `data/titles.json`, per-slug shims: `<slug>.html` bare, `<src>/<dir>.html` nested): cover, names, description and genre/tag chips; same play-button CTA, Mangaplace edition. Built by `build_manga_catalog.py` from the WS2 map + `data/manga_meta.json`; zero pages until the map lands |
 | `404.html` | GitHub Pages fallback: forwards `/catalog/...` and `/manga/...` to their shells with the original path preserved (the shell restores the pretty URL), otherwise shows a small not-found page |
 | `.well-known/assetlinks.json` | Android App Links verification: `place.ani` (Aniplace) and `place.ani.manga` (Mangaplace), release + debug signing fingerprints |
 | `.nojekyll` | Disables Jekyll so GitHub Pages serves `.well-known/assetlinks.json` (dot-directories are otherwise omitted) |
@@ -254,17 +254,21 @@ fingerprints. It needs no network.
 
 ## Manga title pages (`manga/`)
 
-One public page per WS2-mapped manga title: **https://ani.place/manga/&lt;slug&gt;**
-(e.g. `/manga/remanga%3Amartial_peak`). The slug is the full qualified
-provider slug (`remanga:<dir>`, `readmanga:<link>`, bare MangaLib id),
-`Uri.encodeComponent`-escaped per the WS1 contract in `dream_core`
-(`buildMangaCatalogLink` / `parseDreamLink`), so `:` travels as `%3A`.
-The page shows the cover (source-CDN passthrough, family OG card when the
-map entry carries none), names, description and genre/tag chips.
+One public page per WS2-mapped manga title: bare MangaLib ids at
+**https://ani.place/manga/195--naruto**, provider slugs nested with no
+colon and no percent-encoding (e.g. `/manga/readmanga/martial_peak` for
+`readmanga:martial_peak`) per the WS1 contract in `dream_core`
+(`buildMangaCatalogLink` / `parseDreamLink`; only `[A-Za-z0-9_.-]` stays
+verbatim). The old `%3A` single-file shims 404d on GitHub Pages (Pages
+decodes `%3A` before lookup; Windows cannot create colon filenames), so
+the nested shape is required. The page shows the cover (source-CDN
+passthrough, family OG card when the map entry carries none), names,
+description and genre/tag chips.
 
 **Routing.** Same crawler-shim trick as `catalog/`, one directory over:
-each mapped slug ships a shim at `manga/<encodeComponent slug>.html`
-(generated, committed), served with HTTP 200 for the pretty shared URL;
+bare ids ship a shim at `manga/<slug>.html`, provider slugs at
+`manga/<src>/<dir>.html` (generated, committed; the build prunes the
+retired `%3A` single files), served with HTTP 200 for the pretty shared URL;
 chat crawlers read that title's `<title>`/Open Graph tags
 (`<name> — в приложении Mangaplace`, «читать в приложении Mangaplace»
 tail, cover `og:image`) plus the `al:android:*` (`mangaplace://title/<slug>`,
