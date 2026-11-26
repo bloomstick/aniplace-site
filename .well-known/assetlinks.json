@@ -9,5 +9,16 @@
         "2F:98:63:45:F1:18:64:25:65:85:17:50:2B:45:13:C4:9C:52:D8:4B:39:55:9F:78:52:CC:66:0A:6F:78:E7:66"
       ]
     }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "place.ani.manga",
+      "sha256_cert_fingerprints": [
+        "2D:32:75:DD:AC:BE:D2:C6:86:C9:0F:36:64:2E:E9:B8:83:9E:25:45:4F:4E:A8:F8:FA:A4:12:D0:E4:E5:EE:36",
+        "2F:98:63:45:F1:18:64:25:65:85:17:50:2B:45:13:C4:9C:52:D8:4B:39:55:9F:78:52:CC:66:0A:6F:78:E7:66"
+      ]
+    }
   }
 ]

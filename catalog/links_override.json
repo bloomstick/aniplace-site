@@ -1,0 +1,61 @@
+{
+  "exclude": {
+    "10285": [
+      "readmanga:vse_sezony_"
+    ],
+    "10370": [
+      "readmanga:persona_3__A5288"
+    ],
+    "12102": [
+      "readmanga:vse_sezony_"
+    ],
+    "1325": [
+      "1403--naruto-shinden",
+      "readmanga:naruto__novyi_akt__A35c96"
+    ],
+    "17961": [
+      "172766--one-punch-man-ot-avtora-yumiko-honda"
+    ],
+    "19732": [
+      "251901--chainsaw-man-fan-one-shot-reze-and-yuki-story"
+    ],
+    "22": [
+      "169667--berserkir",
+      "readmanga:berserker_16439",
+      "readmanga:berserker_8667",
+      "readmanga:berserker_8718",
+      "readmanga:berserkir"
+    ],
+    "23203": [
+      "readmanga:familia",
+      "readmanga:family"
+    ],
+    "23942": [
+      "readmanga:mstitel_09"
+    ],
+    "320": [
+      "readmanga:love_mate_2"
+    ],
+    "4650": [
+      "readmanga:persona_3__A5288"
+    ],
+    "668": [
+      "readmanga:disgaea_2"
+    ],
+    "7142": [
+      "readmanga:vse_sezony_"
+    ],
+    "8021": [
+      "172766--one-punch-man-ot-avtora-yumiko-honda"
+    ],
+    "8558": [
+      "172766--one-punch-man-ot-avtora-yumiko-honda"
+    ],
+    "9474": [
+      "172766--one-punch-man-ot-avtora-yumiko-honda"
+    ]
+  },
+  "links": {},
+  "notes": "Manual anime->manga links. Keys are anime ids (strings), values are lists of qualified manga slugs: bare 'NNNN--slug' (MangaLib), 'remanga:<dir>' (Remanga), 'readmanga:<linkName>' (ReadManga). 'links' entries always win over auto-matches; 'exclude' slugs are removed from auto-matches. Curated 2026-11-25 from live top-50 refresh audit: every excluded slug was verified a wrong work (parody/fanfic 'yumiko_honda' One-Punch-Man doujinshi, 'berserkir' parody, Persona 3 manga for Persona 4/5 anime, Naruto Shinden novel-entry for Shippuden, 'vse_sezony_' season compilations, Disgaea 2 for the Disgaea 1 anime, Reze fan one-shot for the Reze movie, 'love_mate_2' alt-name collision for Suzuka, 'mstitel_09' for REVENGER, 'familia' short-string collision). No invented links: anything without a verified source stays unresolved in link_report.json.",
+  "version": 1
+}

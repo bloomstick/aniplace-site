@@ -18,6 +18,15 @@
           encodeURIComponent(path + location.search + location.hash)
       );
     }
+    // Same bridge for the manga surface: /manga/<slug> lands here and is
+    // handed to the manga shell, which restores the pretty URL itself.
+    // Unknown manga slugs keep the 404 status with the not-found page.
+    if (path === '/manga' || path.indexOf('/manga/') === 0) {
+      location.replace(
+        '/manga/?path=' +
+          encodeURIComponent(path + location.search + location.hash)
+      );
+    }
   })();
 </script>
 </head>

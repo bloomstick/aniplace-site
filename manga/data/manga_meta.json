@@ -1,0 +1,371 @@
+{
+  "version": 1,
+  "titles": [
+    {
+      "slug": "112--great_teacher_onizuka",
+      "name": "Крутой учитель Онидзука"
+    },
+    {
+      "slug": "114307--kaoru-hana-wa-rinto-saku",
+      "name": "Очаровательный цветок расцветает с достоинством"
+    },
+    {
+      "slug": "116245--gachiakuta",
+      "name": "Крутые Отбросы (Гачиакута)"
+    },
+    {
+      "slug": "127--hunter_x_hunter",
+      "name": "Охотник х Охотник"
+    },
+    {
+      "slug": "1282--boruto",
+      "name": "Боруто: Следующее поколение Наруто"
+    },
+    {
+      "slug": "144736--madara",
+      "name": "Мадара"
+    },
+    {
+      "slug": "159591--dororon-enma-kun",
+      "name": "Доророн Энма-кун"
+    },
+    {
+      "slug": "191607--kyokai-sen",
+      "name": "Граница"
+    },
+    {
+      "slug": "195--naruto",
+      "name": "Наруто"
+    },
+    {
+      "slug": "2025--dr-stone",
+      "name": "Доктор Стоун"
+    },
+    {
+      "slug": "211953--solo-leveling",
+      "name": "Поднятие уровня в одиночку",
+      "description": "Сон Джину — слабейший охотник ранга E. После смертельного двойного подземелья он получает странную систему, которая позволяет ему расти без предела.",
+      "genres": [
+        "Экшен",
+        "Фэнтези",
+        "Приключения"
+      ],
+      "tags": [
+        "охотники",
+        "система",
+        "прокачка"
+      ],
+      "status": "ongoing",
+      "year": "2018"
+    },
+    {
+      "slug": "220445--jujutsu-kaisen-05",
+      "name": "Магическая Битва 0.5"
+    },
+    {
+      "slug": "2212--shingeki-no-kyojin-gaiden-kuinaki-sentaku",
+      "name": "Атака Титанов — Выбор без сожалений"
+    },
+    {
+      "slug": "245947--mimojuro",
+      "name": "Магическая битва: По модулю"
+    },
+    {
+      "slug": "247--shingeki-no-kyojin",
+      "name": "Атака Титанов"
+    },
+    {
+      "slug": "267369--made-in-abyss-sozdannyi-v-bezdne",
+      "name": "Созданный в Бездне"
+    },
+    {
+      "slug": "293--vinland-saga",
+      "name": "Сага о Винланде"
+    },
+    {
+      "slug": "29759--oshi-no-ko",
+      "name": "Звёздное Дитя"
+    },
+    {
+      "slug": "3173--boku-dake-ga-inai-machi",
+      "name": "Город, в котором меня нет"
+    },
+    {
+      "slug": "3471--guran-buru",
+      "name": "Необъятный океан"
+    },
+    {
+      "slug": "3595--kimetsu-no-yaiba",
+      "name": "Клинок, рассекающий демонов"
+    },
+    {
+      "slug": "39470--8kaijuu",
+      "name": "Кайдзю No. 8"
+    },
+    {
+      "slug": "4464--jujutsu-kaisen",
+      "name": "Магическая битва"
+    },
+    {
+      "slug": "5940--boruto-naruto-the-movie",
+      "name": "Боруто: Спецвыпуск"
+    },
+    {
+      "slug": "701--horimiya",
+      "name": "Хоримия"
+    },
+    {
+      "slug": "70510--dandadan",
+      "name": "Дандадан"
+    },
+    {
+      "slug": "706--onepunchman",
+      "name": "Ванпанчмен"
+    },
+    {
+      "slug": "7965--chainsaw-man",
+      "name": "Человек-бензопила"
+    },
+    {
+      "slug": "8748--sono-bisque-doll-wa-koi-wo-suru",
+      "name": "Эта фарфоровая кукла влюбилась"
+    },
+    {
+      "slug": "8774--dororo",
+      "name": "Дороро"
+    },
+    {
+      "slug": "readmanga:ah__moia_boginia__prikliucheniia_mini_bogin_",
+      "name": "Ах! Моя Богиня! Приключения Мини-Богинь."
+    },
+    {
+      "slug": "readmanga:bezdomnyi__A5238",
+      "name": "Бездомный"
+    },
+    {
+      "slug": "readmanga:bezdomnyi_bog",
+      "name": "Бездомный Бог"
+    },
+    {
+      "slug": "readmanga:blagouhaiuchii_cvetok_rascvetaet_s_dostoinstvom",
+      "name": "Благоухающий цветок расцветает с достоинством"
+    },
+    {
+      "slug": "readmanga:boruto__naruto_next_generations",
+      "name": "Боруто. Наруто: Новое поколение"
+    },
+    {
+      "slug": "readmanga:boruto__specvypusk",
+      "name": "Боруто: Спецвыпуск"
+    },
+    {
+      "slug": "readmanga:cvetochki_posle_iagodok_2_sezon",
+      "name": "Цветочки после ягодок 2 сезон"
+    },
+    {
+      "slug": "readmanga:doktor_stoun__A5327",
+      "name": "Доктор Стоун"
+    },
+    {
+      "slug": "readmanga:dororo__A5238",
+      "name": "Дороро"
+    },
+    {
+      "slug": "readmanga:eksel_saga",
+      "name": "Эксель-сага"
+    },
+    {
+      "slug": "readmanga:erased",
+      "name": "Город, в котором меня нет"
+    },
+    {
+      "slug": "readmanga:forma_golosa",
+      "name": "Форма Голоса"
+    },
+    {
+      "slug": "readmanga:gatiakuta",
+      "name": "Гатиакута"
+    },
+    {
+      "slug": "readmanga:gigantskaia_ledi",
+      "name": "Гигантская леди"
+    },
+    {
+      "slug": "readmanga:gorod__v_kotorom_ty_jivesh__A533b",
+      "name": "Город, в котором ты живешь"
+    },
+    {
+      "slug": "readmanga:grand_blues_",
+      "name": "Великий блюз"
+    },
+    {
+      "slug": "readmanga:grandeek",
+      "name": "Грандик"
+    },
+    {
+      "slug": "readmanga:gromovaia_troica",
+      "name": "Громовая троица"
+    },
+    {
+      "slug": "readmanga:harlock_saga___the_ring_of_the_nibelung",
+      "name": "Сага о Харлоке: Кольцо Нибелунга"
+    },
+    {
+      "slug": "readmanga:hladnokrovnyi_hodzuki",
+      "name": "Хладнокровный Ходзуки"
+    },
+    {
+      "slug": "readmanga:horimiia__A5327",
+      "name": "Хоримия"
+    },
+    {
+      "slug": "readmanga:ia_hochu_zakonchit_etu_igru_liubvi",
+      "name": "Я хочу закончить эту игру любви"
+    },
+    {
+      "slug": "readmanga:istoriia_bespoleznogo_prefekta_i_starsheklassnicy_s_nepodhodiachei_dlinoi_iubki__A5238",
+      "name": "История бесполезного префекта и старшеклассницы с неподходящей длиной юбки"
+    },
+    {
+      "slug": "readmanga:istoriia_semi_arkana",
+      "name": "История семьи Аркана"
+    },
+    {
+      "slug": "readmanga:klinok__rassekaiuchii_demonov__A5327",
+      "name": "Клинок, рассекающий демонов"
+    },
+    {
+      "slug": "readmanga:krutoi_uchitel_onidzuka__A5327",
+      "name": "Крутой учитель Онидзука"
+    },
+    {
+      "slug": "readmanga:krutoi_uchitel_onidzuka__rannie_gody",
+      "name": "Крутой учитель Онидзука: Ранние годы"
+    },
+    {
+      "slug": "readmanga:magicheskaia_bitva",
+      "name": "Магическая битва"
+    },
+    {
+      "slug": "readmanga:magicheskaia_bitva_0__tokiiskaia_stolichnaia_magichesko_tehnicheskaia_shkola",
+      "name": "Магическая битва 0: Токийская столичная магическо-техническая школа"
+    },
+    {
+      "slug": "readmanga:magicheskaia_bitva__modul",
+      "name": "Магическая битва: Модуль"
+    },
+    {
+      "slug": "readmanga:moia_hranitelnica_himari",
+      "name": "Моя хранительница Химари"
+    },
+    {
+      "slug": "readmanga:naruto__A35c96",
+      "name": "Наруто",
+      "genres": [
+        "Экшен",
+        "Приключения"
+      ]
+    },
+    {
+      "slug": "readmanga:needless_zero",
+      "name": "Отверженные 0"
+    },
+    {
+      "slug": "readmanga:neiro_nogami___detektiv_iz_ada",
+      "name": "Нейро Ногами — детектив из ада"
+    },
+    {
+      "slug": "readmanga:neveroiatnye_prikliucheniia_djodjo_chast_3__krestonoscy_zvezdnoi_pyli__A5327",
+      "name": "Невероятные Приключения ДжоДжо Часть 3: Крестоносцы звёздной пыли"
+    },
+    {
+      "slug": "readmanga:neveroiatnye_prikliucheniia_djodjo_chast_6__kamennyi_okean__A5327",
+      "name": "Невероятные Приключения ДжоДжо Часть 6: Каменный океан"
+    },
+    {
+      "slug": "readmanga:nomernutye",
+      "name": "Номернутые"
+    },
+    {
+      "slug": "readmanga:noragami_aragoto",
+      "name": "Норагами Арагото"
+    },
+    {
+      "slug": "readmanga:obechannyi_neverlend",
+      "name": "Обещанный Неверленд"
+    },
+    {
+      "slug": "readmanga:ohotnik___ohotnik",
+      "name": "Охотник × Охотник"
+    },
+    {
+      "slug": "readmanga:princessa_kukla_",
+      "name": "Принцесса-кукла!"
+    },
+    {
+      "slug": "readmanga:provojaiuchaia_v_poslednii_put_friren",
+      "name": "Провожающая в последний путь Фрирен"
+    },
+    {
+      "slug": "readmanga:put_asa___akt_ii__A5664",
+      "name": "Путь аса - Акт II"
+    },
+    {
+      "slug": "readmanga:put_baki_2__A533b",
+      "name": "Путь Баки 2"
+    },
+    {
+      "slug": "readmanga:raidbek",
+      "name": "Райдбэк"
+    },
+    {
+      "slug": "readmanga:semia_shpiona__A5327",
+      "name": "Семья шпиона"
+    },
+    {
+      "slug": "readmanga:shkolnaia_forma_akebi_tian",
+      "name": "Школьная форма Акэби-тян"
+    },
+    {
+      "slug": "readmanga:sinii_gigant__A5664",
+      "name": "Синий гигант"
+    },
+    {
+      "slug": "readmanga:skullman",
+      "name": "Человек-череп"
+    },
+    {
+      "slug": "readmanga:stalnaia_bitva_beibleidov",
+      "name": "Стальная битва Бэйблэйдов"
+    },
+    {
+      "slug": "readmanga:tancui__tancui__tancor",
+      "name": "Танцуй, танцуй, танцор"
+    },
+    {
+      "slug": "readmanga:the_place_promised_in_our_early_days",
+      "name": "Там, за облаками, где мы обещали побывать"
+    },
+    {
+      "slug": "readmanga:vtorjenie__giganty_srednei_shkoly",
+      "name": "Вторжение! Гиганты средней школы"
+    },
+    {
+      "slug": "readmanga:vynos_gigantov__A5238",
+      "name": "Вынос Гигантов"
+    },
+    {
+      "slug": "readmanga:zvezdnoe_ditia__A533b",
+      "name": "Звёздное дитя"
+    },
+    {
+      "slug": "remanga:martial_peak",
+      "name": "Пик боевых искусств",
+      "genres": [
+        "Экшен",
+        "Боевые искусства",
+        "Фэнтези"
+      ]
+    }
+  ]
+}

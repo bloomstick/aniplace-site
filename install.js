@@ -501,10 +501,10 @@
   /// lands here. The short delay lets the S3 manifest replace the known-good
   /// fallback first; a user who changes app/device cancels it.
   function maybeAutoStart() {
-    if (!autoRequested || autoStarted || state.app !== 'aniplace' || state.os !== 'android') {
+    if (!autoRequested || autoStarted || state.os !== 'android') {
       return;
     }
-    var release = window.PlaceDownloads ? window.PlaceDownloads.get('aniplace') : null;
+    var release = window.PlaceDownloads ? window.PlaceDownloads.get(state.app) : null;
     var asset = release ? release.android : null;
     if (!asset || !asset.url) return;
     autoStarted = true;
@@ -514,7 +514,7 @@
     window.requestAnimationFrame(function () { scrollToWizard(false); });
   }
 
-  if (autoRequested && state.app === 'aniplace') {
+  if (autoRequested) {
     autoTimer = window.setTimeout(function () {
       autoTimer = null;
       maybeAutoStart();

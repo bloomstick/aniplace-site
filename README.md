@@ -24,8 +24,9 @@ GitHub-first release links.
 | `campaign/` | Aniplace-only ad landing (`index.html`, `campaign.css`, `campaign.js`, `og-campaign.png`): animated midnight hero, design-concept screens, Android-first direct APK / RuStore CTAs, desktop QR, optional Windows install, dedicated share card |
 | `go/` | RuStore-free copy of the ad landing (`index.html`, `go.css`, `go.js`, `og-go.png`): same midnight hero and direct-APK flow as `campaign/`, no store mentions or buttons |
 | `catalog/` | Public title pages at `/catalog/<slug>-<id>` (`index.html`, `catalog.css`, `catalog.js`, `data/titles-*.json`, per-title `<slug>-<id>.html` crawler shims): cover, names, description, genres/tags and facts; the same play-button CTA opens the app or installs it |
-| `404.html` | GitHub Pages fallback: forwards `/catalog/...` to the catalog shell with the original path preserved (the shell restores the pretty URL), otherwise shows a small not-found page |
-| `.well-known/assetlinks.json` | Android App Links verification: `place.ani`, release + debug signing fingerprints |
+| `manga/` | Public manga pages at `/manga/<slug>` (`index.html`, `manga.js`, `data/titles.json`, per-slug `<encodeComponent slug>.html` crawler shims): cover, names, description and genre/tag chips; same play-button CTA, Mangaplace edition. Built by `build_manga_catalog.py` from the WS2 map + `data/manga_meta.json`; zero pages until the map lands |
+| `404.html` | GitHub Pages fallback: forwards `/catalog/...` and `/manga/...` to their shells with the original path preserved (the shell restores the pretty URL), otherwise shows a small not-found page |
+| `.well-known/assetlinks.json` | Android App Links verification: `place.ani` (Aniplace) and `place.ani.manga` (Mangaplace), release + debug signing fingerprints |
 | `.nojekyll` | Disables Jekyll so GitHub Pages serves `.well-known/assetlinks.json` (dot-directories are otherwise omitted) |
 | `assets/` | `mascot.png` (source art) + `mascot.webp` / `mascot-360.webp`, both app icons, `favicon.png`, `grain.png` (texture); `shots/` (six straight Aniplace screens, 720×1384); `qr-install.svg`, `og-cover.png` (generated) |
 
@@ -251,6 +252,59 @@ shard request, the S3 cover, the desktop install hand-off and auto-download,
 the Android `intent://` URL, the missing-title state, and the assetlinks
 fingerprints. It needs no network.
 
+## Manga title pages (`manga/`)
+
+One public page per WS2-mapped manga title: **https://ani.place/manga/&lt;slug&gt;**
+(e.g. `/manga/remanga%3Amartial_peak`). The slug is the full qualified
+provider slug (`remanga:<dir>`, `readmanga:<link>`, bare MangaLib id),
+`Uri.encodeComponent`-escaped per the WS1 contract in `dream_core`
+(`buildMangaCatalogLink` / `parseDreamLink`), so `:` travels as `%3A`.
+The page shows the cover (source-CDN passthrough, family OG card when the
+map entry carries none), names, description and genre/tag chips.
+
+**Routing.** Same crawler-shim trick as `catalog/`, one directory over:
+each mapped slug ships a shim at `manga/<encodeComponent slug>.html`
+(generated, committed), served with HTTP 200 for the pretty shared URL;
+chat crawlers read that title's `<title>`/Open Graph tags
+(`<name> — в приложении Mangaplace`, «читать в приложении Mangaplace»
+tail, cover `og:image`) plus the `al:android:*` (`mangaplace://title/<slug>`,
+package `place.ani.manga`) and `twitter:app:*` hooks. Human browsers follow
+the instant redirect to `/manga/?path=<original>`; the shell restores the
+pretty URL with `replaceState`. Anything unmapped (or the whole surface
+before WS2 lands the map) falls through to `404.html` with a 404 status and
+shows the honest not-found state.
+
+**Data.** `apps/animedream/tools/site/build_manga_catalog.py` reads the
+slug set from the WS2 map (`apps/mangaplace/assets/anime_manga.json`,
+`{"version":1,"links":{animeId:[slugs]}}`) and the display fields from
+`site/manga/data/manga_meta.json` (`{"version":1,"titles":[{slug,name,...}]}`),
+then writes `site/manga/data/titles.json` (`{"version":1,"rows":{slug:row}}`,
+keyed by the raw provider slug exactly as `parseDreamLink` decodes it) plus
+the shims, deleting retired ones:
+
+```powershell
+python apps/animedream/tools/site/build_manga_catalog.py
+# or: --map <path> --meta <path> (defaults above)
+```
+
+A missing or empty map is a green build publishing zero pages (the surface
+stays deployable while WS2 curates); a non-empty map is strict — a mapped
+slug without metadata, or without its shim after the write, fails the
+build. Regenerate and commit whenever the map or metadata changes.
+
+**App Links.** The Mangaplace manifest declares an `autoVerify` intent
+filter for `https://ani.place/manga/` (see the `goal/manga-app-links`
+stream); `assetlinks.json` carries its release signing key (alias
+`mangaplace`, `C:/my/keys/fingerprint.txt`) plus the shared debug key.
+On Android the OS opens installed Mangaplace directly; messenger in-app
+browsers get the `al:android:*` meta, the shell fires one silent
+`mangaplace://title/<slug>` frame, and the page CTA uses an `intent://`
+URL with `S.browser_fallback_url` to
+`/install.html?app=mangaplace&os=android&step=3&started=1&auto=1`.
+`auto=1` is app-generic: it starts the current Android asset for either
+app (Mangaplace resolves to null, honestly "soon", until its first
+release).
+
 ## Design intent
 
 The direction is **a handmade zine for two apps**, not a dark SaaS landing:
@@ -437,6 +491,7 @@ static HTML plus `changelog.js`; there is no build step.
 
 ```powershell
 python apps/animedream/tools/site/build_catalog.py  # catalog/data/titles-*.json shards
+python apps/animedream/tools/site/build_manga_catalog.py  # manga/data/titles.json + per-slug shims (zero pages until the WS2 map lands)
 python apps/animedream/tools/site/make_og.py       # family OG card + 64px favicon
 python apps/animedream/tools/site/make_campaign_og.py  # campaign/og-campaign.png + go/og-go.png
 python apps/animedream/tools/site/make_campaign_qr.py  # campaign/qr-android.svg + go/qr-android.svg
@@ -457,6 +512,41 @@ python apps/animedream/tools/site/make_app_shots.py --shots-dir <captures>
 (gitignored) on first run. Re-run it after a palette, headline or mascot
 change; the PNG is committed. The QR points at
 `https://ani.place/install.html`.
+
+## Anime ↔ manga link map (`catalog/anime_manga.json`)
+
+`catalog/anime_manga.json` maps DreamDB anime ids to manga provider slugs
+for the future anime→manga cross-link:
+`{"version":1,"links":{"13867":["7965--chainsaw-man"]}}`. Slug forms match
+the app's qualified slugs (see `manga_source.dart` in Mangaplace): bare
+`NNNN--slug` (MangaLib), `remanga:<dir>` (Remanga),
+`readmanga:<linkName>` (ReadManga). The seed (2026-11-25) links 110 of the
+3,750 manga-source anime rows, backed by 1,122 cached manga records; the
+rest are triaged in `link_report.json` with their best sub-threshold
+candidates for manual confirmation.
+
+| File | Purpose |
+|---|---|
+| `catalog/anime_manga.json` | the map (`{"version":1,"links":{...}}`, numeric-sorted keys) |
+| `catalog/link_report.json` | summary counts + `unresolved` + `dead` (pruned) slugs |
+| `catalog/links_override.json` | manual `links` (always win) + `exclude` (kill a wrong fuzzy hit) |
+| `catalog/manga_snapshot/snapshot.json` | checked-in manga search cache |
+| `tools/site/link_anime_manga.py` | the kept builder (next to `build_catalog.py`) |
+
+Rerun (from the repo root):
+
+```powershell
+python apps/animedream/tools/site/link_anime_manga.py --live --top 50  # refresh snapshot, then rebuild
+python apps/animedream/tools/site/link_anime_manga.py          # offline rebuild (no network)
+python apps/animedream/tools/site/link_anime_manga.py --prune  # validate links, drop dead slugs
+```
+
+Matching: manga-source rows only (`isMangaSourceLabel` rule), manual
+override first, then Shikimori/MAL id join, then normalized-name fuzzy at
+`--threshold` (default 0.85); below threshold the anime stays `unresolved`.
+Offline reruns are byte-identical (sorted keys, no timestamps). MangaplaceApi
+is deliberately not used; Remanga search sits behind DDoS-Guard and 403s from
+some networks (recorded in the report, never fatal).
 
 ## Screenshots
 
