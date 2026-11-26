@@ -295,6 +295,15 @@ A missing or empty map is a green build publishing zero pages (the surface
 stays deployable while WS2 curates); a non-empty map is strict — a mapped
 slug without metadata, or without its shim after the write, fails the
 build. Regenerate and commit whenever the map or metadata changes.
+`manga_meta.json` display fields for mapped slugs come from
+`tools/site/refresh_manga_meta.py`, which detail-fetches each slug
+(MangaLib + ReadManga, Remanga best-effort) into
+`catalog/manga_snapshot/snapshot.json` and rewrites the mapped meta rows:
+
+```powershell
+python apps/animedream/tools/site/refresh_manga_meta.py
+python apps/animedream/tools/site/build_manga_catalog.py --map apps/animedream/site/catalog/anime_manga.json
+```
 
 **App Links.** The Mangaplace manifest declares an `autoVerify` intent
 filter for `https://ani.place/manga/` (see the `goal/manga-app-links`
